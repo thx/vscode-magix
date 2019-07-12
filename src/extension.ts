@@ -9,7 +9,9 @@ import { DiamondCommand } from './command/DiamondCommand';
 import { TestCommand } from './command/TestCommand';
 import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider } from './provider/VSDefinitionProvider';
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
-import {VSFoldingRangeProvider} from './provider/VSFoldingRangeProvider';
+import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
+import { VSHoverProvider } from './provider/VSHoverProvider';
+
 import { ConfigManager } from './utils/ConfigManager';
 import { Logger } from './utils/Logger';
 
@@ -42,6 +44,8 @@ export function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
 
         context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE,new VSFoldingRangeProvider()));
+        //注册悬浮提示Provider
+        context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE,new VSHoverProvider()));
 
         initViews();
 

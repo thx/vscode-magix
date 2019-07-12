@@ -7,7 +7,8 @@ import * as path from 'path';
 import * as fut from './utils/FileUtils';
 //import * as parse5 from 'parse5';
 import { HtmlESMappingCache } from './utils/CacheUtils';
-import {ConfigManager} from './utils/ConfigManager';
+import { ConfigManager } from './utils/ConfigManager';
+import {Iconfont} from './utils/Iconfont';
 
 
 export class Initializer {
@@ -19,6 +20,7 @@ export class Initializer {
     let fileList: Array<string> = [];
     let rootPath = fut.FileUtils.getProjectPath(undefined);
     this.listFiles(rootPath, fileList);
+    let cssFileList: Array<string> = [];
 
     fileList.forEach((filePath) => {
       let extName = path.extname(filePath);
@@ -39,23 +41,41 @@ export class Initializer {
         this.mappingFile(content,filePath);
       } else if (extName === '.es') { 
         this.mappingSameFile(filePath);
-      } else if(extName === '.css' ){
-        //let content = fs.readFileSync(filePath, 'UTF-8');
-       
-       
-      }else if(extName === '.less'){
-        //let content = fs.readFileSync(filePath, 'UTF-8');
-       
+      } else if (extName === '.css' || extName === '.less' || extName === '.scss') {
+        cssFileList.push(filePath);
       }
+
+    });
+   
+    Iconfont.scanCSSFile(cssFileList);
+
+  }
+  /**
+   * 从新扫描所有CSSFile
+   */
+  private reScanAllCSSFile(){
+    let fileList: Array<string> = [];
+    let rootPath = fut.FileUtils.getProjectPath(undefined);
+    this.listFiles(rootPath, fileList);
+    let cssFileList: Array<string> = fileList.filter((filePath: string) => {
+      let extName = path.extname(filePath);
+      if (filePath.indexOf('src') > -1) {
+        if (extName === '.css' || extName === '.less' || extName === '.scss') {
+          return true;
+        }
+      }
+      return false;
     });
 
-    
+    Iconfont.scanCSSFile(cssFileList);
+
   }
   private mappingFile(content: string, filePath: string){
     try {
 
       content.match(/(['"]?)tmpl\1.*?\@([^'"]*?)['"]/gi);
-
+      //更好的正则
+      //content.match(/(['"]?)tmpl\1\s*\:\s*(['"]+?)\@([^\2]*)\2/gi);
       let tmplVal: string = RegExp.$2;
       if (tmplVal) {
         let htmlPath: string = path.join(path.dirname(filePath), tmplVal);
@@ -106,7 +126,9 @@ export class Initializer {
     });
 
   }
-
+  /**
+   * 开始文件监听
+   */
   private startWatching() {
     //当编辑窗口活动时分析其内容
     window.onDidChangeActiveTextEditor((e: any) => {
@@ -115,13 +137,13 @@ export class Initializer {
         let path: string = editor.document.uri.path;
         let languageId: string = editor.document.languageId;
         if (languageId === 'typescript' || languageId === 'javascript') {
-         this.updateESCache(editor.document.getText(), path);
+          this.updateESCache(editor.document.getText(), path);
         }
       }
     });
     //监听文件
- 
-    let watcher: FileSystemWatcher = workspace.createFileSystemWatcher('**/*.{ts,js,html,css,less,json,es}', false, false, false);
+
+    let watcher: FileSystemWatcher = workspace.createFileSystemWatcher('**/*.{ts,js,html,css,less,scss,json,es}', false, false, false);
     watcher.onDidChange((e: Uri) => {
       let filePath = e.fsPath;
       let ext:string = path.extname(filePath);
@@ -134,7 +156,7 @@ export class Initializer {
         }
         this.updateESCache(content, filePath);
       }
-      
+      this.reScanAllCSSFile();
     });
     watcher.onDidCreate((e: Uri) => {
       let filePath = e.fsPath;
@@ -148,6 +170,7 @@ export class Initializer {
         }
         this.updateESCache(content, filePath);
       }
+      this.reScanAllCSSFile();
     });
     watcher.onDidDelete((e: Uri) => {
       let filePath = e.fsPath;
@@ -159,6 +182,7 @@ export class Initializer {
       }else if(ext === '.html'){
         HtmlESMappingCache.removeMappingByHtmlFile(filePath);
       }
+      this.reScanAllCSSFile();
     });
   }
 

@@ -2,7 +2,12 @@
 
 ## 功能
 
-### 新增 magix3 模板语法高亮功能！
+### iconfont 预览功能
+
+<img src="https://img.alicdn.com/tfs/TB1TROXX7L0gK0jSZFAXXcA9pXa-921-532.gif" alt="js跳转" width="800"/>
+
+
+### magix3 模板语法高亮功能！
 
 给 handlebars 实现新的 grammar 实现，自动支持 .tpl .html 扩展名的着色，如果你的扩展名不同，请在 配置中将你的扩展名指派给 handlebars
 
@@ -80,5 +85,13 @@ Diamond 快捷功能
 ### 0.0.5
 
 html 模板语法折叠功能
+
+### 0.2.0
+
+html 模板语法高亮
+
+### 0.3.0
+
+iconfont图标 悬浮展示
 
 
