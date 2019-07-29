@@ -3,7 +3,7 @@
   "displayName": "Magix",
   "description": "Magix 开发增强套件 @MMFE",
   "version": "0.5.0",
-  "publisher": "fengyu",
+  "publisher": "mmfe",
   "engines": {
     "vscode": "^1.28.0"
   },
