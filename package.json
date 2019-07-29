@@ -12,7 +12,7 @@
   ],
   "activationEvents": [
     "onCommand:mx.plugin",
-    "onLanguage:html",
+    "onLanguage:handlebars",
     "onLanguage:javascript",
     "onLanguage:typescript",
     "onLanguage:es"
@@ -129,15 +129,17 @@
     "map-lru": "^1.0.2",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",
-    "vscode": "^1.1.21",
-    "xml": "^1.0.1"
+    "vscode": "^1.1.21"
   },
   "dependencies": {
+    "@types/css-tree": "^1.0.0",
     "@types/parse5": "^5.0.0",
-    "request": "^2.81.0",
     "babylon": "^6.18.0",
+    "css-tree": "^1.0.0-alpha.29",
+    "datauri": "^1.1.0",
     "map-lru": "^1.0.2",
-    "opn": "^4.0.2"
+    "opn": "^4.0.2",
+    "request": "^2.81.0"
   },
   "repository": "https://github.com/thx/vscode-magix",
   "author": "",

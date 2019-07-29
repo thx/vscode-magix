@@ -1,29 +1,170 @@
 
 const request = require('request');
 
-export class Iconfont{
-  s:string = `<?xml version="1.0" standalone="no"?>
-  <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
-  <svg width="100" height="100">
-      <path d="M770.301 171.596l-42.485-42.485-212.41 212.41-212.414-212.41-42.464 42.485 212.403 212.41-212.403 212.41 42.464 42.48 212.414-212.41 212.41 212.406 42.485-42.48-212.41-212.406 212.41-212.41z"  fill="#000" stroke="#fff" stroke-width="10" />
-  </svg>`;
-  writeTempFiles(fontInfo:FontInfo){
-    request(fontInfo.url, (error: any, response: any, body: any) => {
-      if (!error && response.statusCode === 200) {
-        console.log(body);
-      } else {
-        console.log('send log error');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as csstree from 'css-tree';
+
+export interface IconfontData {
+  code: string;
+  data: string;
+}
+export class Iconfont {
+  private static IconFontDataCache: Map<string, Array<IconfontData>>;
+  public static getDataByClass(className: string): Array<IconfontData> | undefined {
+
+    return this.IconFontDataCache ? this.IconFontDataCache.get(className) : undefined;
+  }
+  //去掉注释，避免csstree 无法
+  private static removeComments(code: string) {
+    let lines = code.split('\n');
+    for(let i = 0;i<lines.length;i++){
+      //避免 url(‘//at.alicdn.com/t/font_826439_bq8dmoo4mn7.woff2') 被清除掉
+      if(lines[i].indexOf('url(')< 0){
+      lines[i] = lines[i].replace(/\/\/.*$/mg,'');
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
+  public static scanCSSFile(fileList: Array<string>) {
+    let fontFaceList: Array<{ name: string, url: string }> = [];
+    let fontClassList: Array<{ fontName: string, className: string }> = [];
+    fileList.forEach((filePath) => {
+      let extName = path.extname(filePath);
+      if (filePath.indexOf('src') < 0) {
+        return;
+      }
+      if (extName === '.css' || extName === '.less' || extName === '.scss') {
+        
+        let content = fs.readFileSync(filePath, 'UTF-8');
+        
+        content = this.removeComments(content);
+        let cssAST: any = csstree.parse(content);
+        if(filePath.indexOf('iconfont')>-1){
+          console.log(cssAST.children);
+        }
+        if (cssAST.children) {
+          cssAST.children.forEach((node: any) => {
+            let name: string, url: string, className: string = '', fontName: string = '';
+            //解析font-face
+            if (node.type === 'Atrule' && node.name === 'font-face' && node.block && node.block.children) {
+              node.block.children.forEach((subNode: any) => {
+                if (subNode.type === 'Declaration') {
+                  if (subNode.property === 'font-family' &&
+                    subNode.value &&
+                    subNode.value.children) {
+                    subNode.value.children.forEach((thNode: any) => {
+                      if (thNode.type === 'String') {
+                        name = thNode.value.replace(/[\'\"]/gi, '');
+                      }
+                    });
+
+                  }
+
+                  if (subNode.property === 'src' &&
+                    subNode.value &&
+                    subNode.value.children) {
+                    subNode.value.children.forEach((thNode: any) => {
+                      if (thNode.type === 'Url' &&
+                        thNode.value &&
+                        thNode.value.value &&
+                        thNode.value.value.indexOf('.svg') > -1) {
+                        url = thNode.value.value.replace(/[\'\"]/gi, '');
+                      }
+                    });
+                  }
+
+                  if (name && url) {
+                    fontFaceList.push({ name, url });
+                  }
+                }
+              });
+            } else if (node.type === 'Rule' &&
+              node.prelude &&
+              node.prelude.type === 'SelectorList' &&
+              node.prelude.children &&
+              node.block &&
+              node.block.children) {
+              //className
+              node.prelude.children.forEach((subNode: any) => {
+                if (subNode.type === 'Selector' && subNode.children) {
+                  subNode.children.forEach((thNode: any) => {
+                    if (thNode.type === 'ClassSelector') {
+                      className = thNode.name;
+                    }
+                  });
+                }
+              });
+              //fontName
+              node.block.children.forEach((subNode: any) => {
+                if (subNode.type === 'Declaration' &&
+                  subNode.property === 'font-family' &&
+                  subNode.value &&
+                  subNode.value.children) {
+                  subNode.value.children.forEach((thNode: any) => {
+                    if (thNode.type === 'String') {
+                      fontName = thNode.value.replace(/[\'\"]/gi, '');
+                    }
+                  });
+                }
+              });
+
+              if (className && fontName) {
+                fontClassList.push({ className, fontName });
+              }
+            }
+
+          });
+        }
       }
     });
+    let classUrlMap: Map<string, string> = new Map();
+    fontClassList.forEach((c) => {
+      let font = fontFaceList.find(f => {
+        return f.name === c.fontName;
+      });
+      if (font) {
+        classUrlMap.set(c.className, font.url);
+      }
+    });
+    let classDataMap: Map<string, Array<IconfontData>> = new Map();
+    
+    classUrlMap.forEach((url, className) => {
+      this.fetchSvgData(className, url).then((info: any) => {
+        classDataMap.set(info.className, info.list);
+      });
+    });
+    //缓存起来
+    this.IconFontDataCache = classDataMap;
+
   }
-}
-export class FontInfo{
-  public fontFamily:string;
-  public url:string;
-  public className:string;
-  constructor(){
-    this.fontFamily = '';
-    this.url = '';
-    this.className = '';
+  private static fetchSvgData(className: string, url: string) {
+    let p = new Promise((resolve, reject) => {
+      request('http:' + url, (error: any, response: any, body: any) => {
+        if (!error && response.statusCode === 200) {
+
+          let arr = body.match(/<glyph.*\/>/gi);
+          let list: Array<IconfontData> = [];
+          if (arr) {
+            arr.forEach((item: string) => {
+              item.match(/unicode=\"\&\#(\d+);\"\s*d=\"(.*?)\"/gi);
+              let code = RegExp.$1 ? Number(RegExp.$1).toString(16) : '';
+              let data = RegExp.$2;
+              if (code && data) {
+                list.push({ code, data });
+              }
+            });
+          }
+          resolve({ className, list });
+
+        } else {
+          console.log('send log error');
+          reject(error);
+        }
+      });
+    });
+    return p;
   }
 }

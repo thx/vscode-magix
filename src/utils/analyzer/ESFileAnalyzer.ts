@@ -12,7 +12,7 @@ export class ESFileAnalyzer {
       let doc = babylon.parse(content, {
         allowImportExportEverywhere: true, allowReturnOutsideFunction: true, allowSuperOutsideMethod: true, plugins: [
           // enable jsx and flow syntax https://babeljs.io/docs/en/babel-parser
-          "typescript", "estree", "jsx", "flow", "flowComments", "objectRestSpread", "throwExpressions", "classProperties"
+          "typescript", "estree", "flow", "flowComments", "objectRestSpread", "throwExpressions", "classProperties"
         ]
       });
 

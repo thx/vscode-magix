@@ -16,7 +16,7 @@ export class MXWebView {
     panel = vscode.window.createWebviewPanel(
       'mxWebView', // viewType
       title, // 视图标题
-      vscode.ViewColumn.One, // 显示在编辑器的哪个部位
+      vscode.ViewColumn.Active, // 显示在编辑器的哪个部位
       {
         enableScripts: true, // 启用JS，默认禁用
         retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
@@ -25,7 +25,7 @@ export class MXWebView {
     //指定html内容
     let html: string = fs.readFileSync(htmlPath, 'utf-8');
     panel.webview.html = html;
-    panel.onDidDispose((e)=>{
+    panel.onDidDispose((e:any)=>{
       this.panelMap.delete(title);
     });
     this.panelMap.set(title, panel);
