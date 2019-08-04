@@ -14,6 +14,7 @@ import { VSHoverProvider } from './provider/VSHoverProvider';
 
 import { ConfigManager } from './utils/ConfigManager';
 import { Logger } from './utils/Logger';
+import { ShowWelcomeCommand } from './command/ShowWelcomeCommand';
 
 
 
@@ -33,6 +34,9 @@ export function activate(context: vscode.ExtensionContext) {
         let testCommand: TestCommand = new TestCommand();
         testCommand.registerCommand(context);
 
+        let showWelcomeCommend:ShowWelcomeCommand = new ShowWelcomeCommand();
+        showWelcomeCommend.registerCommand(context);
+
         //注册es代码跳转command
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
@@ -48,6 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE,new VSHoverProvider()));
 
         initViews();
+       
 
         Logger.logActivate(new Date().getTime() - startTime, '');
         Logger.log('插件启动成功');
@@ -67,6 +72,9 @@ export function deactivate() {
 
 function initViews() {
 
+     //欢迎页面
+     vscode.commands.executeCommand(Command.COMMAND_WEB_SHOW_WELCOME);
+
     let config: any = ConfigManager.read();
 
     createStatusBar('日常',config.diamond.daily.appName,Command.COMMAND_DIAMOND_OPEN_DAILY);
@@ -83,4 +91,5 @@ function createStatusBar(text:string,tooltip:string,command:string){
     status.tooltip = '';
     status.show();
     status.command = command;
+    
 }

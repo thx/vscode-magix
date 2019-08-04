@@ -28,7 +28,8 @@ export class ConfigManager {
     }
   }
   public static openConfigPanel(context: vscode.ExtensionContext) {
-    let panel: vscode.WebviewPanel = MXWebView.openConfigPanel(path.join(context.extensionPath, './web/config/index.html'), 'mx-plugin系统配置');
+   
+    let panel: vscode.WebviewPanel = MXWebView.openConfigPanel(context, './web/welcome/index.html', 'mx-plugin系统配置');
     let eventData: any = { type: 'loaded', config: this.read() };
     panel.webview.postMessage(eventData);
     panel.webview.onDidReceiveMessage((e) => {
