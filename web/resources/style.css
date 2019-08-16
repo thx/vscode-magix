@@ -1,0 +1,19 @@
+body {
+    background-color: #f5f5f5;
+    padding:40px 30px;
+}
+.mb10{
+    margin-bottom: 10px;
+}
+.mt30{
+    margin-top:30px;
+}
+.w150{
+    width: 150px;
+}
+.w200{
+    width: 200px;
+}
+.w400{
+    width: 400px;    
+}

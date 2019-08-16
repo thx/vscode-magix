@@ -2,12 +2,12 @@ import { window, TextEditor,workspace,  FileSystemWatcher, Uri } from 'vscode';
 import { ESFileInfo } from './model/ESFileInfo';
 import { Cache } from './utils/CacheUtils';
 import { ESFileAnalyzer } from './utils/analyzer/ESFileAnalyzer';
+import { ProjectInfo, Info } from './utils/ProjectInfo';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as fut from './utils/FileUtils';
 //import * as parse5 from 'parse5';
 import { HtmlESMappingCache } from './utils/CacheUtils';
-import { ConfigManager } from './utils/ConfigManager';
 import {Iconfont} from './utils/Iconfont';
 
 
@@ -15,7 +15,7 @@ export class Initializer {
   /**
    * 扫描项目文件夹
    */
-  private scanFile() {
+  private scanSrcFile() {
 
     let fileList: Array<string> = [];
     let rootPath = fut.FileUtils.getProjectPath(undefined);
@@ -49,6 +49,13 @@ export class Initializer {
    
     Iconfont.scanCSSFile(cssFileList);
 
+  }
+  /**
+   * 扫描工程目录下的关键文件，eg： package.json
+   */
+  private scanProjectFile(){
+    let rootPath = fut.FileUtils.getProjectPath(undefined);
+    ProjectInfo.scanProject(rootPath);
   }
   /**
    * 从新扫描所有CSSFile
@@ -196,11 +203,10 @@ export class Initializer {
   public init(): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      
-      ConfigManager.init();
 
       this.startWatching();
-      this.scanFile();
+      this.scanSrcFile();
+      this.scanProjectFile();
       resolve();
 
     });

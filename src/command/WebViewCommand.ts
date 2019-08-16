@@ -3,15 +3,15 @@ import { MXWebView } from '../utils/WebViewUtils';
 import {Command} from '../command';
 
 
-export class ShowWelcomeCommand{
+export class WebViewCommand{
     /**
      * 注册command
      * @param context 
      */
   public registerCommand(context: vscode.ExtensionContext) {
 
-    context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_WEB_SHOW_WELCOME, (args) => {
-        let panel: vscode.WebviewPanel = MXWebView.openWebView(context, './web/welcome.html', 'Magix插件配置');
+    context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_WEBVIEW_SHOW, (args) => {
+        let panel: vscode.WebviewPanel = MXWebView.openWebView(context, './web/status-bar.html', 'StatusBar快捷方式配置');
         panel.webview.onDidReceiveMessage((e) => {
           if(e.type === 'save'){
             this.saveNickName(e.nickName);

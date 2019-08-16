@@ -8,6 +8,7 @@ export class Command {
   public static COMMAND_DIAMOND_OPEN_PRE: string = "mx.diamond.open.pre";
   public static COMMAND_DIAMOND_CONFIG: string = "mx.diamond.config";
   public static COMMAND_WEB_SHOW_WELCOME:string = "mx.web.show.welcome";
+  public static COMMAND_WEBVIEW_SHOW:string="mx.webview.show";
   public static COMMAND_TEST:string = "mx.test";
 }
 

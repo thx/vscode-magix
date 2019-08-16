@@ -11,15 +11,16 @@ import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
 import { VSHoverProvider } from './provider/VSHoverProvider';
-
-import { ConfigManager } from './utils/ConfigManager';
+import{MenuTreeViewProvider} from'./provider/MenuTreeViewProvider';
 import { Logger } from './utils/Logger';
 import { ShowWelcomeCommand } from './command/ShowWelcomeCommand';
+import { WebViewCommand } from './command/WebViewCommand';
 
 
 
 export function activate(context: vscode.ExtensionContext) {
     
+
 
     let startTime: number = new Date().getTime();
     //初始化期，初始化基本数据
@@ -37,6 +38,9 @@ export function activate(context: vscode.ExtensionContext) {
         let showWelcomeCommend:ShowWelcomeCommand = new ShowWelcomeCommand();
         showWelcomeCommend.registerCommand(context);
 
+        let webViewCommand:WebViewCommand = new WebViewCommand();
+        webViewCommand.registerCommand(context);
+
         //注册es代码跳转command
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
@@ -51,7 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
         //注册悬浮提示Provider
         context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE,new VSHoverProvider()));
 
-        initViews();
+        initViews(context);
        
 
         Logger.logActivate(new Date().getTime() - startTime, '');
@@ -70,18 +74,15 @@ export function deactivate() {
     Logger.logDeactivate();
 }
 
-function initViews() {
-
-     //欢迎页面
-     vscode.commands.executeCommand(Command.COMMAND_WEB_SHOW_WELCOME);
-
-    let config: any = ConfigManager.read();
-
-    createStatusBar('日常',config.diamond.daily.appName,Command.COMMAND_DIAMOND_OPEN_DAILY);
-
-    createStatusBar('预发',config.diamond.pre.appName,Command.COMMAND_DIAMOND_OPEN_PRE);
-
-    createStatusBar('Diamond配置','Diamond配置',Command.COMMAND_DIAMOND_CONFIG);
+function initViews(context:vscode.ExtensionContext) {
+    let nikeName = vscode.workspace.getConfiguration().get('magix.conf.user.nikeName');
+    //没有设置nikeName，显示欢迎页面
+    if (!nikeName) {
+        vscode.commands.executeCommand(Command.COMMAND_WEB_SHOW_WELCOME);
+    }
+    let menuTreeViewProvider:MenuTreeViewProvider  = new MenuTreeViewProvider(context);
+    vscode.window.registerTreeDataProvider('magix-menu-view', menuTreeViewProvider);
+    
 
 }
 

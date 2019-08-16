@@ -5,9 +5,9 @@ import * as path from 'path';
 export class MXWebView {
   static panelMap: Map<string, vscode.WebviewPanel> = new Map();
 
-  public static openWebView(context: vscode.ExtensionContext,htmlPath: string, title: string): vscode.WebviewPanel {
-    let panel: vscode.WebviewPanel | undefined = this.panelMap.get(title);
-    
+  public static openWebView(context: vscode.ExtensionContext, htmlPath: string, title: string): vscode.WebviewPanel {
+    let panel: vscode.WebviewPanel | undefined = this.panelMap.get(htmlPath);
+
     if (panel) {
       const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
       panel.reveal(column);
@@ -23,12 +23,12 @@ export class MXWebView {
         retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
       }
     );
-   
-    panel.webview.html = this.getWebViewContent(context,htmlPath);
-    panel.onDidDispose((e:any)=>{
-      this.panelMap.delete(title);
+
+    panel.webview.html = this.getWebViewContent(context, htmlPath);
+    panel.onDidDispose((e: any) => {
+      this.panelMap.delete(htmlPath);
     });
-    this.panelMap.set(title, panel);
+    this.panelMap.set(htmlPath, panel);
     return panel;
   }
   /**

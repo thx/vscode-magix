@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./resources/element.css">
+  <link rel="stylesheet" href="./resources/style.css">
+</head>
+
+<body>
+  <h1>Magix VSCode 插件</h1>
+  <div id="app">
+    <el-alert title="温馨提示" type="success" effect="dark" description="为了更好的使用Magix插件，请您设置一下您的花名" show-icon>
+    </el-alert>
+    <el-input class="mt30 w200" placeholder="请输入您的花名" v-model="nickName" clearable>
+    </el-input>
+
+    <el-button plain @click="saveNickName">确认</el-button>
+
+  </div>
+</body>
+<script src="./resources/vue.min.js"></script>
+<script src="./resources/element.min.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: function () {
+      return { visible: false, nickName: '' }
+    },
+    methods: {
+      saveNickName() {
+        if (this.nickName === '') {
+          this.$alert('花名不能为空', '温馨提示', {
+            confirmButtonText: '确定'
+          });
+          return;
+        }
+        if (vscode) {
+          vscode.postMessage({ nickName: this.nickName, type: 'save' });
+        }
+      }
+    }
+  });
+
+  var vscode;
+  (function () {
+    vscode = acquireVsCodeApi();
+  })();
+  window.addEventListener('message', event => {
+    const data = event.data;
+
+    if (data.type === 'loaded') {
+
+    }
+  });
+</script>
+
+</html>

@@ -29,10 +29,6 @@
         "title": "MX"
       },
       {
-        "command": "mx.web.show.welcome",
-        "title": "欢迎页面"
-      },
-      {
         "command": "mx.test",
         "title": "MX Test"
       }
@@ -67,16 +63,16 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "magix",
-          "title": "mx-plugin",
+          "id": "Magix",
+          "title": "Magix VSCode插件",
           "icon": "images/Magix.svg"
         }
       ]
     },
     "views": {
-      "magix": [
+      "Magix": [
         {
-          "id": "magix",
+          "id": "magix-menu-view",
           "name": "插件设置"
         }
       ]
@@ -110,6 +106,18 @@
           ".html"
         ],
         "configuration": "./language-configuration.json"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "Magix VSCode 插件",
+        "properties": {
+          "magix.conf.user.nikeName": {
+            "type": "string",
+            "default": "",
+            "description": "请输入您的花名"
+          }
+        }
       }
     ]
   },
