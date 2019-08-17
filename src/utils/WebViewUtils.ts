@@ -4,8 +4,18 @@ import * as path from 'path';
 
 export class MXWebView {
   static panelMap: Map<string, vscode.WebviewPanel> = new Map();
-
-  public static openWebView(context: vscode.ExtensionContext, htmlPath: string, title: string): vscode.WebviewPanel {
+/**
+ * 打开webview
+ * @param context 
+ * @param htmlPath 
+ * @param title 
+ * @param showOptions 
+ */
+  public static showWebView(
+    context: vscode.ExtensionContext,
+    htmlPath: string,
+    title: string,
+    showOptions: vscode.ViewColumn | { viewColumn: vscode.ViewColumn, preserveFocus?: boolean }): vscode.WebviewPanel {
     let panel: vscode.WebviewPanel | undefined = this.panelMap.get(htmlPath);
 
     if (panel) {
@@ -17,7 +27,7 @@ export class MXWebView {
     panel = vscode.window.createWebviewPanel(
       'mxWebView', // viewType
       title, // 视图标题
-      vscode.ViewColumn.Active, // 显示在编辑器的哪个部位
+      showOptions, // 显示在编辑器的哪个部位
       {
         enableScripts: true, // 启用JS，默认禁用
         retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
@@ -46,8 +56,6 @@ export class MXWebView {
     });
     return html;
   }
-  public static openConfigPanel(context: vscode.ExtensionContext, htmlPath: string, title: string): vscode.WebviewPanel {
-    return this.openWebView(context, htmlPath, title);
-  }
+  
 
 }

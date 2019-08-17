@@ -13,8 +13,7 @@ import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
 import { VSHoverProvider } from './provider/VSHoverProvider';
 import{MenuTreeViewProvider} from'./provider/MenuTreeViewProvider';
 import { Logger } from './utils/Logger';
-import { ShowWelcomeCommand } from './command/ShowWelcomeCommand';
-import { WebViewCommand } from './command/WebViewCommand';
+import { WebViewCommand, WebViewCommandArgument, WebPath } from './command/WebViewCommand';
 
 
 
@@ -34,9 +33,6 @@ export function activate(context: vscode.ExtensionContext) {
 
         let testCommand: TestCommand = new TestCommand();
         testCommand.registerCommand(context);
-
-        let showWelcomeCommend:ShowWelcomeCommand = new ShowWelcomeCommand();
-        showWelcomeCommend.registerCommand(context);
 
         let webViewCommand:WebViewCommand = new WebViewCommand();
         webViewCommand.registerCommand(context);
@@ -78,8 +74,15 @@ function initViews(context:vscode.ExtensionContext) {
     let nikeName = vscode.workspace.getConfiguration().get('magix.conf.user.nikeName');
     //没有设置nikeName，显示欢迎页面
     if (!nikeName) {
-        vscode.commands.executeCommand(Command.COMMAND_WEB_SHOW_WELCOME);
+
+        let arg:WebViewCommandArgument = new WebViewCommandArgument();
+        arg.title="Magix Code 插件";
+        arg.viewColumn= vscode.ViewColumn.Active;
+        arg.webPath = WebPath.Welcome;
+
+        vscode.commands.executeCommand(Command.COMMAND_WEBVIEW_SHOW,[arg]);
     }
+    //初始化Menu View
     let menuTreeViewProvider:MenuTreeViewProvider  = new MenuTreeViewProvider(context);
     vscode.window.registerTreeDataProvider('magix-menu-view', menuTreeViewProvider);
     

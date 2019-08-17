@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./resources/element.css">
+  <link rel="stylesheet" href="./resources/style.css">
+</head>
+<body>
+  <div id="app">
+    <div v-for="(item,index) in list" class="mb10">
+      <el-input class="w150" placeholder="StatusBar标题" v-model="item.title" clearable>
+        </el-input> :
+      <el-input class="w400" placeholder="请输入您的链接" v-model="item.link" clearable>
+      </el-input>
+      <el-button v-if="index === list.length - 1" plain @click="addItem">+</el-button>
+      <el-button v-if="index > 0" plain @click="deleteItem($event,index)">-</el-button>
+    </div>
+  </div>
+</body>
+<script src="./resources/vue.min.js"></script>
+<script src="./resources/element.min.js"></script>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: function () {
+      return {
+        visible: false,
+        list: [
+          { title: '', link: '' }
+          , { title: '', link: '' }
+        ]
+      }
+    },
+    methods: {
+      saveNickName() {
+        if (this.nickName === '') {
+          this.$alert('花名不能为空', '温馨提示', {
+            confirmButtonText: '确定'
+          });
+          return;
+        }
+        if (vscode) {
+          vscode.postMessage({ nickName: this.nickName, type: 'save' });
+        }
+      },
+      addItem(){
+        this.list.push({title:'',link:''});
+      },
+      deleteItem(e,index){
+        this.list.splice(index,1);
+      }
+    }
+  });
+
+</script>
+
+</html>
