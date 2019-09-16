@@ -3,7 +3,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { Initializer } from './initializer';
-import { Command } from './command';
+import { Command } from './common/constant/Command';
 import { ToDefinitionCommand } from './command/ToDefinitionCommand';
 import { DiamondCommand } from './command/DiamondCommand';
 import { TestCommand } from './command/TestCommand';
@@ -11,14 +11,14 @@ import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
 import { VSHoverProvider } from './provider/VSHoverProvider';
-import{MenuTreeViewProvider} from'./provider/MenuTreeViewProvider';
+import { MenuTreeViewProvider } from './provider/MenuTreeViewProvider';
 import { Logger } from './utils/Logger';
 import { WebViewCommand, WebViewCommandArgument, WebPath } from './command/WebViewCommand';
 
 
 
 export function activate(context: vscode.ExtensionContext) {
-    
+
 
 
     let startTime: number = new Date().getTime();
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
         let testCommand: TestCommand = new TestCommand();
         testCommand.registerCommand(context);
 
-        let webViewCommand:WebViewCommand = new WebViewCommand();
+        let webViewCommand: WebViewCommand = new WebViewCommand();
         webViewCommand.registerCommand(context);
 
         //注册es代码跳转command
@@ -47,12 +47,12 @@ export function activate(context: vscode.ExtensionContext) {
         //注册代码提示
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
 
-        context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE,new VSFoldingRangeProvider()));
+        context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
         //注册悬浮提示Provider
-        context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE,new VSHoverProvider()));
+        context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new VSHoverProvider()));
 
         initViews(context);
-       
+
 
         Logger.logActivate(new Date().getTime() - startTime, '');
         Logger.log('插件启动成功');
@@ -70,30 +70,30 @@ export function deactivate() {
     Logger.logDeactivate();
 }
 
-function initViews(context:vscode.ExtensionContext) {
+function initViews(context: vscode.ExtensionContext) {
     let nikeName = vscode.workspace.getConfiguration().get('magix.conf.user.nikeName');
     //没有设置nikeName，显示欢迎页面
     if (!nikeName) {
 
-        let arg:WebViewCommandArgument = new WebViewCommandArgument();
-        arg.title="Magix Code 插件";
-        arg.viewColumn= vscode.ViewColumn.Active;
+        let arg: WebViewCommandArgument = new WebViewCommandArgument();
+        arg.title = "Magix Code 插件";
+        arg.viewColumn = vscode.ViewColumn.Active;
         arg.webPath = WebPath.Welcome;
 
-        vscode.commands.executeCommand(Command.COMMAND_WEBVIEW_SHOW,[arg]);
+        vscode.commands.executeCommand(Command.COMMAND_WEBVIEW_SHOW, [arg]);
     }
     //初始化Menu View
-    let menuTreeViewProvider:MenuTreeViewProvider  = new MenuTreeViewProvider(context);
+    let menuTreeViewProvider: MenuTreeViewProvider = new MenuTreeViewProvider(context);
     vscode.window.registerTreeDataProvider('magix-menu-view', menuTreeViewProvider);
-    
+
 
 }
 
-function createStatusBar(text:string,tooltip:string,command:string){
+function createStatusBar(text: string, tooltip: string, command: string) {
     let status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     status.text = text;
     status.tooltip = '';
     status.show();
     status.command = command;
-    
+
 }

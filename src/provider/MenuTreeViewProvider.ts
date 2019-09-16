@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { Command } from '../command';
+import { Command } from '../common/constant/Command';
 import * as path from 'path';
 import { WebPath,WebViewCommandArgument } from '../command/WebViewCommand';
 

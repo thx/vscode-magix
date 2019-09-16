@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { MXWebView } from '../utils/WebViewUtils';
-import { Command } from '../command';
-
+import { Command } from '../common/constant/Command';
+import { WebCommand } from '../common/constant/WebCommand';
 
 export class WebViewCommand {
   /**
@@ -15,9 +15,11 @@ export class WebViewCommand {
       let panel: vscode.WebviewPanel = MXWebView.showWebView(context, args.webPath, args.title, args.viewColumn);
 
       panel.webview.onDidReceiveMessage((e) => {
-        if (e.type === 'nike_name_save') {
+        if (e.type === WebCommand.SAVE_NIKE_NAME) {
           this.saveNickName(e.nickName);
           panel.dispose();
+        }else if(e.type  === WebCommand.GET_NIKE_NAME){
+
         }
       });
 
@@ -26,6 +28,9 @@ export class WebViewCommand {
       }
 
     }));
+  }
+  private saveNickName(nickName: string): void {
+    vscode.workspace.getConfiguration().update('magix.conf.user.nikeName', nickName, true);
   }
   private saveNickName(nickName: string): void {
     vscode.workspace.getConfiguration().update('magix.conf.user.nikeName', nickName, true);

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Command } from '../command';
+import { Command } from '../common/constant/Command';
 
 
 

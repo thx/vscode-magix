@@ -20,7 +20,12 @@
 </body>
 <script src="./resources/vue.min.js"></script>
 <script src="./resources/element.min.js"></script>
-
+<script>
+  var vscode;
+  (function () {
+    vscode = acquireVsCodeApi();
+  })();
+</script>
 <script>
   new Vue({
     el: '#app',
@@ -54,6 +59,13 @@
     }
   });
 
+  window.addEventListener('message', event => {
+    const data = event.data;
+
+    if (data.type === 'loaded') {
+
+    }
+  });
 </script>
 
 </html>
