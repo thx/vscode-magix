@@ -1,14 +1,14 @@
 import { window, TextEditor,workspace,  FileSystemWatcher, Uri } from 'vscode';
 import { ESFileInfo } from './model/ESFileInfo';
-import { Cache } from './utils/CacheUtils';
-import { ESFileAnalyzer } from './utils/analyzer/ESFileAnalyzer';
-import { ProjectInfo, Info } from './utils/ProjectInfo';
+import { Cache } from './common/utils/CacheUtils';
+import { ESFileAnalyzer } from './common/analyzer/ESFileAnalyzer';
+import { ProjectInfo, Info } from './common/utils/ProjectInfo';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as fut from './utils/FileUtils';
+import * as fut from './common/utils/FileUtils';
 //import * as parse5 from 'parse5';
-import { HtmlESMappingCache } from './utils/CacheUtils';
-import {Iconfont} from './utils/Iconfont';
+import { HtmlESMappingCache } from './common/utils/CacheUtils';
+import {Iconfont} from './common/utils/Iconfont';
 
 
 export class Initializer {

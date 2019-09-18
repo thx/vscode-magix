@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import { Command } from '../common/constant/Command';
 import * as path from 'path';
-import { WebPath,WebViewCommandArgument } from '../command/WebViewCommand';
+import { WebViewCommandArgument, WebviewType } from '../command/CommandArgument';
 
 export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
   constructor(content: vscode.ExtensionContext) {
@@ -12,26 +12,22 @@ export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
   private treeItems: Array<any> = [
     {
       label: '插件基本信息设置',
-      viewColumn: vscode.ViewColumn.Active,
-      webPath: WebPath.Welcome,
+      webviewType: WebviewType.Setting,
       icon: 'setting'
     },
     {
       label: 'StatusBar快捷方式设置',
-      viewColumn: vscode.ViewColumn.Active,
-      webPath: WebPath.StatusBarShortcut,
+      webviewType: WebviewType.StatusBarShortcut,
       icon: 'status-bar'
     },
     {
       label: '快速插入Gallery组件',
-      viewColumn: vscode.ViewColumn.Active,
-      webPath: WebPath.Gallery,
+      webviewType: WebviewType.Gallery,
       icon: 'status-bar'
     },
     {
       label: '失效Rap引用扫描',
-      viewColumn: vscode.ViewColumn.Active,
-      webPath: WebPath.RapScan,
+      webviewType: WebviewType.RapScan,
       icon: 'status-bar'
     }
   ];
@@ -43,9 +39,8 @@ export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
     treeItem.iconPath = this.getIcon(item.icon);
 
     let arg: WebViewCommandArgument = new WebViewCommandArgument();
-    arg.title = item.label;
-    arg.webPath = item.webPath;
-    arg.viewColumn = item.viewColumn;
+ 
+    arg.webviewType = item.webviewType;
 
     treeItem.command = {
       command: Command.COMMAND_WEBVIEW_SHOW,
@@ -57,6 +52,7 @@ export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
   getChildren(offset?: number): Thenable<number[]> {
     return Promise.resolve([1, 2, 3, 4]);
   }
+
   getIcon(type: string): any {
     return {
       light: this.context.asAbsolutePath(path.join('resources', 'light', type + '.svg')),

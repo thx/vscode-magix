@@ -1,8 +1,8 @@
-import * as vscode from 'vscode';
+
 import { FileUtils } from './FileUtils';
 import * as fs from 'fs';
 import * as path from 'path';
-import { MXWebView } from './WebViewUtils';
+
 
 export class ConfigManager {
   private static config: any = { diamond: { daily: { serverId: 'daily', appName: '', dataId: '',group:'' }, pre: { serverId: 'pre', appName: '', dataId: '',group:'' } } };
@@ -27,17 +27,6 @@ export class ConfigManager {
       fs.writeFileSync(this.configFilePath, JSON.stringify(config), 'utf-8');
     }
   }
-  public static openConfigPanel(context: vscode.ExtensionContext) {
-   
-    let panel: vscode.WebviewPanel = MXWebView.openConfigPanel(context, './web/welcome/index.html', 'mx-plugin系统配置');
-    let eventData: any = { type: 'loaded', config: this.read() };
-    panel.webview.postMessage(eventData);
-    panel.webview.onDidReceiveMessage((e) => {
-      if(e.type === 'save'){
-        this.save(e.config);
-        vscode.window.showInformationMessage('Diamond配置保存成功');
-      }
-    });
-  }
+ 
 
 }

@@ -6,7 +6,6 @@
   <link rel="stylesheet" href="./resources/element.css">
   <link rel="stylesheet" href="./resources/style.css">
 </head>
-<script src="./config/vscode-utils.js"></script>
 
 <body>
   <div id="app">
@@ -17,46 +16,42 @@
     <el-button plain @click="saveNickName">确认</el-button>
 
   </div>
+  <div id="msg"></div>
 </body>
+<script src="./config/vscode-utils.js"></script>
+<script src="./config/command.js"></script>
 <script src="./resources/vue.min.js"></script>
 <script src="./resources/element.min.js"></script>
-<script src="./config/command.js"></script>
+
 <script>
   new Vue({
-      el: '#app',
-      data: function () {
-        return { visible: false, nickName: '' }
-      },
-      mounted: function () {
-        if(vscode){
-          vscode.postMessage({
-
-          });
+    el: '#app',
+    data: function () {
+      return { visible: false, nickName: '' }
+    },
+    mounted: function () {
+      window.addEventListener('message', event => {
+        const msg = event.data;
+        let data = msg.data;
+        if (event.type === WEB_COMMAND.GET_NIKE_NAME) {
+          this.nickName = data.nickName;
         }
-        window.addEventListener('message', event => {
-          const data = event.data;
-          if (data.type === WEB_COMMAND.GET_NIKE_NAME) {
-            this.nickName = data.nickName;
-          }
-        });
-      }
+      });
+      VSCode.postMessage(WEB_COMMAND.GET_NIKE_NAME);
+    },
     methods: {
-        saveNickName() {
-          if (this.nickName === '') {
-            this.$alert('花名不能为空', '温馨提示', {
-              confirmButtonText: '确定'
-            });
-            return;
-          }
-          if (vscode) {
-            vscode.postMessage({ nickName: this.nickName, type: 'save' });
-          }
+      saveNickName() {
+        if (this.nickName === '') {
+          this.$alert('花名不能为空', '温馨提示', {
+            confirmButtonText: '确定'
+          });
+          return;
         }
+        VSCode.postMessage(WEB_COMMAND.SAVE_NIKE_NAME, { nickName: this.nickName });
       }
-    });
+    }
+  });
 
- 
- 
 </script>
 
 </html>

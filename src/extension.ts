@@ -5,39 +5,27 @@ import * as vscode from 'vscode';
 import { Initializer } from './initializer';
 import { Command } from './common/constant/Command';
 import { ToDefinitionCommand } from './command/ToDefinitionCommand';
-import { DiamondCommand } from './command/DiamondCommand';
+
 import { TestCommand } from './command/TestCommand';
 import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider } from './provider/VSDefinitionProvider';
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
 import { VSHoverProvider } from './provider/VSHoverProvider';
 import { MenuTreeViewProvider } from './provider/MenuTreeViewProvider';
-import { Logger } from './utils/Logger';
-import { WebViewCommand, WebViewCommandArgument, WebPath } from './command/WebViewCommand';
-
+import { Logger } from './common/utils/Logger';
+import { WebViewCommand } from './command/WebViewCommand';
+import { WebViewCommandArgument, WebviewType } from './command/CommandArgument';
 
 
 export function activate(context: vscode.ExtensionContext) {
 
-
-
     let startTime: number = new Date().getTime();
     //初始化期，初始化基本数据
     new Initializer().init().then(() => {
-        //注册跳转到定义command
-        let command: ToDefinitionCommand = new ToDefinitionCommand();
-        command.registerCommand(context);
+        //注册command
+        new ToDefinitionCommand().registerCommand(context);
+        new WebViewCommand().registerCommand(context);
 
-        let diamondCommand: DiamondCommand = new DiamondCommand();
-        diamondCommand.registerCommand(context);
-
-        let testCommand: TestCommand = new TestCommand();
-        testCommand.registerCommand(context);
-
-        let webViewCommand: WebViewCommand = new WebViewCommand();
-        webViewCommand.registerCommand(context);
-
-        //注册es代码跳转command
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
@@ -52,7 +40,6 @@ export function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new VSHoverProvider()));
 
         initViews(context);
-
 
         Logger.logActivate(new Date().getTime() - startTime, '');
         Logger.log('插件启动成功');
@@ -71,17 +58,15 @@ export function deactivate() {
 }
 
 function initViews(context: vscode.ExtensionContext) {
-    let nikeName = vscode.workspace.getConfiguration().get('magix.conf.user.nikeName');
-    //没有设置nikeName，显示欢迎页面
-    if (!nikeName) {
-
+    let nickname = vscode.workspace.getConfiguration().get('magix.conf.user.nickname');
+    //没有设置nickname，显示欢迎页面
+    
+    if (!nickname) {
         let arg: WebViewCommandArgument = new WebViewCommandArgument();
-        arg.title = "Magix Code 插件";
-        arg.viewColumn = vscode.ViewColumn.Active;
-        arg.webPath = WebPath.Welcome;
-
-        vscode.commands.executeCommand(Command.COMMAND_WEBVIEW_SHOW, [arg]);
+        arg.webviewType = WebviewType.Welcome;
+        vscode.commands.executeCommand(Command.COMMAND_WEBVIEW_SHOW, arg);
     }
+
     //初始化Menu View
     let menuTreeViewProvider: MenuTreeViewProvider = new MenuTreeViewProvider(context);
     vscode.window.registerTreeDataProvider('magix-menu-view', menuTreeViewProvider);

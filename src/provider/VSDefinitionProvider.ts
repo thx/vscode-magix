@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { ESFileProvider } from '../provider/ESFileProvider';
-import { HtmlESMappingCache } from '../utils/CacheUtils';
+import { HtmlESMappingCache } from '../common/utils/CacheUtils';
 
 /**
  * 跳段到定义

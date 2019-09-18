@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { Cache } from '../utils/CacheUtils';
+import { Cache } from '../common/utils/CacheUtils';
 import { ESFileInfo } from '../model/ESFileInfo';
-import { ESFileAnalyzer } from '../utils/analyzer/ESFileAnalyzer';
+import { ESFileAnalyzer } from '../common/analyzer/ESFileAnalyzer';
 import * as fs from 'fs';
 import { FnInfo } from '../model/FnInfo';
 

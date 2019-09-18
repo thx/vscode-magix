@@ -19,13 +19,25 @@
 
   </div>
 </body>
+<script src="./config/vscode-utils.js"></script>
+<script src="./config/command.js"></script>
 <script src="./resources/vue.min.js"></script>
 <script src="./resources/element.min.js"></script>
+
 <script>
   new Vue({
     el: '#app',
     data: function () {
       return { visible: false, nickName: '' }
+    },
+    mounted: function () {
+      window.addEventListener('message', event => {
+        const data = event.data;
+        if (data.type === WEB_COMMAND.GET_NIKE_NAME) {
+          this.nickName = data.nickName;
+        }
+      });
+      VSCode.postMessage(WEB_COMMAND.GET_NIKE_NAME);
     },
     methods: {
       saveNickName() {
@@ -35,24 +47,18 @@
           });
           return;
         }
-        if (vscode) {
-          vscode.postMessage({ nickName: this.nickName, type: 'save' });
-        }
+        VSCode.postMessage(WEB_COMMAND.SAVE_NIKE_NAME, { nickName: this.nickName });
       }
     }
   });
 
-  var vscode;
-  (function () {
-    vscode = acquireVsCodeApi();
-  })();
-  window.addEventListener('message', event => {
-    const data = event.data;
+      window.addEventListener('message', event => {
+        const data = event.data;
 
-    if (data.type === 'loaded') {
+        if (data.type === 'loaded') {
 
-    }
-  });
+        }
+      });
 </script>
 
 </html>

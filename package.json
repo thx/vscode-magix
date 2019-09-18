@@ -112,7 +112,7 @@
       {
         "title": "Magix VSCode 插件",
         "properties": {
-          "magix.conf.user.nikeName": {
+          "magix.conf.user.nickName": {
             "type": "string",
             "default": "",
             "description": "请输入您的花名"

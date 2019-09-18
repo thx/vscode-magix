@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Iconfont, IconfontData } from '../utils/Iconfont';
+import { Iconfont, IconfontData } from '../common/utils/Iconfont';
 
 const Datauri = require('datauri');
 const SVG_TEMPLATE_START: string = `<?xml version="1.0" standalone="no"?>

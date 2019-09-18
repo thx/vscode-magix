@@ -1,6 +1,6 @@
 import * as from 'vscode';
 
-export  class ProjectInfo{
+export class  ProjectInfo{
     private static info:Info;
     /**
      * 扫描当前目录

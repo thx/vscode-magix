@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Command } from '../common/constant/Command';
 const opn = require('opn');
-import { ConfigManager } from '../utils/ConfigManager';
+import { ConfigManager } from '../common/utils/ConfigManager';
 
 
 export class DiamondCommand {
