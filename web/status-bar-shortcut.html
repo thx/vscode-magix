@@ -39,15 +39,15 @@
       }
     },
     methods: {
-      saveNickName() {
-        if (this.nickName === '') {
+      saveNickname() {
+        if (this.nickname === '') {
           this.$alert('花名不能为空', '温馨提示', {
             confirmButtonText: '确定'
           });
           return;
         }
         if (vscode) {
-          vscode.postMessage({ nickName: this.nickName, type: 'save' });
+          vscode.postMessage({ nickname: this.nickname, type: 'save' });
         }
       },
       addItem(){

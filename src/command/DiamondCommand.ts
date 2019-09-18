@@ -20,9 +20,7 @@ export class DiamondCommand {
       let pre = config.diamond.pre;
       this.openUrl(pre, this.preUrl, context);
     }));
-    context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_DIAMOND_CONFIG,(args)=>{
-      ConfigManager.openConfigPanel(context);
-    }));
+   
   }
   openUrl(diamondConfig: any, url: string, context: vscode.ExtensionContext) {
     //anuary 2019 (version 1.31) 打开浏览器可以使用vs自带方法了

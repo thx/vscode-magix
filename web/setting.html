@@ -10,10 +10,10 @@
 <body>
   <div id="app">
 
-    <el-input class="mt30 w200" placeholder="请输入您的花名" v-model="nickName" clearable>
+    <el-input class="mt30 w200" placeholder="请输入您的花名" v-model="nickname" clearable>
     </el-input>
 
-    <el-button plain @click="saveNickName">确认</el-button>
+    <el-button plain @click="saveNickname">确认</el-button>
 
   </div>
   <div id="msg"></div>
@@ -27,27 +27,27 @@
   new Vue({
     el: '#app',
     data: function () {
-      return { visible: false, nickName: '' }
+      return { visible: false, nickname: '' }
     },
     mounted: function () {
       window.addEventListener('message', event => {
         const msg = event.data;
         let data = msg.data;
-        if (event.type === WEB_COMMAND.GET_NIKE_NAME) {
-          this.nickName = data.nickName;
+        if (event.type === WEB_COMMAND.GET_NICKNAME) {
+          this.nickname = data.nickname;
         }
       });
-      VSCode.postMessage(WEB_COMMAND.GET_NIKE_NAME);
+      VSCode.postMessage(WEB_COMMAND.GET_NICKNAME);
     },
     methods: {
-      saveNickName() {
-        if (this.nickName === '') {
+      saveNickname() {
+        if (this.nickname === '') {
           this.$alert('花名不能为空', '温馨提示', {
             confirmButtonText: '确定'
           });
           return;
         }
-        VSCode.postMessage(WEB_COMMAND.SAVE_NIKE_NAME, { nickName: this.nickName });
+        VSCode.postMessage(WEB_COMMAND.SAVE_NICKNAME, { nickname: this.nickname });
       }
     }
   });

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { BaseView } from './BaseView';
 import { WebCommand } from '../common/constant/WebCommand';
+import { ConfigurationUtils } from '../common/utils/ConfigurationUtils';
 
 export class WelcomeWebview extends BaseView {
     public show() {
@@ -8,21 +9,13 @@ export class WelcomeWebview extends BaseView {
         let title = 'Magix VSCode 插件';
         this.createWebview(path, title, vscode.ViewColumn.Active);
         this.onDidReceiveMessage((e) => {
-            if (e.type === WebCommand.SAVE_NIKE_NAME) {
-                this.saveNickName(e.data.nickName);
+            if (e.type === WebCommand.SAVE_NICKNAME) {
+                ConfigurationUtils.saveNickname(e.data.nickname);
                 this.dispose();
-            } else if (e.type === WebCommand.GET_NIKE_NAME) {
-                let nikeName = this.getNickName();
-                this.postMessage(WebCommand.GET_NIKE_NAME, { nikeName });
-            }
+            } 
         });
 
     }
-    private saveNickName(nickName: string): void {
-        vscode.workspace.getConfiguration().update('magix.conf.user.nikeName', nickName, true);
-    }
-    private getNickName(): string | null | undefined {
-        return vscode.workspace.getConfiguration().get('magix.conf.user.nikeName');
-    }
+  
 
 }

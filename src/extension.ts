@@ -15,6 +15,7 @@ import { MenuTreeViewProvider } from './provider/MenuTreeViewProvider';
 import { Logger } from './common/utils/Logger';
 import { WebViewCommand } from './command/WebViewCommand';
 import { WebViewCommandArgument, WebviewType } from './command/CommandArgument';
+import { ConfigurationUtils } from './common/utils/ConfigurationUtils';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -58,7 +59,7 @@ export function deactivate() {
 }
 
 function initViews(context: vscode.ExtensionContext) {
-    let nickname = vscode.workspace.getConfiguration().get('magix.conf.user.nickname');
+    let nickname = ConfigurationUtils.getNickname();
     //没有设置nickname，显示欢迎页面
     
     if (!nickname) {

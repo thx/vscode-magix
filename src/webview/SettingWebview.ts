@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { BaseView } from './BaseView';
 import { WebCommand } from '../common/constant/WebCommand';
+import { ConfigurationUtils } from '../common/utils/ConfigurationUtils';
 
 export class SettingWebview extends BaseView {
     public show() {
@@ -9,20 +10,15 @@ export class SettingWebview extends BaseView {
         this.createWebview(path, title, vscode.ViewColumn.Active);
         this.onDidReceiveMessage((e) => {
             if (e.type === WebCommand.SAVE_NICKNAME) {
-                this.saveNickName(e.data.nickName);
+                ConfigurationUtils.saveNickname(e.data.nickname);
                 this.dispose();
             } else if (e.type === WebCommand.GET_NICKNAME) {
-                let nickName = this.getNickName();
-                this.postMessage(WebCommand.GET_NICKNAME, { nickName });
+                let nickname = ConfigurationUtils.getNickname();
+                this.postMessage(WebCommand.GET_NICKNAME, { nickname });
             }
         });
        
     }
-    private saveNickName(nickName: string): void {
-        vscode.workspace.getConfiguration().update('magix.conf.user.nikeName', nickName, true);
-    }
-    private getNickName(): string | null | undefined {
-        return vscode.workspace.getConfiguration().get('magix.conf.user.nikeName');
-    }
+   
 
 }
