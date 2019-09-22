@@ -5,8 +5,6 @@ import * as vscode from 'vscode';
 import { Initializer } from './initializer';
 import { Command } from './common/constant/Command';
 import { ToDefinitionCommand } from './command/ToDefinitionCommand';
-
-import { TestCommand } from './command/TestCommand';
 import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider } from './provider/VSDefinitionProvider';
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
@@ -16,7 +14,8 @@ import { Logger } from './common/utils/Logger';
 import { WebViewCommand } from './command/WebViewCommand';
 import { WebViewCommandArgument, WebviewType } from './command/CommandArgument';
 import { ConfigurationUtils } from './common/utils/ConfigurationUtils';
-
+import {Fether} from './net/Fether';
+import {DynamicCommand} from './command/DynamicCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -48,9 +47,6 @@ export function activate(context: vscode.ExtensionContext) {
         Logger.logActivate(new Date().getTime() - startTime, info);
         Logger.error(info);
     });
-
-
-
 }
 
 export function deactivate() {
@@ -62,7 +58,9 @@ function initViews(context: vscode.ExtensionContext) {
     let nickname = ConfigurationUtils.getNickname();
     //没有设置nickname，显示欢迎页面
     
-    if (!nickname) {
+    if (nickname) {
+        initStatusBar(nickname,context);
+    }else{
         let arg: WebViewCommandArgument = new WebViewCommandArgument();
         arg.webviewType = WebviewType.Welcome;
         vscode.commands.executeCommand(Command.COMMAND_WEBVIEW_SHOW, arg);
@@ -72,10 +70,22 @@ function initViews(context: vscode.ExtensionContext) {
     let menuTreeViewProvider: MenuTreeViewProvider = new MenuTreeViewProvider(context);
     vscode.window.registerTreeDataProvider('magix-menu-view', menuTreeViewProvider);
 
-
+    
 }
-
-function createStatusBar(text: string, tooltip: string, command: string) {
+function initStatusBar(nickname:string,context:vscode.ExtensionContext){
+    Fether.getShortcut(nickname).then((arr)=>{
+        let data = arr.length === 0 ? { nickname, list: [] } : arr[0];
+        if (data && data.list) {
+            data.list.forEach((item: any) => {
+                let command = DynamicCommand.registerOpenBrowserCommand(item.url, context);
+                createStatusBar(item.name, command);
+            });
+        }
+    }).catch((msg)=>{
+        console.error(msg);
+    });
+}
+function createStatusBar(text: string, command: string) {
     let status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     status.text = text;
     status.tooltip = '';

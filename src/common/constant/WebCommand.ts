@@ -5,4 +5,7 @@
 export class WebCommand {
   public static SAVE_NICKNAME: string = "web.nickname.save";
   public static GET_NICKNAME: string = "web.nickname.get";
+  public static GET_SHORTCUT: string = 'web.shortcut.get';
+  public static SAVE_SHORTCUT: string = 'web.shortcut.save';
+  public static CLOSE: string = 'web.close';
 }

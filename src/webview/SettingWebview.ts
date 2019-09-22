@@ -11,10 +11,12 @@ export class SettingWebview extends BaseView {
         this.onDidReceiveMessage((e) => {
             if (e.type === WebCommand.SAVE_NICKNAME) {
                 ConfigurationUtils.saveNickname(e.data.nickname);
-                this.dispose();
+                this.postMessage(WebCommand.SAVE_NICKNAME,{});
             } else if (e.type === WebCommand.GET_NICKNAME) {
                 let nickname = ConfigurationUtils.getNickname();
                 this.postMessage(WebCommand.GET_NICKNAME, { nickname });
+            } else if (e.type === WebCommand.CLOSE) {
+                this.dispose();
             }
         });
        

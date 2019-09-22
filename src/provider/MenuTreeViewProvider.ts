@@ -20,15 +20,15 @@ export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
       webviewType: WebviewType.StatusBarShortcut,
       icon: 'status-bar'
     },
-    {
-      label: '快速插入Gallery组件',
-      webviewType: WebviewType.Gallery,
-      icon: 'status-bar'
-    },
+    // {
+    //   label: '快速插入Gallery组件',
+    //   webviewType: WebviewType.Gallery,
+    //   icon: 'status-bar'
+    // },
     {
       label: '失效Rap引用扫描',
       webviewType: WebviewType.RapScan,
-      icon: 'status-bar'
+      icon: 'rap-scan'
     }
   ];
 
@@ -50,7 +50,7 @@ export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
     return treeItem;
   }
   getChildren(offset?: number): Thenable<number[]> {
-    return Promise.resolve([1, 2, 3, 4]);
+    return Promise.resolve([1, 2, 3]);
   }
 
   getIcon(type: string): any {

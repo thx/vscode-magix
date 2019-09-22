@@ -9,12 +9,18 @@
 
 <body>
   <div id="app">
-
-    <el-input class="mt30 w200" placeholder="请输入您的花名" v-model="nickname" clearable>
-    </el-input>
-
-    <el-button plain @click="saveNickname">确认</el-button>
-
+      <el-alert title="温馨提示" type="success" effect="dark" description="更改花名后，Magix VSCode 插件部分配置将丢失，请谨慎配置" show-icon>
+        </el-alert>
+    <el-form ref="form" :model="form" label-width="80px" class="mt30">
+      <el-form-item label="花名">
+        <el-input class=" w200" placeholder="请输入您的花名" v-model="form.nickname" clearable>
+        </el-input>
+      </el-form-item>
+  
+      <el-form-item>
+        <el-button plain @click="saveNickname">保存配置</el-button>
+      </el-form-item>
+    </el-form>
   </div>
   <div id="msg"></div>
 </body>
@@ -27,27 +33,33 @@
   new Vue({
     el: '#app',
     data: function () {
-      return { visible: false, nickname: '' }
+      return { visible: false, form: { nickname: '' } }
     },
     mounted: function () {
       window.addEventListener('message', event => {
         const msg = event.data;
         let data = msg.data;
-        if (event.type === WEB_COMMAND.GET_NICKNAME) {
-          this.nickname = data.nickname;
+        if (msg.type === WEB_COMMAND.GET_NICKNAME) {
+          this.form.nickname = data.nickname;
+        } else if (msg.type === WEB_COMMAND.SAVE_NICKNAME) {
+          this.$alert('保存成功', '温馨提示', {
+            confirmButtonText: '确定'
+          }).then(() => {
+            VSCode.postMessage(WEB_COMMAND.CLOSE);
+          });
         }
       });
       VSCode.postMessage(WEB_COMMAND.GET_NICKNAME);
     },
     methods: {
       saveNickname() {
-        if (this.nickname === '') {
+        if (this.form.nickname === '') {
           this.$alert('花名不能为空', '温馨提示', {
             confirmButtonText: '确定'
           });
           return;
         }
-        VSCode.postMessage(WEB_COMMAND.SAVE_NICKNAME, { nickname: this.nickname });
+        VSCode.postMessage(WEB_COMMAND.SAVE_NICKNAME, { nickname: this.form.nickname });
       }
     }
   });

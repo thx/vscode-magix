@@ -3,7 +3,7 @@ import { Command } from '../common/constant/Command';
 import { WebViewCommandArgument,WebviewType } from './CommandArgument';
 import { BaseView } from '../webview/BaseView';
 import { WelcomeWebview } from '../webview/WelcomeWebview';
-import { StatusBarShortcutWebview } from '../webview/StatusBarShortcutWebview copy';
+import { StatusBarShortcutWebview } from '../webview/StatusBarShortcutWebview';
 import { RapScanWebview } from '../webview/RapScanWebview';
 import { SettingWebview } from '../webview/SettingWebview';
 

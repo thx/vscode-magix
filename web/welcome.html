@@ -30,15 +30,6 @@
     data: function () {
       return { visible: false, nickname: '' }
     },
-    mounted: function () {
-      window.addEventListener('message', event => {
-        const data = event.data;
-        if (data.type === WEB_COMMAND.GET_NICKNAME) {
-          this.nickname = data.nickname;
-        }
-      });
-      VSCode.postMessage(WEB_COMMAND.GET_NICKNAME);
-    },
     methods: {
       saveNickname() {
         if (this.nickname === '') {

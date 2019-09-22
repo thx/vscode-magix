@@ -2,11 +2,20 @@ body {
     background-color: #f5f5f5;
     padding:40px 30px;
 }
+.mt10{
+    margin-top: 10px;
+}
 .mb10{
     margin-bottom: 10px;
 }
+.mb20{
+    margin-bottom: 20px;
+}
 .mt30{
     margin-top:30px;
+}
+.ml150{
+    margin-left:150px;
 }
 .w150{
     width: 150px;
