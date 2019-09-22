@@ -2,9 +2,11 @@
 
 export class ShortcutInfo {
     nickname: string;
-    list:Array<ShortcutItem>;
+    projectName: string;
+    list: Array<ShortcutItem>;
     constructor(data: any = {}) {
         this.nickname = data.nickname || '';
+        this.projectName = data.projectName || '';
         this.list = data.list || [];
     }
 }

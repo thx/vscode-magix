@@ -8,9 +8,9 @@ export class Fether {
      * 通过nickname 获取快捷方式
      * @param nickname 花名
      */
-    public static getShortcut(nickname: string): Promise<any> {
+    public static getShortcut(nickname: string, projectName: string): Promise<any> {
         let path = 'shortcutGet';
-        let params = { nickname };
+        let params = { nickname, projectName };
         return this.fetherRequest(path, params);
     }
     /**

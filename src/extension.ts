@@ -14,8 +14,9 @@ import { Logger } from './common/utils/Logger';
 import { WebViewCommand } from './command/WebViewCommand';
 import { WebViewCommandArgument, WebviewType } from './command/CommandArgument';
 import { ConfigurationUtils } from './common/utils/ConfigurationUtils';
-import {Fether} from './net/Fether';
-import {DynamicCommand} from './command/DynamicCommand';
+import { Fether } from './net/Fether';
+import { DynamicCommand } from './command/DynamicCommand';
+import { ProjectInfo, Info } from './common/utils/ProjectInfo';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -57,10 +58,10 @@ export function deactivate() {
 function initViews(context: vscode.ExtensionContext) {
     let nickname = ConfigurationUtils.getNickname();
     //没有设置nickname，显示欢迎页面
-    
+
     if (nickname) {
-        initStatusBar(nickname,context);
-    }else{
+        initStatusBar(nickname, context);
+    } else {
         let arg: WebViewCommandArgument = new WebViewCommandArgument();
         arg.webviewType = WebviewType.Welcome;
         vscode.commands.executeCommand(Command.COMMAND_WEBVIEW_SHOW, arg);
@@ -70,10 +71,12 @@ function initViews(context: vscode.ExtensionContext) {
     let menuTreeViewProvider: MenuTreeViewProvider = new MenuTreeViewProvider(context);
     vscode.window.registerTreeDataProvider('magix-menu-view', menuTreeViewProvider);
 
-    
+
 }
-function initStatusBar(nickname:string,context:vscode.ExtensionContext){
-    Fether.getShortcut(nickname).then((arr)=>{
+function initStatusBar(nickname: string, context: vscode.ExtensionContext) {
+    let info: Info = ProjectInfo.getInfo();
+    let projectName = info ? info.name : '';
+    Fether.getShortcut(nickname,projectName).then((arr) => {
         let data = arr.length === 0 ? { nickname, list: [] } : arr[0];
         if (data && data.list) {
             data.list.forEach((item: any) => {
@@ -81,7 +84,7 @@ function initStatusBar(nickname:string,context:vscode.ExtensionContext){
                 createStatusBar(item.name, command);
             });
         }
-    }).catch((msg)=>{
+    }).catch((msg) => {
         console.error(msg);
     });
 }

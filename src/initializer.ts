@@ -2,13 +2,12 @@ import { window, TextEditor,workspace,  FileSystemWatcher, Uri } from 'vscode';
 import { ESFileInfo } from './model/ESFileInfo';
 import { Cache } from './common/utils/CacheUtils';
 import { ESFileAnalyzer } from './common/analyzer/ESFileAnalyzer';
-import { ProjectInfo, Info } from './common/utils/ProjectInfo';
+import { ProjectInfo } from './common/utils/ProjectInfo';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as fut from './common/utils/FileUtils';
-//import * as parse5 from 'parse5';
 import { HtmlESMappingCache } from './common/utils/CacheUtils';
 import {Iconfont} from './common/utils/Iconfont';
+import { FileUtils } from './common/utils/FileUtils';
 
 
 export class Initializer {
@@ -17,11 +16,11 @@ export class Initializer {
    */
   private scanSrcFile() {
 
-    let fileList: Array<string> = [];
-    let rootPath = fut.FileUtils.getProjectPath(undefined);
-    this.listFiles(rootPath, fileList);
-    let cssFileList: Array<string> = [];
+   
+    let rootPath = FileUtils.getProjectPath(undefined);
+    let fileList:Array<string> = FileUtils.listFiles(rootPath);
 
+    let cssFileList: Array<string> = [];
     fileList.forEach((filePath) => {
       let extName = path.extname(filePath);
       if (filePath.indexOf('src') < 0) {
@@ -54,16 +53,16 @@ export class Initializer {
    * 扫描工程目录下的关键文件，eg： package.json
    */
   private scanProjectFile(){
-    let rootPath = fut.FileUtils.getProjectPath(undefined);
+    let rootPath = FileUtils.getProjectPath(undefined);
     ProjectInfo.scanProject(rootPath);
   }
   /**
    * 从新扫描所有CSSFile
    */
   private reScanAllCSSFile(){
-    let fileList: Array<string> = [];
-    let rootPath = fut.FileUtils.getProjectPath(undefined);
-    this.listFiles(rootPath, fileList);
+    let rootPath = FileUtils.getProjectPath(undefined);
+    let fileList: Array<string> = FileUtils.listFiles(rootPath);
+    
     let cssFileList: Array<string> = fileList.filter((filePath: string) => {
       let extName = path.extname(filePath);
       if (filePath.indexOf('src') > -1) {
@@ -106,33 +105,7 @@ export class Initializer {
     let htmlPath: string = path.join(path.dirname(filePath), path.basename(filePath).replace(path.extname(filePath), '.html'));
     HtmlESMappingCache.addMapping(filePath, htmlPath);
   }
-  /**
-   * 列出项目所有文件
-   * @param parentPath 
-   * @param fileList 
-   */
-  private listFiles(parentPath: string, fileList: Array<string>) {
-    let files = fs.readdirSync(parentPath);
-    if (parentPath.indexOf('/.') > -1 || parentPath.indexOf('node_modules') > -1) {
-      return;
-    }
-
-    files.forEach((item) => {
-      item = path.join(parentPath, item);
-      let stat = fs.statSync(item);
-      try {
-        if (stat.isDirectory()) {
-          this.listFiles(item, fileList);
-        }
-        else if (stat.isFile()) {
-          fileList.push(item);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    });
-
-  }
+  
   /**
    * 开始文件监听
    */
@@ -203,10 +176,9 @@ export class Initializer {
   public init(): Promise<any> {
 
     return new Promise((resolve, reject) => {
-
+      this.scanProjectFile();
       this.startWatching();
       this.scanSrcFile();
-      this.scanProjectFile();
       resolve();
 
     });

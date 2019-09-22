@@ -51,8 +51,6 @@ new Vue({
     });
     //初始化，获取配置信息
     VSCode.postMessage(WEB_COMMAND.GET_SHORTCUT);
-
-
   },
   methods: {
 

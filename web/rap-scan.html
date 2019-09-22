@@ -8,30 +8,20 @@
 </head>
 <body>
   <div id="app">
-      当前工程目录：{{rootPath}}
-      <el-button plain @click="startScan">开始扫描</el-button>
+      <el-alert title="温馨提示" type="success" effect="dark" class="mb20" description="搜索js文件中引用的 rap 地址是否有效" show-icon>
+        </el-alert>
+      <p>当前工程目录：{{rootPath}}</p>
+      <p>
+        models.js 文件目录：{{modelsPath}}
+      </p>
+      <el-button :loading="loading" plain @click="startScan">{{btnText}}</el-button>
   </div>
 </body>
+<script src="./config/vscode-utils.js"></script>
+<script src="./config/command.js"></script>
 <script src="./resources/vue.min.js"></script>
 <script src="./resources/element.min.js"></script>
-
-<script>
-  new Vue({
-    el: '#app',
-    data: function () {
-      return {
-        rootPath: ''
-      }
-    },
-    methods: {
-      startScan() {
-        if (vscode) {
-          vscode.postMessage({  type: 'startScan' });
-        }
-      }
-    }
-  });
-
-</script>
+<script src="./resources/element.min.js"></script>
+<script src="./rap-scan.js"></script>
 
 </html>

@@ -4,6 +4,7 @@ import { WebCommand } from '../common/constant/WebCommand';
 import { Fether } from '../net/Fether';
 import { ConfigurationUtils } from '../common/utils/ConfigurationUtils';
 import { ShortcutInfo } from '../model/ShortcutInfo';
+import { Info, ProjectInfo } from '../common/utils/ProjectInfo';
 
 export class StatusBarShortcutWebview extends BaseView {
     public show() {
@@ -23,8 +24,10 @@ export class StatusBarShortcutWebview extends BaseView {
     }
     private getShortcut() {
         let nickname = ConfigurationUtils.getNickname();
+        let info: Info = ProjectInfo.getInfo();
+        let projectName = info ? info.name : '';
         if (nickname) {
-            Fether.getShortcut(nickname).then((arr) => {
+            Fether.getShortcut(nickname,projectName).then((arr) => {
                 let data = arr.length === 0 ? { nickname, list: [] } : arr[0];
                 this.postMessage(WebCommand.GET_SHORTCUT, { ok: true, ...data });
             }).catch((msg) => {
@@ -36,7 +39,11 @@ export class StatusBarShortcutWebview extends BaseView {
         }
     }
     private saveShortcut(shortcut: ShortcutInfo | any) {
-
+        let info: Info = ProjectInfo.getInfo();
+        let projectName = info ? info.name : '';
+        if (shortcut) {
+            shortcut.projectName = projectName;
+        }
         Fether.updateShortcut(shortcut).then((data) => {
             this.postMessage(WebCommand.SAVE_SHORTCUT, { ok: true });
         }).catch((msg) => {

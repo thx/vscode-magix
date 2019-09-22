@@ -27,13 +27,13 @@ export class FileUtils {
     // 如果发现只有一个根文件夹，读取其子文件夹作为 workspaceFolders
     if (workspaceFolders.length === 1 && workspaceFolders[0] === vscode.workspace.rootPath) {
       projectPath = vscode.workspace.rootPath;
-    }else{
+    } else {
       workspaceFolders.forEach(folder => {
         if (currentFile.indexOf(folder) === 0) {
           projectPath = path.dirname(folder);
         }
       });
-      if(!projectPath){
+      if (!projectPath) {
         vscode.window.showErrorMessage('当前编辑页面不属于workspace中文件，请打开workspace中文件，然后重启vscode');
       }
     }
@@ -64,18 +64,50 @@ export class FileUtils {
     return (word || '').replace(/^\w/, m => m.toLowerCase());
   }
 
- /**
-  * 递归创建目录 同步方法  
-  * @param dirname  
-  */
-static mkDirsSync(dirname:string) {  
-  if (fs.existsSync(dirname)) {  
-      return true;  
-  } else {  
-      if (FileUtils.mkDirsSync(path.dirname(dirname))) {  
-          fs.mkdirSync(dirname);  
-          return true;  
-      }  
-  }  
-} 
+  /**
+   * 递归创建目录 同步方法  
+   * @param dirname  
+   */
+  static mkDirsSync(dirname: string) {
+    if (fs.existsSync(dirname)) {
+      return true;
+    } else {
+      if (FileUtils.mkDirsSync(path.dirname(dirname))) {
+        fs.mkdirSync(dirname);
+        return true;
+      }
+    }
+  }
+  /**
+     * 列出项目所有文件
+     * @param rootPath 
+     * @param fileList 
+     */
+  public static listFiles(rootPath: string): Array<string> {
+    let fileList: Array<string> = [];
+    this.getFiles(rootPath, fileList);
+    return fileList;
+  }
+
+  private static getFiles(parentPath: string, fileList: Array<string>) {
+    let files = fs.readdirSync(parentPath);
+    if (parentPath.indexOf('/.') > -1 || parentPath.indexOf('node_modules') > -1) {
+      return;
+    }
+
+    files.forEach((item) => {
+      item = path.join(parentPath, item);
+      let stat = fs.statSync(item);
+      try {
+        if (stat.isDirectory()) {
+          this.getFiles(item, fileList);
+        }
+        else if (stat.isFile()) {
+          fileList.push(item);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }
 }
