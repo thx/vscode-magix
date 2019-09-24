@@ -4,7 +4,7 @@ new Vue({
     return {
       hasError: false,
       alertType: 'success',
-      alertDes: '设置StatusBar快捷方式',
+      alertDes: '设置StatusBar快捷方式,配置信息与当前项目和花名绑定。',
       nickname: '',
       list: []
     }

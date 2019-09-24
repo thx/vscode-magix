@@ -15,6 +15,10 @@
         models.js 文件目录：{{modelsPath}}
       </p>
       <el-button :loading="loading" plain @click="startScan">{{btnText}}</el-button>
+      <div v-if="show" style="margin:10px 0px;color:#333">您的如下Rap引用可以能失效</div>
+      <div v-if="show">1: adinsight_api_group_save_post 
+        <a href="javascript" @click="openEditor" style="margin-left: 15px;">查看</a>
+      </div>
   </div>
 </body>
 <script src="./config/vscode-utils.js"></script>

@@ -2,7 +2,7 @@ import * as from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 
-export class ProjectInfo {
+export class ProjectInfoUtils {
     private static info: Info ;
     /**
      * 扫描当前目录
@@ -18,7 +18,7 @@ export class ProjectInfo {
                     info.name = obj.name;
                     info.modelsPath = obj.magixCliConfig.modelsPath;
                     info.rootPath = rootPath;
-                    info.rapProjectId = obj.magixCliConfig.rapProjectId;
+                    info.rapProjectId = obj.magixCliConfig.rapProjectId || obj.magixCliConfig.matProjectId;
                     info.rapVersion = obj.magixCliConfig.rapVersion;
                     this.info = info;
                 } catch (error) {

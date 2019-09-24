@@ -6,7 +6,7 @@ const babylon = require("babylon");
  * 分析es文件
  */
 export class ESFileAnalyzer {
-
+  
   public static analyseESFile(content: string, filePath: string): ESFileInfo | null {
     try {
       let doc = babylon.parse(content, {
@@ -39,6 +39,7 @@ export class ESFileAnalyzer {
     }
 
   }
+
   /**
    * Magix js、ts文件通用写法
    * @param body 

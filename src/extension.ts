@@ -16,7 +16,7 @@ import { WebViewCommandArgument, WebviewType } from './command/CommandArgument';
 import { ConfigurationUtils } from './common/utils/ConfigurationUtils';
 import { Fether } from './net/Fether';
 import { DynamicCommand } from './command/DynamicCommand';
-import { ProjectInfo, Info } from './common/utils/ProjectInfo';
+import { ProjectInfoUtils, Info } from './common/utils/ProjectInfoUtils';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -74,7 +74,7 @@ function initViews(context: vscode.ExtensionContext) {
 
 }
 function initStatusBar(nickname: string, context: vscode.ExtensionContext) {
-    let info: Info = ProjectInfo.getInfo();
+    let info: Info = ProjectInfoUtils.getInfo();
     let projectName = info ? info.name : '';
     Fether.getShortcut(nickname,projectName).then((arr) => {
         let data = arr.length === 0 ? { nickname, list: [] } : arr[0];

@@ -26,7 +26,7 @@ export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
     //   icon: 'status-bar'
     // },
     {
-      label: '失效Rap引用扫描',
+      label: '无效Rap引用扫描',
       webviewType: WebviewType.RapScan,
       icon: 'rap-scan'
     }

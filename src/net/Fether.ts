@@ -3,7 +3,6 @@ const request = require('request');
 import { ShortcutInfo } from '../model/ShortcutInfo';
 
 export class Fether {
-
     /**
      * 通过nickname 获取快捷方式
      * @param nickname 花名

@@ -1,13 +1,14 @@
-import { window, TextEditor,workspace,  FileSystemWatcher, Uri } from 'vscode';
+import { window, TextEditor, workspace, FileSystemWatcher, Uri } from 'vscode';
 import { ESFileInfo } from './model/ESFileInfo';
 import { Cache } from './common/utils/CacheUtils';
 import { ESFileAnalyzer } from './common/analyzer/ESFileAnalyzer';
-import { ProjectInfo } from './common/utils/ProjectInfo';
+import { ProjectInfoUtils, Info } from './common/utils/ProjectInfoUtils';
 import * as fs from 'fs';
 import * as path from 'path';
 import { HtmlESMappingCache } from './common/utils/CacheUtils';
-import {Iconfont} from './common/utils/Iconfont';
+import { Iconfont } from './common/utils/Iconfont';
 import { FileUtils } from './common/utils/FileUtils';
+import { RapModelUtils } from './common/utils/RapModelUtils';
 
 
 export class Initializer {
@@ -16,9 +17,9 @@ export class Initializer {
    */
   private scanSrcFile() {
 
-   
+
     let rootPath = FileUtils.getProjectPath(undefined);
-    let fileList:Array<string> = FileUtils.listFiles(rootPath);
+    let fileList: Array<string> = FileUtils.listFiles(rootPath);
 
     let cssFileList: Array<string> = [];
     fileList.forEach((filePath) => {
@@ -37,32 +38,32 @@ export class Initializer {
       }
       else if (extName === '.ts' || extName === '.js') {
         let content = fs.readFileSync(filePath, 'UTF-8');
-        this.mappingFile(content,filePath);
-      } else if (extName === '.es') { 
+        this.mappingFile(content, filePath);
+      } else if (extName === '.es') {
         this.mappingSameFile(filePath);
       } else if (extName === '.css' || extName === '.less' || extName === '.scss') {
         cssFileList.push(filePath);
       }
 
     });
-   
+
     Iconfont.scanCSSFile(cssFileList);
 
   }
   /**
    * 扫描工程目录下的关键文件，eg： package.json
    */
-  private scanProjectFile(){
+  private scanProjectFile() {
     let rootPath = FileUtils.getProjectPath(undefined);
-    ProjectInfo.scanProject(rootPath);
+    ProjectInfoUtils.scanProject(rootPath);
   }
   /**
    * 从新扫描所有CSSFile
    */
-  private reScanAllCSSFile(){
+  private reScanAllCSSFile() {
     let rootPath = FileUtils.getProjectPath(undefined);
     let fileList: Array<string> = FileUtils.listFiles(rootPath);
-    
+
     let cssFileList: Array<string> = fileList.filter((filePath: string) => {
       let extName = path.extname(filePath);
       if (filePath.indexOf('src') > -1) {
@@ -76,7 +77,7 @@ export class Initializer {
     Iconfont.scanCSSFile(cssFileList);
 
   }
-  private mappingFile(content: string, filePath: string){
+  private mappingFile(content: string, filePath: string) {
     try {
 
       content.match(/(['"]?)tmpl\1.*?\@([^'"]*?)['"]/gi);
@@ -90,7 +91,7 @@ export class Initializer {
         //KISSY 版本
         let index: number = content.search(/\s*KISSY\s*\.\s*add\s*\(/g);
         if (index === 0) {
-         this.mappingSameFile(filePath);
+          this.mappingSameFile(filePath);
         }
       }
     } catch (error) {
@@ -101,11 +102,11 @@ export class Initializer {
    * 相同文件名判断 a.html -> a.js 
    * @param filePath 文件路径 
    */
-  private mappingSameFile(filePath: string){
+  private mappingSameFile(filePath: string) {
     let htmlPath: string = path.join(path.dirname(filePath), path.basename(filePath).replace(path.extname(filePath), '.html'));
     HtmlESMappingCache.addMapping(filePath, htmlPath);
   }
-  
+
   /**
    * 开始文件监听
    */
@@ -126,13 +127,14 @@ export class Initializer {
     let watcher: FileSystemWatcher = workspace.createFileSystemWatcher('**/*.{ts,js,html,css,less,scss,json,es}', false, false, false);
     watcher.onDidChange((e: Uri) => {
       let filePath = e.fsPath;
-      let ext:string = path.extname(filePath);
-      if(ext === '.ts' || ext === '.js' || ext === '.es'){
-        let content:string = fs.readFileSync(filePath, 'utf-8');
-        if(ext === '.es'){
+      let ext: string = path.extname(filePath);
+      if (ext === '.ts' || ext === '.js' || ext === '.es') {
+        let content: string = fs.readFileSync(filePath, 'utf-8');
+        if (ext === '.es') {
           this.mappingSameFile(filePath);
-        }else{
-          this.mappingFile(content,filePath);
+        } else {
+          this.mappingFile(content, filePath);
+          this.updateModelInfo(filePath);
         }
         this.updateESCache(content, filePath);
       }
@@ -140,13 +142,14 @@ export class Initializer {
     });
     watcher.onDidCreate((e: Uri) => {
       let filePath = e.fsPath;
-      let ext:string = path.extname(filePath);
-      if(ext === '.ts' || ext === '.js' || ext === '.es'){
-        let content:string = fs.readFileSync(filePath, 'utf-8');
-        if(ext === '.es'){
+      let ext: string = path.extname(filePath);
+      if (ext === '.ts' || ext === '.js' || ext === '.es') {
+        let content: string = fs.readFileSync(filePath, 'utf-8');
+        if (ext === '.es') {
           this.mappingSameFile(filePath);
-        }else{
-          this.mappingFile(content,filePath);
+        } else {
+          this.mappingFile(content, filePath);
+          this.updateModelInfo(filePath);
         }
         this.updateESCache(content, filePath);
       }
@@ -155,35 +158,44 @@ export class Initializer {
     watcher.onDidDelete((e: Uri) => {
       let filePath = e.fsPath;
       Cache.remove(filePath);
-     
-      let ext:string = path.extname(filePath);
-      if(ext === '.ts' || ext === '.js' || ext === '.es'){
+
+      let ext: string = path.extname(filePath);
+      if (ext === '.ts' || ext === '.js' || ext === '.es') {
         HtmlESMappingCache.removeMappingByEsFile(filePath);
-      }else if(ext === '.html'){
+      } else if (ext === '.html') {
         HtmlESMappingCache.removeMappingByHtmlFile(filePath);
       }
       this.reScanAllCSSFile();
     });
   }
 
-  private updateESCache(content: string, filePath: string){
-      let info: ESFileInfo | null = ESFileAnalyzer.analyseESFile(content, filePath);
-      if (info) {
-        Cache.set(filePath, info);
-      }
+  private updateESCache(content: string, filePath: string) {
+    let info: ESFileInfo | null = ESFileAnalyzer.analyseESFile(content, filePath);
+    if (info) {
+      Cache.set(filePath, info);
+    }
   }
-  
+  private updateModelInfo(path: string | undefined | null) {
+    let info: Info = ProjectInfoUtils.getInfo();
+    if (path && info && info.modelsPath) {
+      //如果指定path，path不是models.js 的路径。则不更新rap信息
+      if (path.indexOf(info.modelsPath) < 0) {
+        return;
+      }
+    }
+    //如果没有指定path，则更新rap信息
+    RapModelUtils.updateModelInfo(info);
+  }
   public init(): Promise<any> {
 
     return new Promise((resolve, reject) => {
       this.scanProjectFile();
       this.startWatching();
       this.scanSrcFile();
+      this.updateModelInfo(null);
       resolve();
 
     });
   }
-
-
 
 }
