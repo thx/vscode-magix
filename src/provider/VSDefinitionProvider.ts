@@ -2,11 +2,15 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { ESFileProvider } from '../provider/ESFileProvider';
 import { HtmlESMappingCache } from '../common/utils/CacheUtils';
-
+import { RapModelUtils, Model, ModelItem } from '../common/utils/RapModelUtils';
+const opn = require('opn');
 /**
  * 跳段到定义
  */
 export class MXDefinitionProvider implements vscode.DefinitionProvider {
+  private quotationReg = /[\'\"]+([^\'\"]*)[\'\"]+/g;
+  
+private lastTriggerTime:number = new Date().getTime();
   provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
 
     const fileName = document.fileName;
@@ -21,6 +25,31 @@ export class MXDefinitionProvider implements vscode.DefinitionProvider {
     if (text.indexOf('tmpl:') > -1) {
       let path = workDir + '/' + word.replace(/(^\'*)|(\'*$)/g, '').replace(/(^\"*)|(\"*$)/g, '').replace('@', '');
       return new vscode.Location(vscode.Uri.file(path), new vscode.Position(0, 0));
+    }
+    
+    text.match(this.quotationReg);
+
+let key = RegExp.$1;
+    if(key && key.indexOf("_")>-1){
+     let model:Model = RapModelUtils.getModel();
+     if(model){
+      let find:ModelItem | undefined = model.list.find((m:ModelItem)=>{
+         return key === m.key;
+       });
+       if(find){
+        let time = new Date().getTime();
+        //一秒之内只能触发一次
+         if (time - this.lastTriggerTime > 1000) {
+           this.lastTriggerTime = time;
+           let url: string = 'https://rap2.alibaba-inc.com/repository/editor?id=' +
+             model.projectId +
+             '&mod=' + find.moduleId +
+             '&itf=' + find.id;
+           opn(url);
+         }
+      
+       }
+     }
     }
 
   }
@@ -69,7 +98,7 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
           let mxMethod = mx[0].replace('mx-', '');
           let userMethod = word.replace(/mx-[a-z]+\s*=\s*\'|mx-[a-z]+\s*=\s*\"/, '');
           userMethod = userMethod.replace(/(\(.*?\)|\s*)(\'|\")/, '');
-          let fnName: Array<string> = [userMethod, userMethod + '<' + mxMethod + '>',mxMethod + '.' + userMethod];
+          let fnName: Array<string> = [userMethod, userMethod + '<' + mxMethod + '>', mxMethod + '.' + userMethod];
           //获取 html 对应的 es 文件地址
           let esFilePath: any = HtmlESMappingCache.getEsFilePath(fileName);
           if (esFilePath) {

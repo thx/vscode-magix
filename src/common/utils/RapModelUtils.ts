@@ -6,6 +6,9 @@ import * as fs from 'fs';
 
 export class RapModelUtils {
     private static model: Model;
+    public static getModel(): Model {
+        return this.model;
+    }
     /**
      * 更新RapModels 信息
      * @param projectInfo 
@@ -68,9 +71,7 @@ export class RapModelUtils {
     }
     private static getDataFromRap(projectId: string) {
         Rap.getProjectInfo(projectId).then((interfaces: []) => {
-            if(this.model.list.length > 0){
-                console.log(interfaces);
-            }
+           
             let list = this.model.list;
             interfaces.forEach((i:any)=>{
                 let find = list.find((item:ModelItem)=>{
@@ -81,11 +82,9 @@ export class RapModelUtils {
                     find.moduleId = i.moduleId;
                     find.moduleName = i.moduleName;
                     find.name = i.name;
-                    //find.properties = i.properties;
+                    find.properties = i.properties;
                 }
             });
-            console.log(this.model.list);
-       
         });
     }
 }
