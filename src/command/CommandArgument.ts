@@ -13,5 +13,6 @@ export enum WebviewType {
     Welcome = 'Welcome',
     StatusBarShortcut = 'StatusBarShortcut',
     Gallery = 'Gallery',
-    RapScan = 'RapScan'
+    RapScan = 'RapScan',
+    About = 'About'
 }

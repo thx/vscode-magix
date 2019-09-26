@@ -29,6 +29,11 @@ export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
       label: '无效Rap引用扫描',
       webviewType: WebviewType.RapScan,
       icon: 'rap-scan'
+    },
+    {
+      label: '关于插件',
+      webviewType: WebviewType.About,
+      icon: 'about'
     }
   ];
 
@@ -50,7 +55,7 @@ export class MenuTreeViewProvider implements vscode.TreeDataProvider<number> {
     return treeItem;
   }
   getChildren(offset?: number): Thenable<number[]> {
-    return Promise.resolve([1, 2, 3]);
+    return Promise.resolve([1, 2, 3, 4]);
   }
 
   getIcon(type: string): any {
