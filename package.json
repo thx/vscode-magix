@@ -2,7 +2,7 @@
   "name": "magix",
   "displayName": "Magix",
   "description": "Magix 开发增强套件 @MMFE",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "publisher": "mmfe",
   "engines": {
     "vscode": "^1.28.0"

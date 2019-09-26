@@ -2,10 +2,21 @@
 
 ## 功能
 
+### 自定义StatusBar快捷方式功能
+
+<img src="https://img.alicdn.com/tfs/TB1.xXzgKbviK0jSZFNXXaApXXa-1284-676.gif" alt="js跳转" width="800"/>
+
+### 失效 Rap 引用扫描功能
+
+<img src="https://img.alicdn.com/tfs/TB1SYb6heT2gK0jSZFvXXXnFXXa-1284-676.gif" alt="js跳转" width="800"/>
+
+### 跳转到Rap定义功能
+
+<img src="https://img.alicdn.com/tfs/TB1z.D9hhv1gK0jSZFFXXb0sXXa-1051-557.gif" alt="js跳转" width="800"/>
+
 ### iconfont 预览功能
 
 <img src="https://img.alicdn.com/tfs/TB1TROXX7L0gK0jSZFAXXcA9pXa-921-532.gif" alt="js跳转" width="800"/>
-
 
 ### magix3 模板语法高亮功能！
 
@@ -94,4 +105,9 @@ html 模板语法高亮
 
 iconfont图标 悬浮展示
 
+### 0.6.2
+
+自定义StatusBar快捷方式功能
+失效 Rap 引用扫描功能
+跳转到Rap定义功能
 
