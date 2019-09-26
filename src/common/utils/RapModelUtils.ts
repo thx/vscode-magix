@@ -70,19 +70,23 @@ export class RapModelUtils {
         }
     }
     private static getDataFromRap(projectId: string) {
-        Rap.getProjectInfo(projectId).then((interfaces: []) => {
-           
+        Rap.getProjectInfo(projectId).then((interfaces: Array<any>) => {
+                 
             let list = this.model.list;
-            interfaces.forEach((i:any)=>{
+           
+            interfaces.forEach((interfaceItem:any)=>{
+               
                 let find = list.find((item:ModelItem)=>{
-                    return +i.id === +item.id;
+                    return interfaceItem.url === item.url;
                 });
                 if(find){
-                    find.moduleDescription = i.moduleDescription;
-                    find.moduleId = i.moduleId;
-                    find.moduleName = i.moduleName;
-                    find.name = i.name;
-                    find.properties = i.properties;
+                    find.id = interfaceItem.id;
+                    find.moduleDescription = interfaceItem.moduleDescription;
+                    find.moduleId = interfaceItem.moduleId;
+                    find.moduleName = interfaceItem.moduleName;
+                    find.name = interfaceItem.name;
+                    find.properties = interfaceItem.properties;
+
                 }
             });
         });
