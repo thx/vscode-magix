@@ -50,7 +50,7 @@ export class RapScanWebview extends BaseView {
         let list: Array<any> = [];
         fileList.forEach(filePath => {
             let extName = path.extname(filePath);
-            if (filePath.indexOf('src') < 0 || filePath.indexOf('gallery') > -1 || filePath.indexOf(info.modelsPath) > -1) {
+            if (filePath.indexOf('src') < 0 || filePath.indexOf('gallery') > -1 || filePath.indexOf(info.modelsPath) > -1 || filePath.indexOf('requester.ts') > -1) {
                 //不扫描无效路径
                 return;
             }
@@ -64,7 +64,7 @@ export class RapScanWebview extends BaseView {
                         arr.forEach(item => {
                             item = item.replace(/\'|\"/ig, '');
                             //在models.js 文件里面找不到，说明无效Rap引用了
-                            if (item.indexOf('_') > -1 && !model.list.find((mi) => {
+                            if (item.length > 4 && item.indexOf('_') > -1 &&  !model.list.find((mi) => {
                                 return mi.key === item;
                             })) {
                                 let start = text.indexOf(item);
