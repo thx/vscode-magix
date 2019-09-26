@@ -61,10 +61,6 @@
 <img src="https://img.alicdn.com/tfs/TB17yPcOxTpK1RjSZFMXXbG_VXa-1139-555.gif" alt="hsts" width="800"/>
 
 
-### Diamond 快速打开
-
-
-
 ### html 模板代码折叠
 
 <img src="https://img.alicdn.com/tfs/TB1LM_gOwHqK1RjSZFEXXcGMXXa-1139-555.gif" alt="Diamond" width="800"/>
