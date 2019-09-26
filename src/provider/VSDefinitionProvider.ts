@@ -9,8 +9,8 @@ const opn = require('opn');
  */
 export class MXDefinitionProvider implements vscode.DefinitionProvider {
   private quotationReg = /[\'\"]+([^\'\"]*)[\'\"]+/g;
-  
-private lastTriggerTime:number = new Date().getTime();
+
+  private lastTriggerTime: number = new Date().getTime();
   provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
 
     const fileName = document.fileName;
@@ -26,30 +26,30 @@ private lastTriggerTime:number = new Date().getTime();
       let path = workDir + '/' + word.replace(/(^\'*)|(\'*$)/g, '').replace(/(^\"*)|(\"*$)/g, '').replace('@', '');
       return new vscode.Location(vscode.Uri.file(path), new vscode.Position(0, 0));
     }
-    
+
     text.match(this.quotationReg);
 
-let key = RegExp.$1;
-    if(key && key.indexOf("_")>-1){
-     let model:Model = RapModelUtils.getModel();
-     if(model){
-      let find:ModelItem | undefined = model.list.find((m:ModelItem)=>{
-         return key === m.key;
-       });
-       if(find){
-        let time = new Date().getTime();
-        //一秒之内只能触发一次
-         if (time - this.lastTriggerTime > 1000) {
-           this.lastTriggerTime = time;
-           let url: string = 'https://rap2.alibaba-inc.com/repository/editor?id=' +
-             model.projectId +
-             '&mod=' + find.moduleId +
-             '&itf=' + find.id;
-           opn(url);
-         }
-      
-       }
-     }
+    let key = RegExp.$1;
+    if (key && key.indexOf("_") > -1) {
+      let model: Model = RapModelUtils.getModel();
+      if (model) {
+        let find: ModelItem | undefined = model.list.find((m: ModelItem) => {
+          return key === m.key;
+        });
+        if (find) {
+          let time = new Date().getTime();
+          //一秒之内只能触发一次
+          if (time - this.lastTriggerTime > 1000) {
+            this.lastTriggerTime = time;
+            let url: string = 'https://rap2.alibaba-inc.com/repository/editor?id=' +
+              model.projectId +
+              '&mod=' + find.moduleId +
+              '&itf=' + find.id;
+            opn(url);
+          }
+
+        }
+      }
     }
 
   }

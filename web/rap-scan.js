@@ -6,7 +6,8 @@ new Vue({
             modelsPath: '',
             loading: false,
             btnText:'开始扫描',
-            show:false
+            show:false,
+            list:[]
         }
     },
     mounted: function () {
@@ -15,9 +16,13 @@ new Vue({
             const msg = event.data;
             let data = msg.data;
             if (msg.type === WEB_COMMAND.FINISH_SCAN_RAP) {
-                this.loading = false;
-                this.btnText = '重新扫描';
-                this.show = true;
+                if(data.ok){
+                    this.loading = false;
+                    this.btnText = '重新扫描';
+                    this.show = true;
+                    this.list = data.list;
+                }
+                
                 //showMsg(JSON.stringify(data));
             }else if (msg.type === WEB_COMMAND.GET_PROJECT_INFO) {
                 this.rootPath = data.rootPath;
@@ -38,8 +43,9 @@ new Vue({
             this.loading = true;
             this.btnText = '扫描中...';
         },
-        openEditor(){
-            VSCode.postMessage(WEB_COMMAND.OPEN_EDITOR);
+        openEditor(e, index){
+            let item = this.list[index];
+            VSCode.postMessage(WEB_COMMAND.OPEN_EDITOR, item);
         }
     }
 });
