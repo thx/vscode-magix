@@ -39,6 +39,12 @@ new Vue({
             if(this.loading){
                 return;
             }
+            if(!this.rootPath || !this.modelsPath){
+                this.$alert('监测到当前项目不是一个Magix项目', '温馨提示', {
+                    confirmButtonText: '确定'
+                  })
+                return;
+            }
             VSCode.postMessage(WEB_COMMAND.START_SCAN_RAP);
             this.loading = true;
             this.btnText = '扫描中...';
