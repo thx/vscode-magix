@@ -50,7 +50,7 @@
           "group": "0_mx"
         },
         {
-          "when": "resourceLangId ==  html",
+          "when": "resourceLangId ==  handlebars",
           "command": "mx.jumper.toES",
           "group": "0_mx"
         }
