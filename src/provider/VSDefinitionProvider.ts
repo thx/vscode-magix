@@ -3,6 +3,7 @@ import * as path from 'path';
 import { ESFileProvider } from '../provider/ESFileProvider';
 import { HtmlESMappingCache } from '../common/utils/CacheUtils';
 import { RapModelUtils, Model, ModelItem } from '../common/utils/RapModelUtils';
+import { ConfigurationUtils } from '../common/utils/ConfigurationUtils';
 const opn = require('opn');
 /**
  * 跳段到定义
@@ -27,9 +28,16 @@ export class MXDefinitionProvider implements vscode.DefinitionProvider {
       return new vscode.Location(vscode.Uri.file(path), new vscode.Position(0, 0));
     }
 
-    text.match(this.quotationReg);
+    let rapType = ConfigurationUtils.getRapType();
+    if (rapType === '0' || rapType === '1') {
+      this.jumpToRap(document, position);
+    }
+  }
 
-    let key = RegExp.$1;
+  private jumpToRap(document: vscode.TextDocument, position: vscode.Position) {
+    //跳转Rap定义
+    let rapKey = document.getText(document.getWordRangeAtPosition(position, this.quotationReg));
+    let key = rapKey.replace(/\'|\"+/g, '');
     if (key && key.indexOf("_") > -1) {
       let model: Model = RapModelUtils.getModel();
       if (model) {
@@ -51,9 +59,9 @@ export class MXDefinitionProvider implements vscode.DefinitionProvider {
         }
       }
     }
-
   }
 }
+
 /**
  * magix 内部函数跳转
  */

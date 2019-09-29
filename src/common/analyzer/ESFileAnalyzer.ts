@@ -34,7 +34,7 @@ export class ESFileAnalyzer {
       }
       return this.analyseCommonFile(body);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return null;
     }
 
@@ -242,7 +242,6 @@ export class ESFileAnalyzer {
     return info;
   }
   private static analyseASTObject(astObj: any,isInMagix:boolean) {
-   // console.log(JSON.stringify(astObj));
     if (!astObj.type) {
       return;
     }

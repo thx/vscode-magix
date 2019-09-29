@@ -18,13 +18,13 @@ export class Iconfont {
   //去掉注释，避免csstree 无法
   private static removeComments(code: string) {
     let lines = code.split('\n');
-    for(let i = 0;i<lines.length;i++){
+    for (let i = 0; i < lines.length; i++) {
       //避免 url(‘//at.alicdn.com/t/font_826439_bq8dmoo4mn7.woff2') 被清除掉
-      if(lines[i].indexOf('url(')< 0){
-      lines[i] = lines[i].replace(/\/\/.*$/mg,'');
+      if (lines[i].indexOf('url(') < 0) {
+        lines[i] = lines[i].replace(/\/\/.*$/mg, '');
       }
     }
-    
+
     return lines.join('\n');
   }
 
@@ -37,12 +37,12 @@ export class Iconfont {
         return;
       }
       if (extName === '.css' || extName === '.less' || extName === '.scss') {
-        
+
         let content = fs.readFileSync(filePath, 'UTF-8');
-        
+
         content = this.removeComments(content);
         let cssAST: any = csstree.parse(content);
-        if(filePath.indexOf('iconfont')>-1){
+        if (filePath.indexOf('iconfont') > -1) {
           console.log(cssAST.children);
         }
         if (cssAST.children) {
@@ -130,7 +130,7 @@ export class Iconfont {
       }
     });
     let classDataMap: Map<string, Array<IconfontData>> = new Map();
-    
+
     classUrlMap.forEach((url, className) => {
       this.fetchSvgData(className, url).then((info: any) => {
         classDataMap.set(info.className, info.list);
@@ -160,7 +160,7 @@ export class Iconfont {
           resolve({ className, list });
 
         } else {
-          console.log('send log error');
+          console.error('send log error');
           reject(error);
         }
       });

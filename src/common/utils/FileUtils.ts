@@ -106,7 +106,7 @@ export class FileUtils {
           fileList.push(item);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     });
   }

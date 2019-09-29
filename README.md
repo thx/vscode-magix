@@ -11,9 +11,16 @@
 <img src="https://img.alicdn.com/tfs/TB1SYb6heT2gK0jSZFvXXXnFXXa-1284-676.gif" alt="js跳转" width="800"/>
 
 ### 跳转到Rap定义功能
+
+在Magix 插件配置页面，可以设置 Rap跳转方式
+<img src="https://img.alicdn.com/tfs/TB1a9BihUH1gK0jSZSyXXXtlpXa-1283-634.gif" alt="js跳转" width="800"/>
+
 通过快捷键`MAC键+鼠标点击`,支持 Rap 接口名称跳转到Rap2页面功能
 
 <img src="https://img.alicdn.com/tfs/TB1z.D9hhv1gK0jSZFFXXb0sXXa-1051-557.gif" alt="js跳转" width="800"/>
+
+通过`鼠标右键选择菜单`,支持 Rap 接口名称跳转到Rap2页面功能
+<img src="https://img.alicdn.com/tfs/TB1dRMJhp67gK0jSZPfXXahhFXa-914-530.gif" alt="js跳转" width="800"/>
 
 ### iconfont 预览功能
 

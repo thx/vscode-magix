@@ -11,7 +11,7 @@ export class MXEventCompletionItemProvider implements vscode.CompletionItemProvi
     // 只截取到光标位置为止，防止一些特殊情况
     const lineText = line.text.substring(0, position.character);
     let list: vscode.CompletionList = new vscode.CompletionList();
-    console.log(lineText);
+   
     if (/.?(mx-)$/.test(lineText)) {
       this.arr.forEach((item) => {
         list.items.push(new vscode.CompletionItem('mx-' + item, vscode.CompletionItemKind.Field));
@@ -50,9 +50,9 @@ export class MXEventNameCompletionItemProvider implements vscode.CompletionItemP
     // 只截取到光标位置为止，防止一些特殊情况
     const lineText = line.text.substring(0, position.character);
     let list: vscode.CompletionList = new vscode.CompletionList();
-    //console.log('ok:'+lineText);
+    
    if(/.?mx-[a-z]+\s*=(\'|\")$/.test(lineText)){
-     // console.log('ok');
+    
     }
     
     return list;

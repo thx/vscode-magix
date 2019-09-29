@@ -66,7 +66,7 @@ export class RapModelUtils {
                 });
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
     private static getDataFromRap(projectId: string) {
