@@ -15,11 +15,8 @@ export class FileUtils {
     if (!document && vscode.window.activeTextEditor) {
       document = vscode.window.activeTextEditor.document;
     }
-    if (!document) {
-      vscode.window.showErrorMessage('当前激活的编辑器不是文件或者没有文件被打开！');
-      return '';
-    }
-    const currentFile = document.uri.fsPath;
+   
+    const currentFile = document ? document.uri.fsPath : '';
     let projectPath = null;
 
     let workspaceFolders = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(item => item.uri.path) : [];
