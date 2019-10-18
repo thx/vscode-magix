@@ -28,12 +28,16 @@ export class Logger {
     this.request4Log(url);
   }
   private static request4Log(url: string) {
-    request(url, (error: any, response: any, body: any) => {
-      if (!error && response.statusCode === 200) {
-        console.log('send log success');
-      } else {
-        console.log('send log error');
-      }
-    });
+    try {
+      request(url, (error: any, response: any, body: any) => {
+        if (!error && response.statusCode === 200) {
+          console.log('send log success');
+        } else {
+          console.log('send log error');
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
