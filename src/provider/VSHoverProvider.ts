@@ -54,10 +54,15 @@ export class VSHoverProvider implements vscode.HoverProvider {
           
           let iconfontData: IconfontData | undefined = dataArr.find((iconfont: IconfontData) => { return iconfont.code === code; });
           if (iconfontData) {
-            let svg: string = SVG_TEMPLATE_START + iconfontData.data + SVG_TEMPLATE_END;
-            
+            //let svg: string = SVG_TEMPLATE_START + iconfontData.data + SVG_TEMPLATE_END;
+            let svg:string = this.toSvg(iconfontData.data);
             datauri.format('.svg', svg);
-            hover = new vscode.Hover(`![](${datauri.content})`);
+            hover = new vscode.Hover(`多个 
+            class:mc-inconfont
+            ![](${datauri.content}) 
+            class:inconfont ![](${datauri.content}) 
+            class:inconfont ![](${datauri.content}) 
+            class:inconfont ![](${datauri.content}) `);
             
           }
 
@@ -67,5 +72,10 @@ export class VSHoverProvider implements vscode.HoverProvider {
 
     return hover;
 
+  }
+  toSvg(path:string) {
+    return `<svg viewBox='0 -128 1035 1035' width='80' xmlns='http://www.w3.org/2000/svg' style='transform:rotateX(180deg);transform-origin:center;scale(.8);'><path fill='#EA3C3C' d='${path}'></path><text x="10" y="20" style="fill:red;">
+    I love SVG I love SVG
+  </text></svg>`;
   }
 }
