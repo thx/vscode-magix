@@ -8,14 +8,32 @@ import * as csstree from 'css-tree';
 export interface IconfontData {
   code: string;
   data: string;
+  className: string;
 }
 export class Iconfont {
-  private static IconFontDataCache: Map<string, Array<IconfontData>>;
-  public static getDataByClass(className: string): Array<IconfontData> | undefined {
-
-    return this.IconFontDataCache ? this.IconFontDataCache.get(className) : undefined;
+  private static IconFontDataCache:  Array<IconfontData> = [];
+  /**
+   * 通过className 获取IconFont 图标信息
+   * @param className className
+   */
+  public static getDataByClass(className: string): Array<IconfontData> {
+    return this.IconFontDataCache.filter(item => {
+      return item.className.indexOf(className) > -1;
+    });
   }
-  //去掉注释，避免csstree 无法
+  /**
+   * 通过 code 获取IconFont 图标信息 
+   * @param code 
+   */
+  public static getDataByCode(code: string): Array<IconfontData> {
+    return this.IconFontDataCache.filter(item => {
+      return item.code.indexOf(code) > -1;
+    });
+  }
+  /**
+   * 去掉注释，避免csstree 无法
+   * @param code 
+   */
   private static removeComments(code: string) {
     let lines = code.split('\n');
     for (let i = 0; i < lines.length; i++) {
@@ -129,15 +147,15 @@ export class Iconfont {
         classUrlMap.set(c.className, font.url);
       }
     });
-    let classDataMap: Map<string, Array<IconfontData>> = new Map();
+    
+    this.IconFontDataCache = [];
 
     classUrlMap.forEach((url, className) => {
-      this.fetchSvgData(className, url).then((info: any) => {
-        classDataMap.set(info.className, info.list);
+      this.fetchSvgData(className, url).then((list: any) => {
+        this.IconFontDataCache = this.IconFontDataCache.concat(list);
       });
     });
-    //缓存起来
-    this.IconFontDataCache = classDataMap;
+  
 
   }
   private static fetchSvgData(className: string, url: string) {
@@ -153,11 +171,11 @@ export class Iconfont {
               let code = RegExp.$1 ? Number(RegExp.$1).toString(16) : '';
               let data = RegExp.$2;
               if (code && data) {
-                list.push({ code, data });
+                list.push({ className, code, data });
               }
             });
           }
-          resolve({ className, list });
+          resolve(list);
 
         } else {
           console.error('send log error');

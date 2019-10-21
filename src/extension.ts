@@ -8,7 +8,7 @@ import { ToDefinitionCommand } from './command/ToDefinitionCommand';
 import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider } from './provider/VSDefinitionProvider';
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
-import { VSHoverProvider } from './provider/VSHoverProvider';
+import { IconfontHoverProvider } from './provider/IconfontHoverProvider';
 import { MenuTreeViewProvider } from './provider/MenuTreeViewProvider';
 import { Logger } from './common/utils/Logger';
 import { WebViewCommand } from './command/WebViewCommand';
@@ -29,17 +29,19 @@ export function activate(context: vscode.ExtensionContext) {
         new WebViewCommand().registerCommand(context);
 
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
+        const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
+        const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
         //注册html代码跳转
-        const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
+       
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
         //注册代码提示
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
 
         context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
         //注册悬浮提示Provider
-        context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new VSHoverProvider()));
+        context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
 
         initViews(context);
 
