@@ -1,6 +1,6 @@
 
 const request = require('request');
-
+const Datauri = require('datauri');
 import * as fs from 'fs';
 import * as path from 'path';
 import * as csstree from 'css-tree';
@@ -12,6 +12,7 @@ export interface IconfontData {
 }
 export class Iconfont {
   private static IconFontDataCache:  Array<IconfontData> = [];
+  private static datauri = new Datauri();
   /**
    * 通过className 获取IconFont 图标信息
    * @param className className
@@ -26,6 +27,9 @@ export class Iconfont {
    * @param code 
    */
   public static getDataByCode(code: string): Array<IconfontData> {
+    if (code === '') {
+      return this.IconFontDataCache;
+    }
     return this.IconFontDataCache.filter(item => {
       return item.code.indexOf(code) > -1;
     });
@@ -184,5 +188,27 @@ export class Iconfont {
       });
     });
     return p;
+  }
+
+  public static dataToMarkdown(data:IconfontData,needClassName:boolean){
+    let svg: string = needClassName ? this.toSvgWithClassName(data) : this.toSvg(data);
+    this.datauri.format('.svg', svg);
+    return `![](${this.datauri.content})`;
+  }
+
+  private static toSvgWithClassName(data: IconfontData) {
+    return `<svg viewBox='0 0 1500 1500' width='80' height='120' style='margin:10px;' xmlns='http://www.w3.org/2000/svg' >
+    <path style='transform:rotateX(180deg);transform-origin:center;scale(.8);' fill='#EA3C3C' d='${data.data}'></path>
+    <foreignObject width="1500" height="240">
+    <body xmlns="http://www.w3.org/1999/xhtml">
+      <div style="font-size:240px;margin:0;color:#1F94ED;">${data.className}</div>
+    </body>
+  </foreignObject>
+    </svg>`;
+  }
+  private static toSvg(data: IconfontData) {
+    return `<svg viewBox='0 0 1500 1500' width='80' height='100' style='margin:10px;' xmlns='http://www.w3.org/2000/svg' >
+    <path style='transform:rotateX(180deg);transform-origin:center;scale(.8);' fill='#EA3C3C' d='${data.data}'></path>
+    </svg>`;
   }
 }
