@@ -12,6 +12,7 @@ export class IconfontCompletionItemProvider implements vscode.CompletionItemProv
       let label:string = `&#x${item.code};`;
       let completionItem:vscode.CompletionItem = new vscode.CompletionItem(label,vscode.CompletionItemKind.Field);
       let ms:vscode.MarkdownString = new vscode.MarkdownString(Iconfont.dataToMarkdown(item,false));
+      ms.isTrusted = true;
       completionItem.documentation = ms;
       completionItem.detail=`iconfon图标: class:${item.className} code:${item.code}`;
       completionItem.insertText = `#x${item.code};`;
