@@ -2,6 +2,11 @@
 
 ## 功能
 
+### iconfont 输入提示功能
+
+编辑 html 时，输入 ‘&’ 后，会提示所有iconfont 引用
+<img src="https://img.alicdn.com/tfs/TB1cKrtkVP7gK0jSZFjXXc5aXXa-763-458.gif" alt="js跳转" width="800"/>
+
 ### 自定义StatusBar快捷方式功能
 
 <img src="https://img.alicdn.com/tfs/TB1.xXzgKbviK0jSZFNXXaApXXa-1284-676.gif" alt="js跳转" width="800"/>
@@ -24,7 +29,8 @@
 
 ### iconfont 预览功能
 
-<img src="https://img.alicdn.com/tfs/TB1TROXX7L0gK0jSZFAXXcA9pXa-921-532.gif" alt="js跳转" width="800"/>
+支持多个iconfont项目引用，通过class name 进行提示。
+<img src="https://img.alicdn.com/tfs/TB1wrcZkebviK0jSZFNXXaApXXa-763-458.gif" alt="js跳转" width="800"/>
 
 ### magix3 模板语法高亮功能！
 
