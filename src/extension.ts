@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
         //注册代码提示
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE,new IconfontCompletionItemProvider(),'>', '&'));
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE,new IconfontCompletionItemProvider(), '&'));
         context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
         //注册悬浮提示Provider
         context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));

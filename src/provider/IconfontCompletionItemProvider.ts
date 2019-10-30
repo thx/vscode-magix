@@ -5,9 +5,7 @@ import { Iconfont, IconfontData } from '../common/utils/Iconfont';
 export class IconfontCompletionItemProvider implements vscode.CompletionItemProvider {
   
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
-    const line = document.lineAt(position);
-    // 只截取到光标位置为止，防止一些特殊情况
-    const lineText = line.text.substring(0, position.character);
+    
     let list: vscode.CompletionList = new vscode.CompletionList();
     let arr:Array<IconfontData> = Iconfont.getDataByCode('');
     arr.forEach(item=>{
@@ -16,6 +14,7 @@ export class IconfontCompletionItemProvider implements vscode.CompletionItemProv
       let ms:vscode.MarkdownString = new vscode.MarkdownString(Iconfont.dataToMarkdown(item,false));
       completionItem.documentation = ms;
       completionItem.detail=`iconfon图标: class:${item.className} code:${item.code}`;
+      completionItem.insertText = `#x${item.code};`;
       list.items.push(completionItem);
     });
    
@@ -27,6 +26,6 @@ export class IconfontCompletionItemProvider implements vscode.CompletionItemProv
  * @param {*} token 
  */
   resolveCompletionItem?(item: vscode.CompletionItem, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CompletionItem> {
-    return null;
+    return item;
   }
 }
