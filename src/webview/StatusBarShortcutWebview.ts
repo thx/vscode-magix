@@ -26,6 +26,10 @@ export class StatusBarShortcutWebview extends BaseView {
         let nickname = ConfigurationUtils.getNickname();
         let info: Info = ProjectInfoUtils.getInfo();
         let projectName = info ? info.name : '';
+        if(!projectName){
+            this.postMessage(WebCommand.GET_SHORTCUT, { ok: false, msg: '没有package.json文件或者没有找到Magix相关配置信息，请确保当前项目是一个 Magix 项目！' });
+            return;
+        }
         if (nickname) {
             Fether.getShortcut(nickname,projectName).then((arr) => {
                 let data = arr.length === 0 ? { nickname, list: [] } : arr[0];
@@ -41,6 +45,11 @@ export class StatusBarShortcutWebview extends BaseView {
     private saveShortcut(shortcut: ShortcutInfo | any) {
         let info: Info = ProjectInfoUtils.getInfo();
         let projectName = info ? info.name : '';
+
+        if(!projectName){
+            this.postMessage(WebCommand.GET_SHORTCUT, { ok: false, msg: '没有package.json文件或者没有找到Magix相关配置信息，请确保当前项目是一个 Magix 项目！' });
+            return;
+        }
         if (shortcut) {
             shortcut.projectName = projectName;
         }
