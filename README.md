@@ -5,11 +5,22 @@
 ### iconfont 输入提示功能
 
 编辑 html 时，输入 ‘&’ 后，会提示所有iconfont 引用
+
 <img src="https://img.alicdn.com/tfs/TB1cKrtkVP7gK0jSZFjXXc5aXXa-763-458.gif" alt="js跳转" width="800"/>
+
+### iconfont 预览功能
+
+支持多个iconfont项目引用，通过class name 进行提示。
+
+<img src="https://img.alicdn.com/tfs/TB1wrcZkebviK0jSZFNXXaApXXa-763-458.gif" alt="js跳转" width="800"/>
 
 ### 自定义StatusBar快捷方式功能
 
 <img src="https://img.alicdn.com/tfs/TB1.xXzgKbviK0jSZFNXXaApXXa-1284-676.gif" alt="js跳转" width="800"/>
+
+### Rap 悬浮提示功能
+
+<img src="https://img.alicdn.com/tfs/TB14Q39lQT2gK0jSZFkXXcIQFXa-687-515.gif" alt="悬浮提示功能" width="800"/>
 
 ### 失效 Rap 引用扫描功能
 
@@ -18,6 +29,7 @@
 ### 跳转到Rap定义功能
 
 在Magix 插件配置页面，可以设置 Rap跳转方式
+
 <img src="https://img.alicdn.com/tfs/TB1a9BihUH1gK0jSZSyXXXtlpXa-1283-634.gif" alt="js跳转" width="800"/>
 
 通过快捷键`MAC键+鼠标点击`,支持 Rap 接口名称跳转到Rap2页面功能
@@ -25,12 +37,8 @@
 <img src="https://img.alicdn.com/tfs/TB1z.D9hhv1gK0jSZFFXXb0sXXa-1051-557.gif" alt="js跳转" width="800"/>
 
 通过`鼠标右键选择菜单`,支持 Rap 接口名称跳转到Rap2页面功能
+
 <img src="https://img.alicdn.com/tfs/TB1dRMJhp67gK0jSZPfXXahhFXa-914-530.gif" alt="js跳转" width="800"/>
-
-### iconfont 预览功能
-
-支持多个iconfont项目引用，通过class name 进行提示。
-<img src="https://img.alicdn.com/tfs/TB1wrcZkebviK0jSZFNXXaApXXa-763-458.gif" alt="js跳转" width="800"/>
 
 ### magix3 模板语法高亮功能！
 
@@ -53,7 +61,6 @@
 `MAC键+鼠标点击 Magix tmpl属性值`
 <img src="https://img.alicdn.com/tfs/TB13IHhOpzqK1RjSZFCXXbbxVXa-1139-555.gif" alt="js跳转" width="800"/>
 
-
 注意：由于跳转功能是基于 magix3的js/ts写法的语法分析，仅支持下面写法的跳转功能,特殊项目可联系 **@灼日** **@抱血** 添加适配
 
 ```javascript
@@ -74,50 +81,75 @@
 
 <img src="https://img.alicdn.com/tfs/TB17yPcOxTpK1RjSZFMXXbG_VXa-1139-555.gif" alt="hsts" width="800"/>
 
-
 ### html 模板代码折叠
 
 <img src="https://img.alicdn.com/tfs/TB1LM_gOwHqK1RjSZFEXXcGMXXa-1139-555.gif" alt="Diamond" width="800"/>
-
 
 ## 加群有惊喜
 
 <img src="https://img.alicdn.com/tfs/TB1iKi.OrPpK1RjSZFFXXa5PpXa-386-558.jpg" alt="Diamond" width="400"/>
 
-
 ## 版本说明
 
-### 0.0.1
 
-html页面与js跳转功能
+### 0.9.0
 
-### 0.0.2
+添加 Rap 悬浮提示功能
+添加图标
 
-函数跳转功能
+### 0.8.1
 
-### 0.0.3
+Magix 项目信息获取异常 bugfix
 
-函数自动提示
+### 0.8.0
 
-### 0.0.4
-
-Diamond 快捷功能
-
-### 0.0.5
-
-html 模板语法折叠功能
-
-### 0.2.0
-
-html 模板语法高亮
-
-### 0.3.0
-
-iconfont图标 悬浮展示
+Iconfont 图标悬浮提示
+Iconfont 输入提示功能
 
 ### 0.6.2
 
 自定义StatusBar快捷方式功能
 失效 Rap 引用扫描功能
 跳转到Rap定义功能
+
+### 0.3.0
+
+iconfont图标 悬浮展示
+
+### 0.2.0
+
+html 模板语法高亮
+
+### 0.0.5
+
+html 模板语法折叠功能
+
+### 0.0.4
+
+Diamond 快捷功能
+
+### 0.0.3
+
+函数自动提示
+
+### 0.0.2
+
+函数跳转功能
+
+### 0.0.1
+
+html页面与js跳转功能
+
+
+
+
+
+
+
+
+
+
+
+
+
 
