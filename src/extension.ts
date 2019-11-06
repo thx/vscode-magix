@@ -9,6 +9,7 @@ import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
 import { IconfontHoverProvider } from './provider/IconfontHoverProvider';
+import {RapHoverProvider} from './provider/RapHoverProvider';
 import { MenuTreeViewProvider } from './provider/MenuTreeViewProvider';
 import { Logger } from './common/utils/Logger';
 import { WebViewCommand } from './command/WebViewCommand';
@@ -43,6 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
         //注册悬浮提示Provider
         context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
+        context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_MODE, new RapHoverProvider()));
 
         initViews(context);
 
