@@ -8,7 +8,7 @@ export class BaseView {
         this.context = context;
     }
     protected panel: vscode.WebviewPanel | undefined;
-    public show(){}
+    public show() { }
     /**
     * 从某个HTML文件读取能被Webview加载的HTML内容
     * @param {*} templatePath 相对于插件根目录的html文件相对路径
@@ -27,27 +27,39 @@ export class BaseView {
         htmlPath: string,
         title: string,
         showOptions: vscode.ViewColumn | { viewColumn: vscode.ViewColumn, preserveFocus?: boolean }): void {
-
-        this.panel = vscode.window.createWebviewPanel(
-            'mxWebView', // viewType
-            title, // 视图标题
-            showOptions, // 显示在编辑器的哪个部位
-            {
-                enableScripts: true, // 启用JS，默认禁用
-                retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
+        const has: boolean = WebviewContainer.webviewMap.has(htmlPath)
+        if (has) {
+            const column = vscode.window.activeTextEditor
+                ? vscode.window.activeTextEditor.viewColumn
+                : undefined;
+            const panel = WebviewContainer.webviewMap.get(htmlPath)
+            if (panel) {
+                panel.reveal(column);
             }
-        );
+        } else {
+            this.panel = vscode.window.createWebviewPanel(
+                'mxWebView', // viewType
+                title, // 视图标题
+                showOptions, // 显示在编辑器的哪个部位
+                {
+                    enableScripts: true, // 启用JS，默认禁用
+                    retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
+                }
+            );
 
-        this.panel.webview.html = this.getWebViewContent(htmlPath);
-      
+            this.panel.webview.html = this.getWebViewContent(htmlPath);
+            WebviewContainer.webviewMap.set(htmlPath, this.panel)
+        }
+
+
     }
-    protected onDidDispose(listener:(e: void) => any):void{
-        if(this.panel){
+    protected onDidDispose(listener: (e: void) => any): void {
+        if (this.panel) {
             this.panel.onDidDispose(listener);
         }
     }
-    protected  onDidReceiveMessage(listener:(e: any) => any):void{    
-        if(this.panel){
+    protected onDidReceiveMessage(listener: (e: any) => any): void {
+        if (this.panel) {
             this.panel.webview.onDidReceiveMessage(listener);
         }
     }
@@ -56,9 +68,13 @@ export class BaseView {
             this.panel.webview.postMessage({ type, data });
         }
     }
-    protected dispose(){
+    protected dispose() {
         if (this.panel) {
             this.panel.dispose();
         }
-    } 
+    }
+}
+class WebviewContainer {
+    public static webviewMap: Map<string, vscode.WebviewPanel> = new Map();
+
 }
