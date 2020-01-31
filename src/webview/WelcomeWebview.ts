@@ -11,7 +11,7 @@ export class WelcomeWebview extends BaseView {
         this.onDidReceiveMessage((e) => {
             if (e.type === WebCommand.SAVE_NICKNAME) {
                 ConfigurationUtils.saveNickname(e.data.nickname);
-                this.dispose();
+                this.dispose(path);
             } 
         });
 

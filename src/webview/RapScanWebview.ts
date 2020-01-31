@@ -22,10 +22,9 @@ export class RapScanWebview extends BaseView {
                 this.startScan();
                 this.postMessage(WebCommand.FINISH_SCAN_RAP, {});
             } else if (e.type === WebCommand.OPEN_EDITOR) {
-
                 this.openEditor(e.data);
             } else if (e.type === WebCommand.CLOSE) {
-                this.dispose();
+                this.dispose(path);
             }
         });
     }

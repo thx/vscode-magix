@@ -17,7 +17,7 @@ export class StatusBarShortcutWebview extends BaseView {
             } else if (e.type === WebCommand.SAVE_SHORTCUT) {
                 this.saveShortcut(e.data);
             } else if (e.type === WebCommand.CLOSE) {
-                this.dispose();
+                this.dispose(path);
             }
         });
 

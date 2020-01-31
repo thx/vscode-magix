@@ -18,7 +18,7 @@ export class SettingWebview extends BaseView {
                 let rapType = ConfigurationUtils.getRapType();
                 this.postMessage(WebCommand.GET_NICKNAME, { nickname, rapType });
             } else if (e.type === WebCommand.CLOSE) {
-                this.dispose();
+                this.dispose(path);
             }
         });
        

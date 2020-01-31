@@ -68,9 +68,10 @@ export class BaseView {
             this.panel.webview.postMessage({ type, data });
         }
     }
-    protected dispose() {
+    protected dispose(htmlPath:string) {
         if (this.panel) {
             this.panel.dispose();
+            WebviewContainer.webviewMap.delete(htmlPath)
         }
     }
 }
