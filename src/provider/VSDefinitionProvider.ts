@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 import { ESFileProvider } from '../provider/ESFileProvider';
 import { HtmlESMappingCache } from '../common/utils/CacheUtils';
 import { RapModelUtils, Model, ModelItem } from '../common/utils/RapModelUtils';
@@ -93,14 +94,31 @@ export class MXInnerDefinitionProvider implements vscode.DefinitionProvider {
  */
 export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
 
+  private mxReg = /mx-[a-z]+\s*=\s*\'(.*?)\'|mx-[a-z]+\s*=\s*\"(.*?)\"/;
   provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
 
     const fileName = document.fileName;
-
-    let word = document.getText(document.getWordRangeAtPosition(position, new RegExp('mx-[a-z]+\s*=\s*\'(.*?)\'|mx-[a-z]+\s*=\s*\"(.*?)\"')));
+    let word = document.getText(document.getWordRangeAtPosition(position, this.mxReg));
 
     let p: Promise<vscode.Location> = new Promise((resolve, reject) => {
-      if (word.indexOf('mx-') > -1) {
+      if (word.indexOf('mx-view') > -1) {
+        let group = word.match(/[\'\"]+([^\'\"]*)[\'\"]+/g);
+        if (group && group.length > 0) {
+          let viewPath = group[0].replace('@', '').replace(/\'|\"+/g, '');
+          let index = viewPath.indexOf('?');
+          viewPath = index > -1 ? viewPath.substring(0, index) : viewPath;
+          let currentPath = path.dirname(fileName);
+          viewPath = path.join(currentPath, viewPath + '.html');
+          console.log(viewPath);
+          if (fs.existsSync(viewPath)) {
+            resolve(new vscode.Location(vscode.Uri.file(viewPath), new vscode.Position(1, 1)));
+          } else {
+            reject();
+          }
+        } else {
+          reject();
+        }
+      } else {
         let mx = word.match(/mx-[a-z]+/);
         if (mx && mx.length > 0) {
           let mxMethod = mx[0].replace('mx-', '');
@@ -112,7 +130,11 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
           if (esFilePath) {
             let position: vscode.Position = ESFileProvider.provideFnPosition(fnName, esFilePath, '');
             resolve(new vscode.Location(vscode.Uri.file(esFilePath), position));
+          }else{
+            reject();
           }
+        }else{
+          reject();
         }
       }
     });
