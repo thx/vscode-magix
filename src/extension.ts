@@ -16,9 +16,10 @@ import { WebViewCommand } from './command/WebViewCommand';
 import { WebViewCommandArgument, WebviewType } from './command/CommandArgument';
 import { ConfigurationUtils } from './common/utils/ConfigurationUtils';
 import { Fether } from './net/Fether';
-import { DynamicCommand } from './command/DynamicCommand';
+
 import { ProjectInfoUtils, Info } from './common/utils/ProjectInfoUtils';
 import { IconfontCompletionItemProvider } from './provider/IconfontCompletionItemProvider';
+import { StatusBarManager } from './common/utils/StatusBarManager';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -57,6 +58,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
+    //销毁 StatusBarManager
+    StatusBarManager.dispose();
     console.info('插件不活动啦。。。。deactivate');
     Logger.logDeactivate();
 }
@@ -77,28 +80,20 @@ function initViews(context: vscode.ExtensionContext) {
     let menuTreeViewProvider: MenuTreeViewProvider = new MenuTreeViewProvider(context);
     vscode.window.registerTreeDataProvider('magix-menu-view', menuTreeViewProvider);
 
-
 }
 function initStatusBar(nickname: string, context: vscode.ExtensionContext) {
     let info: Info = ProjectInfoUtils.getInfo();
     let projectName = info ? info.name : '';
+    StatusBarManager.init(context);
     Fether.getShortcut(nickname,projectName).then((arr) => {
         let data = arr.length === 0 ? { nickname, list: [] } : arr[0];
         if (data && data.list) {
             data.list.forEach((item: any) => {
-                let command = DynamicCommand.registerOpenBrowserCommand(item.url, context);
-                createStatusBar(item.name, command);
+                StatusBarManager.createOpenBrowserStatusBar(item.name, item.url);
             });
         }
     }).catch((msg) => {
         console.error(msg);
     });
 }
-function createStatusBar(text: string, command: string) {
-    let status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    status.text = text;
-    status.tooltip = '';
-    status.show();
-    status.command = command;
 
-}

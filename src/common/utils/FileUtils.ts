@@ -31,11 +31,11 @@ export class FileUtils {
         }
       });
       if (!projectPath) {
-        vscode.window.showErrorMessage('当前编辑页面不属于workspace中文件，请打开workspace中文件，然后重启vscode');
+        vscode.window.showErrorMessage('Magix-VSCode:当前编辑页面不属于workspace中文件，请打开workspace中文件，然后重启vscode');
       }
     }
     if (!projectPath) {
-      vscode.window.showErrorMessage('获取工程根路径异常！');
+      vscode.window.showErrorMessage('Magix-VSCode:无效工程路径！');
       return '';
     }
     return projectPath;

@@ -5,6 +5,7 @@ import { Fether } from '../net/Fether';
 import { ConfigurationUtils } from '../common/utils/ConfigurationUtils';
 import { ShortcutInfo } from '../model/ShortcutInfo';
 import { Info, ProjectInfoUtils } from '../common/utils/ProjectInfoUtils';
+import { StatusBarManager } from '../common/utils/StatusBarManager';
 
 export class StatusBarShortcutWebview extends BaseView {
     public show() {
@@ -54,6 +55,9 @@ export class StatusBarShortcutWebview extends BaseView {
             shortcut.projectName = projectName;
         }
         Fether.updateShortcut(shortcut).then((data) => {
+            
+            StatusBarManager.refreshStatusBars(shortcut.list);
+
             this.postMessage(WebCommand.SAVE_SHORTCUT, { ok: true });
         }).catch((msg) => {
             this.postMessage(WebCommand.SAVE_SHORTCUT, { ok: false, msg: '网络链接错误，请确保在内网环境中使用' });

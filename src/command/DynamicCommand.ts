@@ -19,6 +19,7 @@ export class DynamicCommand {
                 console.error(e);
             }
         }));
+        
         return command;
     }
     private static getRandomInt(max:number) {

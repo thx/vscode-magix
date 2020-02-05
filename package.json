@@ -161,6 +161,7 @@
     "babylon": "^6.18.0",
     "css-tree": "^1.0.0-alpha.29",
     "datauri": "^1.1.0",
+    "hyntax": "^1.1.4",
     "map-lru": "^1.0.2",
     "opn": "^4.0.2",
     "request": "^2.81.0"

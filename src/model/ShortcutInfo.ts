@@ -12,7 +12,7 @@ export class ShortcutInfo {
 }
 export class ShortcutItem {
     name: string;
-    url: number;
+    url: string;
     constructor(data: any = {}) {
         this.name = data.name || '';
         this.url = data.url || '';

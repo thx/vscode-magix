@@ -37,7 +37,7 @@ new Vue({
         loading.close();
       } else if (msg.type === WEB_COMMAND.SAVE_SHORTCUT) {
         if (data.ok) {
-          this.$alert('保存成功,重启VSCode后StatusBar生效', '温馨提示', {
+          this.$alert('保存成功', '温馨提示', {
             confirmButtonText: '确定'
           }).then(() => {
             VSCode.postMessage(WEB_COMMAND.CLOSE);
