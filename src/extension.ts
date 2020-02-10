@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { Initializer } from './initializer';
 import { Command } from './common/constant/Command';
 import { ToDefinitionCommand } from './command/ToDefinitionCommand';
+import {CodeConvertCommand}  from './command/CodeConvertCommand';
 import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider } from './provider/VSDefinitionProvider';
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
@@ -30,7 +31,8 @@ export function activate(context: vscode.ExtensionContext) {
         //注册command
         new ToDefinitionCommand().registerCommand(context);
         new WebViewCommand().registerCommand(context);
-
+        new CodeConvertCommand().registerCommand(context);
+        
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
         const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);

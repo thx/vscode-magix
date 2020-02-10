@@ -32,6 +32,10 @@
       {
         "command": "mx.jumper.backAndForth",
         "title": "MX"
+      },
+      {
+        "command": "mx.code.toReact",
+        "title": "To React"
       }
     ],
     "keybindings": [
@@ -67,6 +71,11 @@
         {
           "when": "resourceLangId ==  handlebars",
           "command": "mx.jumper.toES",
+          "group": "0_mx"
+        },
+        {
+          "when": "resourceLangId ==  handlebars",
+          "command": "mx.code.toReact",
           "group": "0_mx"
         }
       ]
