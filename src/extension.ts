@@ -21,10 +21,10 @@ import { Fether } from './net/Fether';
 import { ProjectInfoUtils, Info } from './common/utils/ProjectInfoUtils';
 import { IconfontCompletionItemProvider } from './provider/IconfontCompletionItemProvider';
 import { StatusBarManager } from './common/utils/StatusBarManager';
-
+import { GalleryHoverProvider } from './provider/GalleryHoverProvider';
 
 export function activate(context: vscode.ExtensionContext) {
-
+    
     let startTime: number = new Date().getTime();
     //初始化期，初始化基本数据
     new Initializer().init().then(() => {
@@ -48,6 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
         //注册悬浮提示Provider
         context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
         context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_MODE, new RapHoverProvider()));
+        context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
 
         initViews(context);
 
