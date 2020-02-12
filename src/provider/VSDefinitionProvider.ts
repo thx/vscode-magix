@@ -11,8 +11,9 @@ const opn = require('opn');
  */
 export class MXDefinitionProvider implements vscode.DefinitionProvider {
   private quotationReg = /[\'\"]+([^\'\"]*)[\'\"]+/g;
-
+  // 最后一次出发跳转，避免多次调用
   private lastTriggerTime: number = new Date().getTime();
+
   provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
 
     const fileName = document.fileName;
@@ -28,16 +29,24 @@ export class MXDefinitionProvider implements vscode.DefinitionProvider {
       let path = workDir + '/' + word.replace(/(^\'*)|(\'*$)/g, '').replace(/(^\"*)|(\"*$)/g, '').replace('@', '');
       return new vscode.Location(vscode.Uri.file(path), new vscode.Position(0, 0));
     }
+    // less 或 css 样式 跳转
+    if (word.indexOf('.less') > -1 || word.indexOf('.css') > -1) {
+      let stylePath = word.replace('@', '').replace(/\'|\"+/g, '').replace('css!','');
+      let currentPath = path.dirname(fileName);
+      stylePath = path.join(currentPath, stylePath);
+      return new vscode.Location(vscode.Uri.file(stylePath), new vscode.Position(0, 0));
+    }
 
     let rapType = ConfigurationUtils.getRapType();
     if (rapType === '0' || rapType === '1') {
-      this.jumpToRap(document, position);
+      this.jumpToRap(word, position);
     }
+
+
   }
 
-  private jumpToRap(document: vscode.TextDocument, position: vscode.Position) {
-    //跳转Rap定义
-    let rapKey = document.getText(document.getWordRangeAtPosition(position, this.quotationReg));
+  private jumpToRap(rapKey: string, position: vscode.Position) {
+   
     let key = rapKey.replace(/\'|\"+/g, '');
     if (key && key.indexOf("_") > -1) {
       let model: Model = RapModelUtils.getModel();
@@ -102,7 +111,7 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
 
     let p: Promise<vscode.Location> = new Promise((resolve, reject) => {
       if (word.indexOf('mx-view') > -1) {
-        const location: vscode.Location | undefined = this.toMxView(word, fileName);
+        const location: vscode.Location | undefined = this.jumpToMxView(word, fileName);
         resolve(location);
       } else {
         let mx = word.match(/mx-[a-z]+/);
@@ -127,7 +136,7 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
     return p;
 
   }
-  toMxView(word:string,fileName:string){
+  jumpToMxView(word:string,fileName:string){
     let group = word.match(/[\'\"]+([^\'\"]*)[\'\"]+/g);
     if (group && group.length > 0) {
       let viewPath = group[0].replace('@', '').replace(/\'|\"+/g, '');
