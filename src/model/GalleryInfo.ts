@@ -147,7 +147,7 @@ export class GalleryInfo {
             type: 'mx-suggest', data: {
                 title: '可选项提示suggest',
                 subTitle: '支持双向绑定',
-                url: '/pagination/index',
+                url: '/suggest/index',
                 code: `<mx-suggest class="w250"
             selected="{{=selectedValue}}"
             placeholder="输入关键词搜索"
@@ -307,7 +307,7 @@ export class GalleryInfo {
             type: 'mx-slider', data: {
                 title: '单个滑块',
                 subTitle: '',
-                url: '/pagination/slider',
+                url: '/slider/index',
                 code: `<mx-slider
             width="160"
             need-input="true"
