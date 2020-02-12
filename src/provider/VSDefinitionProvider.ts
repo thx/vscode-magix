@@ -102,22 +102,8 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
 
     let p: Promise<vscode.Location> = new Promise((resolve, reject) => {
       if (word.indexOf('mx-view') > -1) {
-        let group = word.match(/[\'\"]+([^\'\"]*)[\'\"]+/g);
-        if (group && group.length > 0) {
-          let viewPath = group[0].replace('@', '').replace(/\'|\"+/g, '');
-          let index = viewPath.indexOf('?');
-          viewPath = index > -1 ? viewPath.substring(0, index) : viewPath;
-          let currentPath = path.dirname(fileName);
-          viewPath = path.join(currentPath, viewPath + '.html');
-          console.log(viewPath);
-          if (fs.existsSync(viewPath)) {
-            resolve(new vscode.Location(vscode.Uri.file(viewPath), new vscode.Position(1, 1)));
-          } else {
-            reject();
-          }
-        } else {
-          reject();
-        }
+        const location: vscode.Location | undefined = this.toMxView(word, fileName);
+        resolve(location);
       } else {
         let mx = word.match(/mx-[a-z]+/);
         if (mx && mx.length > 0) {
@@ -140,5 +126,22 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
     });
     return p;
 
+  }
+  toMxView(word:string,fileName:string){
+    let group = word.match(/[\'\"]+([^\'\"]*)[\'\"]+/g);
+    if (group && group.length > 0) {
+      let viewPath = group[0].replace('@', '').replace(/\'|\"+/g, '');
+      let index = viewPath.indexOf('?');
+      viewPath = index > -1 ? viewPath.substring(0, index) : viewPath;
+      let currentPath = path.dirname(fileName);
+      viewPath = path.join(currentPath, viewPath + '.html');
+      if (fs.existsSync(viewPath)) {
+        return new vscode.Location(vscode.Uri.file(viewPath), new vscode.Position(1, 1));
+      } else {
+        return undefined;
+      }
+    } else {
+      return undefined;
+    }
   }
 }
