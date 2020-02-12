@@ -27,12 +27,12 @@ export class BaseView {
         htmlPath: string,
         title: string,
         showOptions: vscode.ViewColumn | { viewColumn: vscode.ViewColumn, preserveFocus?: boolean }): void {
-        const has: boolean = WebviewContainer.webviewMap.has(htmlPath)
+        const has: boolean = WebviewContainer.has(htmlPath)
         if (has) {
             const column = vscode.window.activeTextEditor
                 ? vscode.window.activeTextEditor.viewColumn
                 : undefined;
-            const panel = WebviewContainer.webviewMap.get(htmlPath)
+            const panel = WebviewContainer.get(htmlPath)
             if (panel) {
                 panel.reveal(column);
             }
@@ -48,16 +48,16 @@ export class BaseView {
             );
 
             this.panel.webview.html = this.getWebViewContent(htmlPath);
-            WebviewContainer.webviewMap.set(htmlPath, this.panel)
+            WebviewContainer.set(htmlPath, this.panel)
         }
 
-
-    }
-    protected onDidDispose(listener: (e: void) => any): void {
         if (this.panel) {
-            this.panel.onDidDispose(listener);
+            this.panel.onDidDispose(() => {
+                WebviewContainer.delete(htmlPath);
+            });
         }
     }
+   
     protected onDidReceiveMessage(listener: (e: any) => any): void {
         if (this.panel) {
             this.panel.webview.onDidReceiveMessage(listener);
@@ -71,11 +71,22 @@ export class BaseView {
     protected dispose(htmlPath:string) {
         if (this.panel) {
             this.panel.dispose();
-            WebviewContainer.webviewMap.delete(htmlPath)
+            WebviewContainer.delete(htmlPath)
         }
     }
 }
 class WebviewContainer {
-    public static webviewMap: Map<string, vscode.WebviewPanel> = new Map();
-
+    private static webviewMap: Map<string, vscode.WebviewPanel> = new Map();
+    public static has(key: string) {
+        return this.webviewMap.has(key);
+    }
+    public static set(key: string, panel: vscode.WebviewPanel) {
+        this.webviewMap.set(key, panel);
+    }
+    public static get(key: string): vscode.WebviewPanel | undefined {
+        return this.webviewMap.get(key);
+    }
+    public static delete(key: string) {
+        this.webviewMap.delete(key);
+    }
 }
