@@ -2,6 +2,25 @@
 
 ## 功能
 
+### Gallery 组件悬浮提示功能
+
+鼠标悬浮到Gallery组件的html标签上，能出现组件名称及文档链接
+
+<img src="https://img.alicdn.com/tfs/TB1.7v9vAY2gK0jSZFgXXc5OFXa-690-366.gif" alt="js跳转" width="800"/>
+
+
+### mx-view 跳转到定义功能
+
+通过快捷键`Command键+鼠标点击`，编辑器调转到相应的页面
+
+<img src="https://img.alicdn.com/tfs/TB18.26vuL2gK0jSZPhXXahvXXa-690-366.gif" alt="js跳转" width="800"/>
+
+### 样式文件 跳转到定义功能
+
+通过快捷键`Command键+鼠标点击`，编辑器调转到相应的样式页面
+
+<img src="https://img.alicdn.com/tfs/TB1ZfAXvq61gK0jSZFlXXXDKFXa-690-366.gif" alt="js跳转" width="800"/>
+
 ### iconfont 输入提示功能
 
 编辑 html 时，输入 ‘&’ 后，会提示所有iconfont 引用
@@ -32,7 +51,7 @@
 
 <img src="https://img.alicdn.com/tfs/TB1a9BihUH1gK0jSZSyXXXtlpXa-1283-634.gif" alt="js跳转" width="800"/>
 
-通过快捷键`MAC键+鼠标点击`,支持 Rap 接口名称跳转到Rap2页面功能
+通过快捷键`Command键+鼠标点击`,支持 Rap 接口名称跳转到Rap2页面功能
 
 <img src="https://img.alicdn.com/tfs/TB1z.D9hhv1gK0jSZFFXXb0sXXa-1051-557.gif" alt="js跳转" width="800"/>
 
@@ -52,13 +71,15 @@
 
 ### html模板页与js页跳转
 
-通过快捷键`Alt+Tab`、`MAC键+鼠标点击 Magix tmpl属性值`、`右键快捷方式`，支持 html模板页与之相关联的js页跳转:
+通过快捷键`Alt+Tab`、`Command键+鼠标点击 Magix tmpl属性值`、`右键快捷方式`，支持 html模板页与之相关联的js页跳转:
 
 `Alt+Tab`
 ![js跳转](https://img.alicdn.com/tfs/TB1BSndOpzqK1RjSZFoXXbfcXXa-1139-555.gif)
 `右键快捷方式`
+
 <img src="https://img.alicdn.com/tfs/TB1WKYcOxTpK1RjSZFKXXa2wXXa-1139-555.gif" alt="js跳转" width="800"/>
-`MAC键+鼠标点击 Magix tmpl属性值`
+
+`Command键+鼠标点击 Magix tmpl属性值`
 <img src="https://img.alicdn.com/tfs/TB13IHhOpzqK1RjSZFCXXbbxVXa-1139-555.gif" alt="js跳转" width="800"/>
 
 注意：由于跳转功能是基于 magix3的js/ts写法的语法分析，仅支持下面写法的跳转功能,特殊项目可联系 **@灼日** **@抱血** 添加适配
