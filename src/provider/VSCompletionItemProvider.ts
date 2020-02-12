@@ -5,7 +5,7 @@ import {HtmlESMappingCache} from '../common/utils/CacheUtils';
 import { FnInfo } from '../model/FnInfo';
 
 export class MXEventCompletionItemProvider implements vscode.CompletionItemProvider {
-  arr: Array<string> = ['click', 'change', 'mouseenter', 'mouseleave', 'keyup', 'keydown', 'keypress'];
+  arr: Array<string> = ['click', 'change', 'mouseenter', 'mouseleave', 'keyup', 'keydown', 'keypress','mouseover','mouseout'];
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
     const line = document.lineAt(position);
     // 只截取到光标位置为止，防止一些特殊情况
