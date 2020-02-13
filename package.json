@@ -3,7 +3,7 @@
   "displayName": "Magix",
   "description": "Magix 开发增强套件 @MMFE",
   "icon": "images/Magix.png",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "publisher": "mmfe",
   "engines": {
     "vscode": "^1.28.0"
