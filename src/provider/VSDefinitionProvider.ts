@@ -10,7 +10,7 @@ const opn = require('opn');
  * 跳段到定义
  */
 export class MXDefinitionProvider implements vscode.DefinitionProvider {
-  private quotationReg = /[\'\"]+([^\'\"]*)[\'\"]+/g;
+  
   // 最后一次出发跳转，避免多次调用
   private lastTriggerTime: number = new Date().getTime();
 
