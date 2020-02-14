@@ -5,12 +5,12 @@ import * as vscode from 'vscode';
 import { Initializer } from './initializer';
 import { Command } from './common/constant/Command';
 import { ToDefinitionCommand } from './command/ToDefinitionCommand';
-import {CodeConvertCommand}  from './command/CodeConvertCommand';
+import { CodeConvertCommand } from './command/CodeConvertCommand';
 import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider } from './provider/VSDefinitionProvider';
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
 import { IconfontHoverProvider } from './provider/IconfontHoverProvider';
-import {RapHoverProvider} from './provider/RapHoverProvider';
+import { RapHoverProvider } from './provider/RapHoverProvider';
 import { MenuTreeViewProvider } from './provider/MenuTreeViewProvider';
 import { Logger } from './common/utils/Logger';
 import { WebViewCommand } from './command/WebViewCommand';
@@ -24,7 +24,7 @@ import { StatusBarManager } from './common/utils/StatusBarManager';
 import { GalleryHoverProvider } from './provider/GalleryHoverProvider';
 
 export function activate(context: vscode.ExtensionContext) {
-    
+
     let startTime: number = new Date().getTime();
     //初始化期，初始化基本数据
     new Initializer().init().then(() => {
@@ -32,18 +32,18 @@ export function activate(context: vscode.ExtensionContext) {
         new ToDefinitionCommand().registerCommand(context);
         new WebViewCommand().registerCommand(context);
         new CodeConvertCommand().registerCommand(context);
-        
+
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
         const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
         //注册html代码跳转
-       
+
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
         //注册代码提示
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE,new IconfontCompletionItemProvider(), '&'));
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new IconfontCompletionItemProvider(), '&'));
         context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
         //注册悬浮提示Provider
         context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
@@ -88,7 +88,7 @@ function initStatusBar(nickname: string, context: vscode.ExtensionContext) {
     let info: Info = ProjectInfoUtils.getInfo();
     let projectName = info ? info.name : '';
     StatusBarManager.init(context);
-    Fether.getShortcut(nickname,projectName).then((arr) => {
+    Fether.getShortcut(nickname, projectName).then((arr) => {
         let data = arr.length === 0 ? { nickname, list: [] } : arr[0];
         if (data && data.list) {
             data.list.forEach((item: any) => {

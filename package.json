@@ -72,6 +72,11 @@
           "when": "resourceLangId ==  handlebars",
           "command": "mx.jumper.toES",
           "group": "0_mx"
+        },
+        {
+          "when": "resourceLangId ==  handlebars",
+          "command": "mx.code.toReact",
+          "group": "0_mx"
         }
       ]
     },
@@ -151,23 +156,21 @@
   "devDependencies": {
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
-    "@types/parse5": "^5.0.0",
-    "request": "^2.81.0",
     "babylon": "^6.18.0",
     "map-lru": "^1.0.2",
+    "request": "^2.81.0",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",
     "vscode": "^1.1.21"
   },
   "dependencies": {
     "@types/css-tree": "^1.0.0",
-    "@types/parse5": "^5.0.0",
     "babylon": "^6.18.0",
     "css-tree": "^1.0.0-alpha.29",
     "datauri": "^1.1.0",
-    "hyntax": "^1.1.4",
     "map-lru": "^1.0.2",
     "opn": "^4.0.2",
+    "posthtml-parser": "^0.4.2",
     "request": "^2.81.0"
   },
   "repository": "https://github.com/thx/vscode-magix",

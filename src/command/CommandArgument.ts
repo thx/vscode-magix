@@ -2,8 +2,10 @@
 
 export class WebViewCommandArgument {
     public webviewType: WebviewType;
+    public data: any;
     constructor() {
         this.webviewType = WebviewType.None;
+        this.data = null;
     }
 }
 

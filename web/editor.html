@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./resources/style.css">
+</head>
+
+<body>
+  <textarea id="code_editor" style="width: 100%; height:calc(100vh - 90px);">
+ </textarea>
+</body>
+<script src="./config/vscode-utils.js"></script>
+<script src="./config/command.js"></script>
+<script>
+  window.addEventListener('message', event => {
+    const msg = event.data;
+    let data = msg.data;
+    if (msg.type === WEB_COMMAND.OPEN_EDITOR) {
+      if (data.ok) {
+        document.getElementById('code_editor').value = data.code;
+      }
+    }
+  });
+</script>
+
+</html>

@@ -8,7 +8,7 @@ export class BaseView {
         this.context = context;
     }
     protected panel: vscode.WebviewPanel | undefined;
-    public show() { }
+    public show(args?: any) { }
     /**
     * 从某个HTML文件读取能被Webview加载的HTML内容
     * @param {*} templatePath 相对于插件根目录的html文件相对路径
@@ -23,10 +23,19 @@ export class BaseView {
         });
         return html;
     }
+    /**
+     * 
+     * @param htmlPath 
+     * @param title 
+     * @param showOptions 
+     * @param newPanel 是否打开新的窗口
+     */
     protected createWebview(
         htmlPath: string,
         title: string,
-        showOptions: vscode.ViewColumn | { viewColumn: vscode.ViewColumn, preserveFocus?: boolean }): void {
+        showOptions: vscode.ViewColumn | { viewColumn: vscode.ViewColumn, preserveFocus?: boolean },
+        newPanel?: boolean
+        ): void {
         const has: boolean = WebviewContainer.has(htmlPath)
         if (has) {
             const column = vscode.window.activeTextEditor
@@ -48,7 +57,9 @@ export class BaseView {
             );
 
             this.panel.webview.html = this.getWebViewContent(htmlPath);
-            WebviewContainer.set(htmlPath, this.panel)
+            if (!newPanel) {
+                WebviewContainer.set(htmlPath, this.panel)
+            }
         }
 
         if (this.panel) {
@@ -71,7 +82,7 @@ export class BaseView {
     protected dispose(htmlPath:string) {
         if (this.panel) {
             this.panel.dispose();
-            WebviewContainer.delete(htmlPath)
+            WebviewContainer.delete(htmlPath);
         }
     }
 }
