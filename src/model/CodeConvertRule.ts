@@ -21,14 +21,7 @@ export class Rule {
                 importInfo: 'import { MuxCalendar } from \'@alife/mux-components\'',
                 tag: 'MuxCalendar',
                 attrMap: [
-                    {
-                        form: 'style',
-                        to: 'style'
-                    },
-                    {
-                        form: 'class',
-                        to: 'className'
-                    }
+                   
                 ],
                 hasContent: false
             }
@@ -53,14 +46,7 @@ export class Rule {
                         form: 'v-model',
                         to: 'value'
                     },
-                    {
-                        form: 'class',
-                        to: 'className'
-                    },
-                    {
-                        form: 'style',
-                        to: 'style'
-                    },
+                   
                     {
                         form: 'data-width',
                         to: 'width'
@@ -84,14 +70,7 @@ export class Rule {
                         form: 'v-model',
                         to: 'value'
                     },
-                    {
-                        form: 'class',
-                        to: 'className'
-                    },
-                    {
-                        form: 'style',
-                        to: 'style'
-                    },
+                   
                     {
                         form: 'placeholder',
                         to: 'placeholder'
@@ -113,14 +92,7 @@ export class Rule {
                 tag: 'MuxButton',
                 attrMap: [
                     
-                    {
-                        form: 'class',
-                        to: 'className'
-                    },
-                    {
-                        form: 'style',
-                        to: 'style'
-                    }
+                 
                 ],
                 hasContent: true
             }
@@ -137,15 +109,6 @@ export class Rule {
                 importInfo: 'import UploaderWidget from \'components/widgets/UploaderWidget\'',
                 tag: 'UploaderWidget',
                 attrMap: [
-                    
-                    {
-                        form: 'class',
-                        to: 'className'
-                    },
-                    {
-                        form: 'style',
-                        to: 'style'
-                    },
                     {
                         form: 'data-action',
                         to: 'action'
@@ -155,6 +118,34 @@ export class Rule {
                         to: 'accept'
                     }
                     
+                ],
+                hasContent: true
+            }
+        },
+        {
+            type: 2,
+            match: [{
+                target: 'tag',
+                type: 1,
+                value: 'input'
+            },{
+                target: 'attr',
+                type: 1,
+                key: 'type',
+                value: 'text'
+            }],
+            convert: {
+                importInfo: 'import { MuxText } from \'@alife/mux-components\'',
+                tag: 'MuxText',
+                attrMap: [
+                    {
+                        form: 'v-model',
+                        to: 'value'
+                    },
+                    {
+                        form: 'placeholder',
+                        to: 'placeholder'
+                    }
                 ],
                 hasContent: true
             }

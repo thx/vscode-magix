@@ -1,11 +1,11 @@
 export class FnInfo {
-  mxFnName:string;
-  fnName:string;
-  startLine:number;
-  startColumn:number;
-  endLine:number;
-  endColumn:number;
-  constructor(data:any={}){
+  mxFnName: string;
+  fnName: string;
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+  constructor(data: any = {}) {
     this.mxFnName = data.mxFnName || '';
     this.fnName = data.fnName || "";
     this.startLine = data.startLine || 0;
