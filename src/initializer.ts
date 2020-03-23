@@ -12,14 +12,20 @@ import { RapModelUtils } from './common/utils/RapModelUtils';
 
 
 export class Initializer {
+  private rootPath: string
+  private  excludePath: string[];
+
+  constructor() {
+    this.rootPath = FileUtils.getProjectPath(undefined);
+    this.excludePath = [path.join(this.rootPath, 'build'), path.join(this.rootPath, 'node_modules')];
+  }
+
   /**
    * 扫描项目文件夹
    */
   private scanSrcFile() {
 
-
-    let rootPath = FileUtils.getProjectPath(undefined);
-    let fileList: Array<string> = FileUtils.listFiles(rootPath);
+    let fileList: Array<string> = FileUtils.listFiles(this.rootPath);
 
     let cssFileList: Array<string> = [];
     fileList.forEach((filePath) => {
@@ -54,15 +60,15 @@ export class Initializer {
    * 扫描工程目录下的关键文件，eg： package.json
    */
   private scanProjectFile() {
-    let rootPath = FileUtils.getProjectPath(undefined);
-    ProjectInfoUtils.scanProject(rootPath);
+    
+    ProjectInfoUtils.scanProject(this.rootPath);
   }
   /**
    * 从新扫描所有CSSFile
    */
   private reScanAllCSSFile() {
-    let rootPath = FileUtils.getProjectPath(undefined);
-    let fileList: Array<string> = FileUtils.listFiles(rootPath);
+    
+    let fileList: Array<string> = FileUtils.listFiles(this.rootPath);
 
     let cssFileList: Array<string> = fileList.filter((filePath: string) => {
       let extName = path.extname(filePath);
@@ -106,7 +112,15 @@ export class Initializer {
     let htmlPath: string = path.join(path.dirname(filePath), path.basename(filePath).replace(path.extname(filePath), '.html'));
     HtmlESMappingCache.addMapping(filePath, htmlPath);
   }
-
+  /**
+   * 判断当前路径是否需要更新
+   * @param path 
+   */
+  private needUpdate(path: string): boolean {
+    return !this.excludePath.find((exPath: string) => {
+      return path.indexOf(exPath) > -1;
+    });
+  }
   /**
    * 开始文件监听
    */
@@ -127,6 +141,9 @@ export class Initializer {
     let watcher: FileSystemWatcher = workspace.createFileSystemWatcher('**/*.{ts,js,html,css,less,scss,json,es}', false, false, false);
     watcher.onDidChange((e: Uri) => {
       let filePath = e.fsPath;
+      if (!this.needUpdate(filePath)) {
+        return;
+      }
       let ext: string = path.extname(filePath);
       if (ext === '.ts' || ext === '.js' || ext === '.es') {
         let content: string = fs.readFileSync(filePath, 'utf-8');
@@ -142,6 +159,9 @@ export class Initializer {
     });
     watcher.onDidCreate((e: Uri) => {
       let filePath = e.fsPath;
+      if (!this.needUpdate(filePath)) {
+        return;
+      }
       let ext: string = path.extname(filePath);
       if (ext === '.ts' || ext === '.js' || ext === '.es') {
         let content: string = fs.readFileSync(filePath, 'utf-8');
@@ -157,6 +177,9 @@ export class Initializer {
     });
     watcher.onDidDelete((e: Uri) => {
       let filePath = e.fsPath;
+      if (!this.needUpdate(filePath)) {
+        return;
+      }
       Cache.remove(filePath);
 
       let ext: string = path.extname(filePath);
