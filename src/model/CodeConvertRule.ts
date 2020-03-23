@@ -147,7 +147,31 @@ export class Rule {
                         to: 'placeholder'
                     }
                 ],
-                hasContent: true
+                hasContent: false
+            }
+        },
+        {
+            type: 2,
+            match: [{
+                target: 'tag',
+                type: 1,
+                value: 'input'
+            },{
+                target: 'attr',
+                type: 1,
+                key: 'type',
+                value: 'radio'
+            }],
+            convert: {
+                importInfo: 'import { MuxRadio } from \'@alife/mux-components\'',
+                tag: 'MuxRadio',
+                attrMap: [
+                    {
+                        form: 'v-model',
+                        to: 'value'
+                    }
+                ],
+                hasContent: false
             }
         }
     ]

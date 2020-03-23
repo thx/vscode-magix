@@ -82,13 +82,21 @@ export class FileUtils {
      */
   public static listFiles(rootPath: string): Array<string> {
     let fileList: Array<string> = [];
-    this.getFiles(rootPath, fileList);
+    const excludePath = [path.join(rootPath, 'build'), path.join(rootPath, 'node_modules')];
+    this.getFiles(rootPath, fileList, excludePath);
     return fileList;
   }
-
-  private static getFiles(parentPath: string, fileList: Array<string>) {
+/**
+ * 递归列出所有文件
+ * @param parentPath 上一级目录
+ * @param fileList 导出的文件列表
+ * @param excludePath 需要排除的目录
+ */
+  private static getFiles(parentPath: string, fileList: Array<string>, excludePath:string[]) {
     let files = fs.readdirSync(parentPath);
-    if (parentPath.indexOf('/.') > -1 || parentPath.indexOf('node_modules') > -1) {
+    if (parentPath.indexOf('/.') > -1 || excludePath.find((exPath: string) => {
+      return parentPath.indexOf(exPath) > -1;
+    })) {
       return;
     }
 
@@ -97,7 +105,7 @@ export class FileUtils {
       let stat = fs.statSync(item);
       try {
         if (stat.isDirectory()) {
-          this.getFiles(item, fileList);
+          this.getFiles(item, fileList, excludePath);
         }
         else if (stat.isFile()) {
           fileList.push(item);

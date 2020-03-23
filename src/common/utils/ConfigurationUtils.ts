@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 export class ConfigurationUtils {
     private static readonly CONFIG_NICKNAME = 'magix.config.user.nickname';
     private static readonly CONFIG_RAP_TYPE = 'magix.config.rap.type';
+    private static readonly CONFIG_REACT_CONVERT = 'magix.config.react.convert';
     /**
      * 保存花名
      * @param nickname 
@@ -17,7 +18,7 @@ export class ConfigurationUtils {
     public static getNickname(): string | null | undefined {
         return vscode.workspace.getConfiguration().get(this.CONFIG_NICKNAME);
     }
-      /**
+    /**
      * rap跳转方式
      * @param rapType 
      */
@@ -29,5 +30,18 @@ export class ConfigurationUtils {
      */
     public static getRapType(): string {
         return vscode.workspace.getConfiguration().get(this.CONFIG_RAP_TYPE) || '0';
+    }
+    /**
+     * 设置是否打开转换
+     * @param  
+     */
+    public static convertOpen(open: boolean): void {
+        vscode.workspace.getConfiguration().update(this.CONFIG_REACT_CONVERT, open, true);
+    }
+    /**
+     * 是否打开代码转换入口
+     */
+    public static isConvertOpen(): boolean {
+        return vscode.workspace.getConfiguration().get(this.CONFIG_REACT_CONVERT) === 'true';
     }
 }
