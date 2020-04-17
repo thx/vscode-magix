@@ -9,7 +9,6 @@ export class ESFileProvider {
 
   public static provideFileInfo(filePath: string, content: string): ESFileInfo | any {
     if (Cache.has(filePath)) {
-      console.log('from Cache');
       return Cache.get(filePath);
     }
     else {

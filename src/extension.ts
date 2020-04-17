@@ -22,6 +22,7 @@ import { ProjectInfoUtils, Info } from './common/utils/ProjectInfoUtils';
 import { IconfontCompletionItemProvider } from './provider/IconfontCompletionItemProvider';
 import { StatusBarManager } from './common/utils/StatusBarManager';
 import { GalleryHoverProvider } from './provider/GalleryHoverProvider';
+import { ImageHoverProvider } from './provider/ImageHoverProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -32,24 +33,32 @@ export function activate(context: vscode.ExtensionContext) {
         new ToDefinitionCommand().registerCommand(context);
         new WebViewCommand().registerCommand(context);
         new CodeConvertCommand().registerCommand(context);
-
+        // 
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
+        const CSS_MODE = [{ language: 'css', scheme: 'file' }, { language: 'less', scheme: 'file' }];
         const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
-        context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
-        context.subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
+        const JTS_HTML_CSS_MODE = JTS_HTML_MODE.concat(CSS_MODE);
+        const subscriptions = context.subscriptions;
+
+        subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
+        subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
+        
         //注册html代码跳转
-
-        context.subscriptions.push(vscode.languages.registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
+        subscriptions.push(vscode.languages.registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
+        
         //注册代码提示
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new IconfontCompletionItemProvider(), '&'));
-        context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
+        subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
+        subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new IconfontCompletionItemProvider(), '&'));
+        subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
+        
         //注册悬浮提示Provider
-        context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
-        context.subscriptions.push(vscode.languages.registerHoverProvider(JTS_MODE, new RapHoverProvider()));
-        context.subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
-
+        subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
+        subscriptions.push(vscode.languages.registerHoverProvider(JTS_MODE, new RapHoverProvider()));
+        subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
+        subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
+        subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_CSS_MODE, new ImageHoverProvider()));
+        
         initViews(context);
 
         Logger.logActivate(new Date().getTime() - startTime, '');

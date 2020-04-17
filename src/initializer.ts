@@ -26,13 +26,16 @@ export class Initializer {
   private scanSrcFile() {
 
     let fileList: Array<string> = FileUtils.listFiles(this.rootPath);
-
+let lineCount = 1;
     let cssFileList: Array<string> = [];
     fileList.forEach((filePath) => {
       let extName = path.extname(filePath);
       if (filePath.indexOf('src') < 0) {
         return;
       }
+      //let contentLine = fs.readFileSync(filePath, 'UTF-8').split('\n').length;
+      //lineCount += contentLine;
+
       if (extName === '.html') {
         let content = fs.readFileSync(filePath, 'UTF-8');
         var reg = new RegExp('<(\S*?)[^>]*>.*?|<.*? />', "g");
@@ -52,7 +55,7 @@ export class Initializer {
       }
 
     });
-
+console.log('代码行数:'+lineCount)
     Iconfont.scanCSSFile(cssFileList);
 
   }

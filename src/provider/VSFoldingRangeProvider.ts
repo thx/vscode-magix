@@ -7,10 +7,10 @@ export class VSFoldingRangeProvider implements vscode.FoldingRangeProvider {
     let rangePairs: Array<TemplateRangePair> = [];
     //Magix3 写法，类mustach的模板语法
     //https://github.com/thx/magix-combine/issues/27
-    rangePairs.push(new TemplateRangePair('\{\{each', '\{\{/each'));
-    rangePairs.push(new TemplateRangePair('\{\{forin', '\{\{/forin'));
-    rangePairs.push(new TemplateRangePair('\{\{for', '\{\{/for'));
-    rangePairs.push(new TemplateRangePair('\{\{if', '\{\{/if'));
+    rangePairs.push(new TemplateRangePair('\{\{ {0,1}each', '\{\{ {0,1}/each'));
+    rangePairs.push(new TemplateRangePair('\{\{ {0,1}forin', '\{\{ {0,1}/forin'));
+    rangePairs.push(new TemplateRangePair('\{\{ {0,1}for', '\{\{ {0,1}/for'));
+    rangePairs.push(new TemplateRangePair('\{\{ {0,1}if', '\{\{ {0,1}/if'));
    //直通车写法
     rangePairs.push(new TemplateRangePair('\{\{#', '\{\{\/'));
     

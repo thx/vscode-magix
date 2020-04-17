@@ -5,6 +5,7 @@ import { ESFileProvider } from '../provider/ESFileProvider';
 import { HtmlESMappingCache } from '../common/utils/CacheUtils';
 import { RapModelUtils, Model, ModelItem } from '../common/utils/RapModelUtils';
 import { ConfigurationUtils } from '../common/utils/ConfigurationUtils';
+import { FileUtils } from '../common/utils/FileUtils';
 const opn = require('opn');
 /**
  * 跳段到定义
@@ -111,7 +112,7 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
 
     let p: Promise<vscode.Location> = new Promise((resolve, reject) => {
       if (word.indexOf('mx-view') > -1) {
-        const location: vscode.Location | undefined = this.jumpToMxView(word, fileName);
+        const location: vscode.Location | undefined = this.jumpToMxView(word, fileName, document);
         resolve(location);
       } else {
         let mx = word.match(/mx-[a-z]+/);
@@ -136,17 +137,24 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
     return p;
 
   }
-  jumpToMxView(word:string,fileName:string){
+  jumpToMxView(word: string, fileName: string, document: vscode.TextDocument) {
     let group = word.match(/[\'\"]+([^\'\"]*)[\'\"]+/g);
     if (group && group.length > 0) {
       let viewPath = group[0].replace('@', '').replace(/\'|\"+/g, '');
       let index = viewPath.indexOf('?');
       viewPath = index > -1 ? viewPath.substring(0, index) : viewPath;
       let currentPath = path.dirname(fileName);
-      viewPath = path.join(currentPath, viewPath + '.html');
-      if (fs.existsSync(viewPath)) {
-        return new vscode.Location(vscode.Uri.file(viewPath), new vscode.Position(1, 1));
+      let filePath = path.join(currentPath, viewPath + '.html');
+      // 相对路径
+      if (fs.existsSync(filePath)) {
+        return new vscode.Location(vscode.Uri.file(filePath), new vscode.Position(1, 1));
       } else {
+        // 项目绝对路径
+        let rootPath: string = FileUtils.getProjectPath(document)
+        filePath = path.join(rootPath, 'src', viewPath + '.html');
+        if (fs.existsSync(filePath)) {
+          return new vscode.Location(vscode.Uri.file(filePath), new vscode.Position(1, 1));
+        }
         return undefined;
       }
     } else {
