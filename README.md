@@ -2,6 +2,11 @@
 
 ## 功能
 
+### 代码中图片链接hover展示图片功能
+
+
+<img src="https://img.alicdn.com/tfs/TB1.7v9vAY2gK0jSZFgXXc5OFXa-690-366.gif" alt="js跳转" width="800"/>
+
 ### Gallery 组件悬浮提示功能
 
 鼠标悬浮到Gallery组件的html标签上，能出现组件名称及文档链接
@@ -111,6 +116,12 @@
 <img src="https://img.alicdn.com/tfs/TB1iKi.OrPpK1RjSZFFXXa5PpXa-386-558.jpg" alt="Diamond" width="400"/>
 
 ## 版本说明
+
+### 0.13.0
+
+代码中图片链接hover展示图片功能
+修复 Magix html 模版代码遇到空格不能折叠问题
+修复 mx-view 绝对路径不能跳转问题
 
 ### 0.12.0
 

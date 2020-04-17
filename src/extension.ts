@@ -56,9 +56,8 @@ export function activate(context: vscode.ExtensionContext) {
         subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
         subscriptions.push(vscode.languages.registerHoverProvider(JTS_MODE, new RapHoverProvider()));
         subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
-        subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
         subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_CSS_MODE, new ImageHoverProvider()));
-        
+
         initViews(context);
 
         Logger.logActivate(new Date().getTime() - startTime, '');
