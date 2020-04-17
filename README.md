@@ -5,7 +5,7 @@
 ### 代码中图片链接hover展示图片功能
 
 
-<img src="https://img.alicdn.com/tfs/TB1.7v9vAY2gK0jSZFgXXc5OFXa-690-366.gif" alt="js跳转" width="800"/>
+<img src="https://img.alicdn.com/tfs/TB1ivTrCuL2gK0jSZFmXXc7iXXa-877-376.gif" alt="js跳转" width="800"/>
 
 ### Gallery 组件悬浮提示功能
 
