@@ -21,7 +21,7 @@ export class ProjectInfoUtils {
                     info.rapVersion = obj.magixCliConfig.rapVersion;
                     this.info = info;
                 } catch (error) {
-                    console.error(error);
+                   // console.error(error);
                 }
             }
         }

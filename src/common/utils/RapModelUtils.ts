@@ -15,7 +15,7 @@ export class RapModelUtils {
      */
     public static updateModelInfo(projectInfo: Info) {
         if (!projectInfo || !projectInfo.modelsPath || !projectInfo.rapProjectId) {
-            console.error('无法找到工程目录，或无法找到 models 文件');
+           // console.error('无法找到工程目录，或无法找到 models 文件');
             return;
         }
         this.analyseModelsFile(projectInfo);
@@ -66,7 +66,7 @@ export class RapModelUtils {
                 });
             }
         } catch (error) {
-            console.error(error);
+            //console.error(error);
         }
     }
     private static getDataFromRap(projectId: string) {

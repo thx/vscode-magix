@@ -135,8 +135,8 @@ export class Rule {
                 value: 'text'
             }],
             convert: {
-                importInfo: 'import { MuxText } from \'@alife/mux-components\'',
-                tag: 'MuxText',
+                importInfo: 'import { MuxInput } from \'@alife/mux-components\'',
+                tag: 'MuxInput',
                 attrMap: [
                     {
                         form: 'v-model',

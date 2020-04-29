@@ -17,7 +17,6 @@ import { WebViewCommand } from './command/WebViewCommand';
 import { WebViewCommandArgument, WebviewType } from './command/CommandArgument';
 import { ConfigurationUtils } from './common/utils/ConfigurationUtils';
 import { Fether } from './net/Fether';
-
 import { ProjectInfoUtils, Info } from './common/utils/ProjectInfoUtils';
 import { IconfontCompletionItemProvider } from './provider/IconfontCompletionItemProvider';
 import { StatusBarManager } from './common/utils/StatusBarManager';
@@ -27,6 +26,8 @@ import { ImageHoverProvider } from './provider/ImageHoverProvider';
 export function activate(context: vscode.ExtensionContext) {
 
     let startTime: number = new Date().getTime();
+    const subscriptions = context.subscriptions;
+    
     //初始化期，初始化基本数据
     new Initializer().init().then(() => {
         //注册command
@@ -39,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
         const CSS_MODE = [{ language: 'css', scheme: 'file' }, { language: 'less', scheme: 'file' }];
         const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
         const JTS_HTML_CSS_MODE = JTS_HTML_MODE.concat(CSS_MODE);
-        const subscriptions = context.subscriptions;
+       
 
         subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
         subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
@@ -71,8 +72,18 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
     //销毁 StatusBarManager
     StatusBarManager.dispose();
-    console.info('插件不活动啦。。。。deactivate');
+    recoverBesideEditor()
     Logger.logDeactivate();
+}
+function recoverBesideEditor(){
+    // 回收打开的侧边 编辑器
+   const editors = vscode.window.visibleTextEditors;
+   editors.forEach((item:vscode.TextEditor)=>{
+      let vc:vscode.ViewColumn | undefined = item.viewColumn 
+      if(vc && vc === vscode.ViewColumn.Beside){
+          item.hide()
+      }
+   })
 }
 
 function initViews(context: vscode.ExtensionContext) {
@@ -104,7 +115,7 @@ function initStatusBar(nickname: string, context: vscode.ExtensionContext) {
             });
         }
     }).catch((msg) => {
-        console.error(msg);
+        //console.error(msg);
     });
 }
 

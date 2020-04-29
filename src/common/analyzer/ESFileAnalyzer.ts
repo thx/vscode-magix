@@ -34,7 +34,6 @@ export class ESFileAnalyzer {
       }
       return this.analyseCommonFile(body);
     } catch (error) {
-      console.error(error);
       return null;
     }
 

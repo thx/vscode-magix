@@ -55,7 +55,7 @@ let lineCount = 1;
       }
 
     });
-console.log('代码行数:'+lineCount)
+
     Iconfont.scanCSSFile(cssFileList);
 
   }
@@ -104,7 +104,7 @@ console.log('代码行数:'+lineCount)
         }
       }
     } catch (error) {
-      console.error(error);
+      
     }
   }
   /**

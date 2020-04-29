@@ -16,7 +16,7 @@ export class DynamicCommand {
                 //await vscode.env.openExternal(vscode.Uri.parse("https://github.com/Microsoft/vscode/issues/66741"));
                 opn(url);
             } catch (e) {
-                console.error(e);
+                //console.error(e);
             }
         }));
         

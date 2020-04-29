@@ -30,7 +30,7 @@ export class ToDefinitionCommand {
           this.jumpToRap();
         }
       } catch (error) {
-        console.error(error);
+        //console.error(error);
       }
     }));
 
@@ -49,7 +49,7 @@ export class ToDefinitionCommand {
           this.jumpBackAndForth(filePath);
         }
       } catch (error) {
-        console.error(error);
+        //console.error(error);
       }
 
     }));

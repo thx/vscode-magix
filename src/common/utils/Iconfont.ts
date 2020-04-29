@@ -65,7 +65,7 @@ export class Iconfont {
         content = this.removeComments(content);
         let cssAST: any = csstree.parse(content);
         if (filePath.indexOf('iconfont') > -1) {
-          console.log(cssAST.children);
+          //console.log(cssAST.children);
         }
         if (cssAST.children) {
           cssAST.children.forEach((node: any) => {
@@ -182,7 +182,7 @@ export class Iconfont {
           resolve(list);
 
         } else {
-          console.error('send log error');
+          //console.error('send log error');
           reject(error);
         }
       });
