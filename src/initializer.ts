@@ -26,7 +26,7 @@ export class Initializer {
   private scanSrcFile() {
 
     let fileList: Array<string> = FileUtils.listFiles(this.rootPath);
-let lineCount = 1;
+
     let cssFileList: Array<string> = [];
     fileList.forEach((filePath) => {
       let extName = path.extname(filePath);
@@ -140,8 +140,9 @@ let lineCount = 1;
       }
     });
     //监听文件
-
-    let watcher: FileSystemWatcher = workspace.createFileSystemWatcher('**/*.{ts,js,html,css,less,scss,json,es}', false, false, false);
+    
+    const pattern = path.join(this.rootPath, '/src', '**/*.{ts,js,html,css,less,scss,es}')
+    let watcher: FileSystemWatcher = workspace.createFileSystemWatcher(pattern, false, false, false);
     watcher.onDidChange((e: Uri) => {
       let filePath = e.fsPath;
       if (!this.needUpdate(filePath)) {
