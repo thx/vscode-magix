@@ -12,19 +12,23 @@ const parser = require('posthtml-parser');
 export class CodeConvertCommand {
     public registerCommand(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_CODE_TO_REACT, (args) => {
-            
-            try {
 
-                const html = fs.readFileSync(args.path, 'utf-8');
-                const content = parser(html);
-                const components: Array<ComponentInfo> = [];
-                this.convert(content, components);
-                const code = this.componentsToCode(components);
-                let webview: EditorWebview = new EditorWebview(context);
-                webview.show({ code });
-                
+            try {
+                fs.readFile(args.path, { encoding: 'utf-8' }, (err, html) => {
+                    if (!err) {
+                        const content = parser(html);
+                        const components: Array<ComponentInfo> = [];
+                        this.convert(content, components);
+                        const code = this.componentsToCode(components);
+                        let webview: EditorWebview = new EditorWebview(context);
+                        webview.show({ code });
+                    }
+                })
+
+
+
             } catch (error) {
-                
+
                 vscode.window.showWarningMessage(error);
             }
         }));

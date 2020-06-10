@@ -11,7 +11,7 @@ export interface IconfontData {
   className: string;
 }
 export class Iconfont {
-  private static IconFontDataCache:  Array<IconfontData> = [];
+  private static IconFontDataCache: Array<IconfontData> = [];
   private static datauri = new Datauri();
   /**
    * 通过className 获取IconFont 图标信息
@@ -51,98 +51,121 @@ export class Iconfont {
   }
 
   public static scanCSSFile(fileList: Array<string>) {
-    let fontFaceList: Array<{ name: string, url: string }> = [];
-    let fontClassList: Array<{ fontName: string, className: string }> = [];
+    
     fileList.forEach((filePath) => {
       let extName = path.extname(filePath);
       if (filePath.indexOf('src') < 0) {
         return;
       }
       if (extName === '.css' || extName === '.less' || extName === '.scss') {
+        fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
+          if (!err) {
+            content = this.removeComments(content);
+            let cssAST: any = csstree.parse(content);
+           
+            let classUrlMap: Map<string, string> = this.readCSSAST(cssAST)
 
-        let content = fs.readFileSync(filePath, 'UTF-8');
-
-        content = this.removeComments(content);
-        let cssAST: any = csstree.parse(content);
-        if (filePath.indexOf('iconfont') > -1) {
-          //console.log(cssAST.children);
-        }
-        if (cssAST.children) {
-          cssAST.children.forEach((node: any) => {
-            let name: string, url: string, className: string = '', fontName: string = '';
-            //解析font-face
-            if (node.type === 'Atrule' && node.name === 'font-face' && node.block && node.block.children) {
-              node.block.children.forEach((subNode: any) => {
-                if (subNode.type === 'Declaration') {
-                  if (subNode.property === 'font-family' &&
-                    subNode.value &&
-                    subNode.value.children) {
-                    subNode.value.children.forEach((thNode: any) => {
-                      if (thNode.type === 'String') {
-                        name = thNode.value.replace(/[\'\"]/gi, '');
-                      }
-                    });
-
+            classUrlMap.forEach((url, className) => {
+              this.fetchSvgData(className, url).then((list: any) => {
+                //去重
+                list.forEach((data:any)=>{
+                  if (!Iconfont.IconFontDataCache.find((item: any) => {
+                    return item.className === data.className &&
+                      item.code === data.code &&
+                      item.data === data.data
+                  })) {
+                    Iconfont.IconFontDataCache.push(data)
                   }
-
-                  if (subNode.property === 'src' &&
-                    subNode.value &&
-                    subNode.value.children) {
-                    subNode.value.children.forEach((thNode: any) => {
-                      if (thNode.type === 'Url' &&
-                        thNode.value &&
-                        thNode.value.value &&
-                        thNode.value.value.indexOf('.svg') > -1) {
-                        url = thNode.value.value.replace(/[\'\"]/gi, '');
-                      }
-                    });
-                  }
-
-                  if (name && url) {
-                    fontFaceList.push({ name, url });
-                  }
-                }
+                })
               });
-            } else if (node.type === 'Rule' &&
-              node.prelude &&
-              node.prelude.type === 'SelectorList' &&
-              node.prelude.children &&
-              node.block &&
-              node.block.children) {
-              //className
-              node.prelude.children.forEach((subNode: any) => {
-                if (subNode.type === 'Selector' && subNode.children) {
-                  subNode.children.forEach((thNode: any) => {
-                    if (thNode.type === 'ClassSelector') {
-                      className = thNode.name;
-                    }
-                  });
-                }
-              });
-              //fontName
-              node.block.children.forEach((subNode: any) => {
-                if (subNode.type === 'Declaration' &&
-                  subNode.property === 'font-family' &&
-                  subNode.value &&
-                  subNode.value.children) {
-                  subNode.value.children.forEach((thNode: any) => {
-                    if (thNode.type === 'String') {
-                      fontName = thNode.value.replace(/[\'\"]/gi, '');
-                    }
-                  });
+            });
+          }
+        })
+
+      }
+    });
+   
+  }
+  private static readCSSAST(cssAST: any) {
+    let fontFaceList: Array<{ name: string, url: string }> = [];
+    let fontClassList: Array<{ fontName: string, className: string }> = [];
+    let classUrlMap: Map<string, string> = new Map();
+
+    if (!cssAST.children) {
+      return classUrlMap
+    }
+    cssAST.children.forEach((node: any) => {
+      let name: string, url: string, className: string = '', fontName: string = '';
+      //解析font-face
+      if (node.type === 'Atrule' && node.name === 'font-face' && node.block && node.block.children) {
+        node.block.children.forEach((subNode: any) => {
+          if (subNode.type === 'Declaration') {
+            if (subNode.property === 'font-family' &&
+              subNode.value &&
+              subNode.value.children) {
+              subNode.value.children.forEach((thNode: any) => {
+                if (thNode.type === 'String') {
+                  name = thNode.value.replace(/[\'\"]/gi, '');
                 }
               });
 
-              if (className && fontName) {
-                fontClassList.push({ className, fontName });
-              }
             }
 
-          });
+            if (subNode.property === 'src' &&
+              subNode.value &&
+              subNode.value.children) {
+              subNode.value.children.forEach((thNode: any) => {
+                if (thNode.type === 'Url' &&
+                  thNode.value &&
+                  thNode.value.value &&
+                  thNode.value.value.indexOf('.svg') > -1) {
+                  url = thNode.value.value.replace(/[\'\"]/gi, '');
+                }
+              });
+            }
+
+            if (name && url) {
+              fontFaceList.push({ name, url });
+            }
+          }
+        });
+      } else if (node.type === 'Rule' &&
+        node.prelude &&
+        node.prelude.type === 'SelectorList' &&
+        node.prelude.children &&
+        node.block &&
+        node.block.children) {
+        //className
+        node.prelude.children.forEach((subNode: any) => {
+          if (subNode.type === 'Selector' && subNode.children) {
+            subNode.children.forEach((thNode: any) => {
+              if (thNode.type === 'ClassSelector') {
+                className = thNode.name;
+              }
+            });
+          }
+        });
+        //fontName
+        node.block.children.forEach((subNode: any) => {
+          if (subNode.type === 'Declaration' &&
+            subNode.property === 'font-family' &&
+            subNode.value &&
+            subNode.value.children) {
+            subNode.value.children.forEach((thNode: any) => {
+              if (thNode.type === 'String') {
+                fontName = thNode.value.replace(/[\'\"]/gi, '');
+              }
+            });
+          }
+        });
+
+        if (className && fontName) {
+          fontClassList.push({ className, fontName });
         }
       }
     });
-    let classUrlMap: Map<string, string> = new Map();
+
+
     fontClassList.forEach((c) => {
       let font = fontFaceList.find(f => {
         return f.name === c.fontName;
@@ -151,16 +174,8 @@ export class Iconfont {
         classUrlMap.set(c.className, font.url);
       }
     });
-    
-    this.IconFontDataCache = [];
 
-    classUrlMap.forEach((url, className) => {
-      this.fetchSvgData(className, url).then((list: any) => {
-        this.IconFontDataCache = this.IconFontDataCache.concat(list);
-      });
-    });
-  
-
+    return classUrlMap;
   }
   private static fetchSvgData(className: string, url: string) {
     let p = new Promise((resolve, reject) => {
@@ -190,7 +205,7 @@ export class Iconfont {
     return p;
   }
 
-  public static dataToMarkdown(data:IconfontData,needClassName:boolean){
+  public static dataToMarkdown(data: IconfontData, needClassName: boolean) {
     let svg: string = needClassName ? this.toSvgWithClassName(data) : this.toSvg(data);
     this.datauri.format('.svg', svg);
     return `![](${this.datauri.content})`;
@@ -200,15 +215,15 @@ export class Iconfont {
     return `<svg viewBox='0 0 1500 1500' width='80' height='120' style='margin:10px;' xmlns='http://www.w3.org/2000/svg' >
     <path style='transform:rotateX(180deg);transform-origin:center;scale(.8);' fill='#EA3C3C' d='${data.data}'></path>
     <foreignObject width="1500" height="240">
-    <body xmlns="http://www.w3.org/1999/xhtml">
-      <div style="font-size:240px;margin:0;color:#1F94ED;">${data.className}</div>
-    </body>
-  </foreignObject>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <div style="font-size:200px;margin:0;color:#1F94ED;">${data.className}</div>
+      </body>
+    </foreignObject>
     </svg>`;
   }
   private static toSvg(data: IconfontData) {
     return `<svg viewBox='0 0 1500 1500' width='80' height='100' style='margin:10px;' xmlns='http://www.w3.org/2000/svg' >
-    <path style='transform:rotateX(180deg);transform-origin:center;scale(.8);' fill='#EA3C3C' d='${data.data}'></path>
+      <path style='transform:rotateX(180deg);transform-origin:center;scale(.8);' fill='#EA3C3C' d='${data.data}'></path>
     </svg>`;
   }
 }

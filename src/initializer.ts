@@ -13,11 +13,9 @@ import { RapModelUtils } from './common/utils/RapModelUtils';
 
 export class Initializer {
   private rootPath: string
-  private  excludePath: string[];
-
+  
   constructor() {
     this.rootPath = FileUtils.getProjectPath(undefined);
-    this.excludePath = [path.join(this.rootPath, 'build'), path.join(this.rootPath, 'node_modules')];
   }
 
   /**
@@ -33,21 +31,24 @@ export class Initializer {
       if (filePath.indexOf('src') < 0) {
         return;
       }
-      //let contentLine = fs.readFileSync(filePath, 'UTF-8').split('\n').length;
-      //lineCount += contentLine;
-
       if (extName === '.html') {
-        let content = fs.readFileSync(filePath, 'UTF-8');
-        var reg = new RegExp('<(\S*?)[^>]*>.*?|<.*? />', "g");
-        let strArr = content.match(reg);
-        if (strArr) {
-          strArr.forEach(element => {
-          });
-        }
+        fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
+          if (!err) {
+            var reg = new RegExp('<(\S*?)[^>]*>.*?|<.*? />', "g");
+            let strArr = content.match(reg);
+            if (strArr) {
+              strArr.forEach(element => {
+              });
+            }
+          }
+        })
       }
       else if (extName === '.ts' || extName === '.js') {
-        let content = fs.readFileSync(filePath, 'UTF-8');
-        this.mappingFile(content, filePath);
+        fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
+          if (!err) {
+            this.mappingFile(content, filePath);
+          }
+        })
       } else if (extName === '.es') {
         this.mappingSameFile(filePath);
       } else if (extName === '.css' || extName === '.less' || extName === '.scss') {
@@ -63,29 +64,15 @@ export class Initializer {
    * 扫描工程目录下的关键文件，eg： package.json
    */
   private scanProjectFile() {
-    
     ProjectInfoUtils.scanProject(this.rootPath);
   }
   /**
-   * 从新扫描所有CSSFile
+   * 从新扫描CSSFile
    */
-  private reScanAllCSSFile() {
-    
-    let fileList: Array<string> = FileUtils.listFiles(this.rootPath);
-
-    let cssFileList: Array<string> = fileList.filter((filePath: string) => {
-      let extName = path.extname(filePath);
-      if (filePath.indexOf('src') > -1) {
-        if (extName === '.css' || extName === '.less' || extName === '.scss') {
-          return true;
-        }
-      }
-      return false;
-    });
-
-    Iconfont.scanCSSFile(cssFileList);
-
+  private reScanCSSFile(filePath:string) {
+    Iconfont.scanCSSFile([filePath]);
   }
+  
   private mappingFile(content: string, filePath: string) {
     try {
 
@@ -115,15 +102,7 @@ export class Initializer {
     let htmlPath: string = path.join(path.dirname(filePath), path.basename(filePath).replace(path.extname(filePath), '.html'));
     HtmlESMappingCache.addMapping(filePath, htmlPath);
   }
-  /**
-   * 判断当前路径是否需要更新
-   * @param path 
-   */
-  private needUpdate(path: string): boolean {
-    return !this.excludePath.find((exPath: string) => {
-      return path.indexOf(exPath) > -1;
-    });
-  }
+
   /**
    * 开始文件监听
    */
@@ -145,45 +124,49 @@ export class Initializer {
     let watcher: FileSystemWatcher = workspace.createFileSystemWatcher(pattern, false, false, false);
     watcher.onDidChange((e: Uri) => {
       let filePath = e.fsPath;
-      if (!this.needUpdate(filePath)) {
-        return;
-      }
+     
       let ext: string = path.extname(filePath);
       if (ext === '.ts' || ext === '.js' || ext === '.es') {
-        let content: string = fs.readFileSync(filePath, 'utf-8');
-        if (ext === '.es') {
-          this.mappingSameFile(filePath);
-        } else {
-          this.mappingFile(content, filePath);
-          this.updateModelInfo(filePath);
-        }
-        this.updateESCache(content, filePath);
+        fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
+          if (!err) {
+            if (ext === '.es') {
+              this.mappingSameFile(filePath);
+            } else {
+              this.mappingFile(content, filePath);
+              this.updateModelInfo(filePath);
+            }
+            this.updateESCache(content, filePath);
+          }
+        })
+      } else if (ext === '.css' || ext === '.less' || ext === '.scss') {
+        this.reScanCSSFile(filePath);
       }
-      this.reScanAllCSSFile();
+      
     });
     watcher.onDidCreate((e: Uri) => {
       let filePath = e.fsPath;
-      if (!this.needUpdate(filePath)) {
-        return;
-      }
+     
       let ext: string = path.extname(filePath);
       if (ext === '.ts' || ext === '.js' || ext === '.es') {
-        let content: string = fs.readFileSync(filePath, 'utf-8');
-        if (ext === '.es') {
-          this.mappingSameFile(filePath);
-        } else {
-          this.mappingFile(content, filePath);
-          this.updateModelInfo(filePath);
-        }
-        this.updateESCache(content, filePath);
+        
+        fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
+          if (!err) {
+            if (ext === '.es') {
+              this.mappingSameFile(filePath);
+            } else {
+              this.mappingFile(content, filePath);
+              this.updateModelInfo(filePath);
+            }
+            this.updateESCache(content, filePath);
+          }
+        })
+      } else if (ext === '.css' || ext === '.less' || ext === '.scss') {
+        this.reScanCSSFile(filePath);
       }
-      this.reScanAllCSSFile();
     });
     watcher.onDidDelete((e: Uri) => {
       let filePath = e.fsPath;
-      if (!this.needUpdate(filePath)) {
-        return;
-      }
+     
       Cache.remove(filePath);
 
       let ext: string = path.extname(filePath);
@@ -191,8 +174,9 @@ export class Initializer {
         HtmlESMappingCache.removeMappingByEsFile(filePath);
       } else if (ext === '.html') {
         HtmlESMappingCache.removeMappingByHtmlFile(filePath);
+      } else if (ext === '.css' || ext === '.less' || ext === '.scss') {
+        this.reScanCSSFile(filePath);
       }
-      this.reScanAllCSSFile();
     });
   }
 
@@ -203,15 +187,19 @@ export class Initializer {
     }
   }
   private updateModelInfo(path: string | undefined | null) {
+    if (!path) {
+      return;
+    }
     let info: Info = ProjectInfoUtils.getInfo();
+
     if (path && info && info.modelsPath) {
       //如果指定path，path不是models.js 的路径。则不更新rap信息
       if (path.indexOf(info.modelsPath) < 0) {
         return;
       }
+      //如果没有指定path，则更新rap信息
+      RapModelUtils.updateModelInfo(info);
     }
-    //如果没有指定path，则更新rap信息
-    RapModelUtils.updateModelInfo(info);
   }
   public init(): Promise<any> {
 
@@ -219,7 +207,10 @@ export class Initializer {
       this.scanProjectFile();
       this.startWatching();
       this.scanSrcFile();
-      this.updateModelInfo(null);
+      let info: Info = ProjectInfoUtils.getInfo();
+      if (info && info.modelsPath) {
+        RapModelUtils.updateModelInfo(info);
+      }
       resolve();
 
     });
