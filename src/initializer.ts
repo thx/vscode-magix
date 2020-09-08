@@ -13,7 +13,7 @@ import { RapModelUtils } from './common/utils/RapModelUtils';
 
 export class Initializer {
   private rootPath: string
-  
+
   constructor() {
     this.rootPath = FileUtils.getProjectPath(undefined);
   }
@@ -69,10 +69,10 @@ export class Initializer {
   /**
    * 从新扫描CSSFile
    */
-  private reScanCSSFile(filePath:string) {
+  private reScanCSSFile(filePath: string) {
     Iconfont.scanCSSFile([filePath]);
   }
-  
+
   private mappingFile(content: string, filePath: string) {
     try {
 
@@ -91,7 +91,7 @@ export class Initializer {
         }
       }
     } catch (error) {
-      
+
     }
   }
   /**
@@ -114,17 +114,30 @@ export class Initializer {
         let path: string = editor.document.uri.path;
         let languageId: string = editor.document.languageId;
         if (languageId === 'typescript' || languageId === 'javascript') {
-          this.updateESCache(editor.document.getText(), path);
+          //isDirty  代表数据还没有写到硬盘以editor内容为准，强制刷新缓存
+          this.updateESCache(editor.document.getText(), path, editor.document.isDirty);
+        } else if (languageId === 'html' || languageId === 'handlebars') {
+          //html 切换的时候分析Magix 对应的ts、js 文件
+          const jsFilePath = path.replace('.html', '.js');
+          if (fs.existsSync(jsFilePath)) {
+            const content = fs.readFileSync(jsFilePath, 'UTF-8');
+            this.updateESCache(content, jsFilePath);
+          }
+          const tsFilePath = path.replace('.html', '.ts');
+          if (fs.existsSync(tsFilePath)) {
+            const content = fs.readFileSync(tsFilePath, 'UTF-8');
+            this.updateESCache(content, tsFilePath);
+          }
         }
       }
     });
     //监听文件
-    
+
     const pattern = path.join(this.rootPath, '/src', '**/*.{ts,js,html,css,less,scss,es}')
     let watcher: FileSystemWatcher = workspace.createFileSystemWatcher(pattern, false, false, false);
     watcher.onDidChange((e: Uri) => {
       let filePath = e.fsPath;
-     
+
       let ext: string = path.extname(filePath);
       if (ext === '.ts' || ext === '.js' || ext === '.es') {
         fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
@@ -141,14 +154,14 @@ export class Initializer {
       } else if (ext === '.css' || ext === '.less' || ext === '.scss') {
         this.reScanCSSFile(filePath);
       }
-      
+
     });
     watcher.onDidCreate((e: Uri) => {
       let filePath = e.fsPath;
-     
+
       let ext: string = path.extname(filePath);
       if (ext === '.ts' || ext === '.js' || ext === '.es') {
-        
+
         fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
           if (!err) {
             if (ext === '.es') {
@@ -166,7 +179,7 @@ export class Initializer {
     });
     watcher.onDidDelete((e: Uri) => {
       let filePath = e.fsPath;
-     
+
       Cache.remove(filePath);
 
       let ext: string = path.extname(filePath);
@@ -180,11 +193,29 @@ export class Initializer {
     });
   }
 
-  private updateESCache(content: string, filePath: string) {
-    let info: ESFileInfo | null = ESFileAnalyzer.analyseESFile(content, filePath);
-    if (info) {
-      Cache.set(filePath, info);
+  private updateESCache(content: string, filePath: string, force?: boolean) {
+
+    const cacheData = Cache.get(filePath);
+    if (cacheData) {
+      const { mtime } = fs.statSync(filePath);
+      if (force) {
+        this.setESCache(content, filePath);
+      } else if (cacheData.mtime.getTime() !== mtime.getTime()) {
+        this.setESCache(content, filePath);
+      }
+    } else {
+      this.setESCache(content, filePath);
     }
+
+  }
+  private setESCache(content: string, filePath: string) {
+    let info: ESFileInfo | null = ESFileAnalyzer.analyseESFile(content, filePath);
+    if (!info) {
+      return;
+    }
+    const { mtime } = fs.statSync(filePath);
+    info.mtime = mtime;
+    Cache.set(filePath, info);
   }
   private updateModelInfo(path: string | undefined | null) {
     if (!path) {

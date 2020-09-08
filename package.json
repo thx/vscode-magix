@@ -156,7 +156,6 @@
   "devDependencies": {
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
-    "babylon": "^6.18.0",
     "map-lru": "^1.0.2",
     "request": "^2.81.0",
     "tslint": "^5.8.0",
@@ -165,9 +164,9 @@
   },
   "dependencies": {
     "@types/css-tree": "^1.0.0",
-    "babylon": "^6.18.0",
     "css-tree": "^1.0.0-alpha.29",
     "datauri": "^1.1.0",
+    "gogoast": "0.0.18",
     "map-lru": "^1.0.2",
     "opn": "^4.0.2",
     "posthtml-parser": "^0.4.2",

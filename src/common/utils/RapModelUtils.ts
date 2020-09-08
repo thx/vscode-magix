@@ -1,4 +1,4 @@
-const babylon = require("babylon");
+const GG = require('gogoast');
 import * as path from 'path';
 import { Info } from './ProjectInfoUtils';
 import { Rap } from '../../net/Rap';
@@ -29,20 +29,18 @@ export class RapModelUtils {
 
             fs.readFile(mPath, { encoding: 'utf-8' }, (err, content) => {
                 if (!err) {
-                    let doc = babylon.parse(content, {
-                        allowImportExportEverywhere: true, allowReturnOutsideFunction: true, allowSuperOutsideMethod: true, plugins: [
-                            // enable jsx and flow syntax https://babeljs.io/docs/en/babel-parser
-                            "typescript", "estree", "flow", "flowComments", "objectRestSpread", "throwExpressions", "classProperties"
-                        ]
-                    });
-                    if (doc.program.body &&
-                        doc.program.body.length > 0 &&
-                        doc.program.body[0].expression &&
-                        doc.program.body[0].expression.right &&
-                        doc.program.body[0].expression.right.elements) {
-                        let elements = doc.program.body[0].expression.right.elements;
+                    const AST = GG.createAstObj(content);    
+                    
+                    let doc = AST;
+                    if (doc.ast.program.body &&
+                        doc.ast.program.body.length > 0 &&
+                        doc.ast.program.body[0].expression &&
+                        doc.ast.program.body[0].expression.right &&
+                        doc.ast.program.body[0].expression.right.elements) {
+                        let elements = doc.ast.program.body[0].expression.right.elements;
                         elements.forEach((element: any) => {
                             let modelItem: ModelItem = new ModelItem();
+                            // 分析注释文本，找到rapid等信息
                             if (element.leadingComments && element.leadingComments.length > 0) {
                                 let comment = element.leadingComments[0].value;
                                 let arr = comment.split('-');
