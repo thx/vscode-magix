@@ -5,6 +5,7 @@ export class ConfigurationUtils {
     private static readonly CONFIG_NICKNAME = 'magix.config.user.nickname';
     private static readonly CONFIG_RAP_TYPE = 'magix.config.rap.type';
     private static readonly CONFIG_REACT_CONVERT = 'magix.config.react.convert';
+    private static readonly CONFIG_GOGOCODE_PATH = 'magix.config.gogocode.path';
     /**
      * 保存花名
      * @param nickname 
@@ -43,5 +44,13 @@ export class ConfigurationUtils {
      */
     public static isConvertOpen(): boolean {
         return vscode.workspace.getConfiguration().get(this.CONFIG_REACT_CONVERT) === 'true';
+    }
+   
+    public static saveGogoCodePath(path: string): void {
+        vscode.workspace.getConfiguration().update(this.CONFIG_GOGOCODE_PATH, path, true);
+    }
+   
+    public static getGogoCodePath(): string | null | undefined {
+        return vscode.workspace.getConfiguration().get(this.CONFIG_GOGOCODE_PATH);
     }
 }

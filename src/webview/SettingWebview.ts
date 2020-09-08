@@ -12,11 +12,13 @@ export class SettingWebview extends BaseView {
             if (e.type === WebCommand.SAVE_NICKNAME) {
                 ConfigurationUtils.saveNickname(e.data.nickname);
                 ConfigurationUtils.saveRapType(e.data.rapType);
+                ConfigurationUtils.saveGogoCodePath(e.data.gogoCodePath);
                 this.postMessage(WebCommand.SAVE_NICKNAME, {});
             } else if (e.type === WebCommand.GET_NICKNAME) {
-                let nickname = ConfigurationUtils.getNickname();
-                let rapType = ConfigurationUtils.getRapType();
-                this.postMessage(WebCommand.GET_NICKNAME, { nickname, rapType });
+                const nickname = ConfigurationUtils.getNickname();
+                const rapType = ConfigurationUtils.getRapType();
+                const gogoCodePath = ConfigurationUtils.getGogoCodePath();
+                this.postMessage(WebCommand.GET_NICKNAME, { nickname, rapType, gogoCodePath });
             } else if (e.type === WebCommand.CLOSE) {
                 this.dispose(path);
             }

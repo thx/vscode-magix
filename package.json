@@ -36,6 +36,10 @@
       {
         "command": "mx.code.toReact",
         "title": "To React"
+      },
+      {
+        "command": "mx.gogocode",
+        "title": "GogoCode转换"
       }
     ],
     "keybindings": [
@@ -76,6 +80,23 @@
         {
           "when": "resourceLangId ==  handlebars",
           "command": "mx.code.toReact",
+          "group": "0_mx"
+        }
+      ],
+      "explorer/context": [
+        {
+          "when": "resourceLangId ==  typescript",
+          "command": "mx.gogocode",
+          "group": "0_mx"
+        },
+        {
+          "when": "resourceLangId ==  javascript",
+          "command": "mx.gogocode",
+          "group": "0_mx"
+        },
+        {
+          "when": "resourceLangId ==  handlebars",
+          "command": "mx.gogocode",
           "group": "0_mx"
         }
       ]
@@ -141,6 +162,11 @@
             "type": "string",
             "default": "0",
             "description": "跳转到Rap方式。0：全部、1:鼠标右键跳转、2:Command点击跳转"
+          },
+          "magix.config.gogocode.path": {
+            "type": "string",
+            "default": "",
+            "description": "gogocode 项目路径"
           }
         }
       }

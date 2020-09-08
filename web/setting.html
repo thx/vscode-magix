@@ -11,7 +11,7 @@
   <div id="app">
       <el-alert title="温馨提示" type="success" effect="dark" description="更改花名后，Magix VSCode 插件部分配置将丢失，请谨慎配置" show-icon>
         </el-alert>
-    <el-form ref="form" :model="form" label-width="100px" class="mt30">
+    <el-form ref="form" :model="form" label-width="150px" class="mt30">
       <el-form-item label="花名">
         <el-input class=" w200" placeholder="请输入您的花名" v-model="form.nickname" clearable>
         </el-input>
@@ -20,6 +20,10 @@
         <el-radio v-model="form.rapType" label="0">全部</el-radio>
         <el-radio v-model="form.rapType" label="1">Command点击跳转</el-radio>
         <el-radio v-model="form.rapType" label="2">右键跳转</el-radio>
+      </el-form-item>
+       <el-form-item label="gogocode地址">
+        <el-input class="w400" placeholder="gogocode项目路径" v-model="form.gogoCodePath" clearable>
+        </el-input>
       </el-form-item>
       <el-form-item>
         <el-button plain @click="saveNickname">保存配置</el-button>

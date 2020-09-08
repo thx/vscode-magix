@@ -22,6 +22,7 @@ import { IconfontCompletionItemProvider } from './provider/IconfontCompletionIte
 import { StatusBarManager } from './common/utils/StatusBarManager';
 import { GalleryHoverProvider } from './provider/GalleryHoverProvider';
 import { ImageHoverProvider } from './provider/ImageHoverProvider';
+import { GogoCodeCommand } from './command/GogoCodeCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -34,6 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
         new ToDefinitionCommand().registerCommand(context);
         new WebViewCommand().registerCommand(context);
         new CodeConvertCommand().registerCommand(context);
+        new GogoCodeCommand().registerCommand(context);
         // 
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];

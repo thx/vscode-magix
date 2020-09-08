@@ -12,6 +12,7 @@ export class Command {
   public static COMMAND_WEBVIEW_SHOW:string="mx.webview.show";
   public static COMMAND_TEST:string = "mx.test";
   public static COMMAND_DYNAMIC:string = 'mx.dynamic.';
+  public static COMMAND_GOGOCODE:string = 'mx.gogocode';
 }
 
 
