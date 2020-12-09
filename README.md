@@ -116,6 +116,9 @@
 <img src="https://img.alicdn.com/tfs/TB1iKi.OrPpK1RjSZFFXXa5PpXa-386-558.jpg" alt="Diamond" width="400"/>
 
 ## 版本说明
+### 0.15
+
+在左侧资源管理窗口和文本编辑窗口添加复制Magix相对路径功能。
 
 ### 0.14
 
