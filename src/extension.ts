@@ -23,6 +23,7 @@ import { StatusBarManager } from './common/utils/StatusBarManager';
 import { GalleryHoverProvider } from './provider/GalleryHoverProvider';
 import { ImageHoverProvider } from './provider/ImageHoverProvider';
 import { GogoCodeCommand } from './command/GogoCodeCommand';
+import { PathCopyCommand } from './command/PathCopyCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -36,6 +37,8 @@ export function activate(context: vscode.ExtensionContext) {
         new WebViewCommand().registerCommand(context);
         new CodeConvertCommand().registerCommand(context);
         new GogoCodeCommand().registerCommand(context);
+        new PathCopyCommand().registerCommand(context);
+
         // 
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];

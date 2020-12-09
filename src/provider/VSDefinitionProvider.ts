@@ -39,11 +39,10 @@ export class MXDefinitionProvider implements vscode.DefinitionProvider {
     }
 
     let rapType = ConfigurationUtils.getRapType();
-    if (rapType === '0' || rapType === '1') {
+    //false 去掉跳转逻辑
+    if (false || rapType === '0' || rapType === '1') {
       this.jumpToRap(word, position);
     }
-
-
   }
 
   private jumpToRap(rapKey: string, position: vscode.Position) {

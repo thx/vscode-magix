@@ -3,7 +3,7 @@
   "displayName": "Magix",
   "description": "Magix 开发增强套件 @MMFE",
   "icon": "images/Magix.png",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "publisher": "mmfe",
   "engines": {
     "vscode": "^1.28.0"
@@ -40,6 +40,10 @@
       {
         "command": "mx.gogocode",
         "title": "GogoCode转换"
+      },
+      {
+        "command": "mx.copy.magix.path",
+        "title": "复制Magix相对路径"
       }
     ],
     "keybindings": [
@@ -53,22 +57,12 @@
     "menus": {
       "editor/context": [
         {
-          "when": "resourceLangId ==  typescript",
+          "when": "resourceLangId ==  typescript || resourceLangId ==  javascript",
           "command": "mx.jumper.toHtml",
           "group": "0_mx"
         },
         {
-          "when": "resourceLangId ==  javascript",
-          "command": "mx.jumper.toHtml",
-          "group": "0_mx"
-        },
-        {
-          "when": "resourceLangId ==  typescript",
-          "command": "mx.jumper.toRap",
-          "group": "0_mx"
-        },
-        {
-          "when": "resourceLangId ==  javascript",
+          "when": "resourceLangId ==  typescript || resourceLangId ==  javascript",
           "command": "mx.jumper.toRap",
           "group": "0_mx"
         },
@@ -81,23 +75,23 @@
           "when": "resourceLangId ==  handlebars",
           "command": "mx.code.toReact",
           "group": "0_mx"
+        },
+        {
+          "when": "resourceLangId == handlebars || resourceLangId == javascript || resourceLangId == typescript",
+          "command": "mx.copy.magix.path",
+          "group": "4_mx"
         }
       ],
       "explorer/context": [
         {
-          "when": "resourceLangId ==  typescript",
+          "when": "resourceLangId == handlebars || resourceLangId == javascript || resourceLangId == typescript",
           "command": "mx.gogocode",
           "group": "0_mx"
         },
         {
-          "when": "resourceLangId ==  javascript",
-          "command": "mx.gogocode",
-          "group": "0_mx"
-        },
-        {
-          "when": "resourceLangId ==  handlebars",
-          "command": "mx.gogocode",
-          "group": "0_mx"
+          "when": "resourceLangId == handlebars || resourceLangId == javascript || resourceLangId == typescript",
+          "command": "mx.copy.magix.path",
+          "group": "4_mx"
         }
       ]
     },
@@ -192,6 +186,7 @@
     "@types/css-tree": "^1.0.0",
     "css-tree": "^1.0.0-alpha.29",
     "datauri": "^1.1.0",
+    "glob": "^7.1.6",
     "gogoast": "0.0.18",
     "map-lru": "^1.0.2",
     "opn": "^4.0.2",

@@ -25,7 +25,6 @@ export class GogoCodeCommand {
                 return;
             }
             const codePath = args.path;
-            ''.includes
             if (!codePath.includes('/src/app')) {
                 vscode.window.showErrorMessage(`不是src/app路径中文件`);
                 return;
