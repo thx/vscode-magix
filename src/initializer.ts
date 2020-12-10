@@ -9,13 +9,16 @@ import { HtmlESMappingCache } from './common/utils/CacheUtils';
 import { Iconfont } from './common/utils/Iconfont';
 import { FileUtils } from './common/utils/FileUtils';
 import { RapModelUtils } from './common/utils/RapModelUtils';
-
+import { setContext, ContextKeys } from './common/constant/Command';
+// 只在直通车和品销宝中展示gogocode转换功能
+const ShowGogoCodeProjects = ['subway', 'xiaopin'];
 
 export class Initializer {
   private rootPath: string
 
   constructor() {
-    this.rootPath = FileUtils.getProjectPath(undefined);
+    this.rootPath = FileUtils.getProjectPath();
+    ProjectInfoUtils.scanProject(this.rootPath);
   }
 
   /**
@@ -232,9 +235,29 @@ export class Initializer {
       RapModelUtils.updateModelInfo(info);
     }
   }
+  private async isMagixProject() {
+    const info = ProjectInfoUtils.getInfo();
+    if (info && ShowGogoCodeProjects.indexOf(info.name) > -1) {
+      await setContext(ContextKeys.ShowGogoCode, true);
+    }
+    else {
+      await setContext(ContextKeys.ShowGogoCode, undefined);
+    }
+    return info && info.isMagix;
+  }
+
   public init(): Promise<any> {
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      const isMagixProject = await this.isMagixProject();
+      if (!isMagixProject) {
+        reject('不是Magix项目');
+        //不是magix项目不展示magix相关菜单项
+        await setContext(ContextKeys.IsMagix, undefined);
+        return;
+      }
+      await setContext(ContextKeys.IsMagix, true);
+
       this.scanProjectFile();
       this.startWatching();
       this.scanSrcFile();
@@ -243,7 +266,6 @@ export class Initializer {
         RapModelUtils.updateModelInfo(info);
       }
       resolve();
-
     });
   }
 

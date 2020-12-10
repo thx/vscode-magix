@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Command } from '../common/constant/Command';
+import { BuiltInCommand, Command } from '../common/constant/Command';
 import { ConfigurationUtils } from '../common/utils/ConfigurationUtils';
 import { WebViewCommandArgument, WebviewType } from './CommandArgument';
 import { exec } from 'child_process';
@@ -65,7 +65,7 @@ export class GogoCodeCommand {
                                 vscode.window.showErrorMessage('对应的.ts/.es/.js文件不存在')
                             } else {
                                 const tsOutPath = jtePath.substring(0, jtePath.lastIndexOf('.')) + '-output.ts';
-                                vscode.commands.executeCommand('vscode.diff',
+                                vscode.commands.executeCommand(BuiltInCommand.Diff,
                                     vscode.Uri.parse(jtePath),
                                     vscode.Uri.parse(tsOutPath),
                                     jtePath.substring(srcIndex, jtePath.length) + ' VS ' +
@@ -74,7 +74,7 @@ export class GogoCodeCommand {
                                 );
                             }
                             const htmlOutPath = oPath + '-output.html';
-                            vscode.commands.executeCommand('vscode.diff',
+                            vscode.commands.executeCommand(BuiltInCommand.Diff,
                                 vscode.Uri.parse(codePath),
                                 vscode.Uri.parse(htmlOutPath),
                                 codePath.substring(srcIndex, codePath.length) + ' VS ' +
@@ -95,7 +95,7 @@ export class GogoCodeCommand {
                                 vscode.window.showErrorMessage('对应的.html/.tpl 文件不存在')
                             } else {
                                 const htmlOutPath = oPath + '-output.html';
-                                vscode.commands.executeCommand('vscode.diff',
+                                vscode.commands.executeCommand(BuiltInCommand.Diff,
                                     vscode.Uri.parse(htPath),
                                     vscode.Uri.parse(htmlOutPath),
                                     htPath.substring(srcIndex, htPath.length) + ' VS ' +
@@ -104,7 +104,7 @@ export class GogoCodeCommand {
                                 );
                             }
                             const tsPath = oPath + '-output.ts';
-                            vscode.commands.executeCommand('vscode.diff',
+                            vscode.commands.executeCommand(BuiltInCommand.Diff,
                                 vscode.Uri.parse(codePath),
                                 vscode.Uri.parse(tsPath),
                                 codePath.substring(srcIndex, codePath.length) + ' VS ' +

@@ -11,7 +11,7 @@ export class Logger {
   }
 
   public static logActivate(useTime: number, error: string) {
-    let rootPath: string = FileUtils.getProjectPath(undefined);
+    let rootPath: string = FileUtils.getProjectPath();
     let url: string = 'http://gm.mmstat.com/magix-plugin.event.activate?project_path=' +
       encodeURI(rootPath) +
       '&use_time=' +
@@ -23,7 +23,7 @@ export class Logger {
     this.request4Log(url);
   }
   public static logDeactivate() {
-    let rootPath: string = FileUtils.getProjectPath(undefined);
+    let rootPath: string = FileUtils.getProjectPath();
     let url: string = 'http://gm.mmstat.com/magix-plugin.event.deactivate?project_path=' + encodeURI(rootPath) + '&t=' + new Date().getTime();
     this.request4Log(url);
   }

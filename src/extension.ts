@@ -69,6 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
         Logger.logActivate(new Date().getTime() - startTime, '');
         Logger.log('插件启动成功');
     }).catch((info) => {
+        
         Logger.logActivate(new Date().getTime() - startTime, info);
         Logger.error(info);
     });

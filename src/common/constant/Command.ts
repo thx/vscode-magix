@@ -1,6 +1,7 @@
 
-
+import * as vscode from 'vscode';
 export class Command {
+ 
   public static COMMAND_JUMP_TO_HTML: string = "mx.jumper.toHtml";
   public static COMMAND_JUMP_TO_JTS: string = "mx.jumper.toES";
   public static COMMAND_JUMP_TO_RAP: string = "mx.jumper.toRap";
@@ -14,6 +15,37 @@ export class Command {
   public static COMMAND_DYNAMIC:string = 'mx.dynamic.';
   public static COMMAND_GOGOCODE:string = 'mx.gogocode';
   public static COMMAND_COPY_MAGIX_PATH:string = 'mx.copy.magix.path';
+}
+
+export enum BuiltInCommand {
+	CloseActiveEditor = 'workbench.action.closeActiveEditor',
+	CloseAllEditors = 'workbench.action.closeAllEditors',
+	CursorMove = 'cursorMove',
+	Diff = 'vscode.diff',
+	EditorScroll = 'editorScroll',
+	ExecuteDocumentSymbolProvider = 'vscode.executeDocumentSymbolProvider',
+	ExecuteCodeLensProvider = 'vscode.executeCodeLensProvider',
+	FocusFilesExplorer = 'workbench.files.action.focusFilesExplorer',
+	Open = 'vscode.open',
+	OpenFolder = 'vscode.openFolder',
+	OpenInTerminal = 'openInTerminal',
+	NextEditor = 'workbench.action.nextEditor',
+	PreviewHtml = 'vscode.previewHtml',
+	RevealLine = 'revealLine',
+	SetContext = 'setContext',
+	ShowExplorerActivity = 'workbench.view.explorer',
+	ShowReferences = 'editor.action.showReferences',
+}
+
+export enum ContextKeys {
+  IsMagix = 'vs-magix:isMagix',
+  ShowGogoCode = 'vs-magix:showGogoCode',
+  // 暂时不展示
+  ShowToReact = 'vs-magix:showToReact',
+}
+
+export function setContext(key: ContextKeys | string, value: any) {
+	return vscode.commands.executeCommand(BuiltInCommand.SetContext, key, value);
 }
 
 

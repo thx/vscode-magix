@@ -149,7 +149,7 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
         return new vscode.Location(vscode.Uri.file(filePath), new vscode.Position(1, 1));
       } else {
         // 项目绝对路径
-        let rootPath: string = FileUtils.getProjectPath(document)
+        let rootPath: string = FileUtils.getProjectPath(document);
         filePath = path.join(rootPath, 'src', viewPath + '.html');
         if (fs.existsSync(filePath)) {
           return new vscode.Location(vscode.Uri.file(filePath), new vscode.Position(1, 1));

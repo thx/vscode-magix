@@ -19,6 +19,7 @@ export class ProjectInfoUtils {
                     info.rootPath = rootPath;
                     info.rapProjectId = obj.magixCliConfig.rapProjectId || obj.magixCliConfig.matProjectId;
                     info.rapVersion = obj.magixCliConfig.rapVersion;
+                    info.isMagix = !!obj.magixCliConfig;
                     this.info = info;
                 } catch (error) {
                    // console.error(error);
@@ -37,10 +38,12 @@ export class Info {
         this.modelsPath = '';
         this.rapVersion = '';
         this.rapProjectId = '';
+        this.isMagix = false;
     }
     rootPath: string;
     name: string;
     modelsPath: string;
     rapVersion: string;
     rapProjectId: string;
+    isMagix: boolean;
 }

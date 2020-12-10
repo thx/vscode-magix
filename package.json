@@ -3,7 +3,7 @@
   "displayName": "Magix",
   "description": "Magix 开发增强套件 @MMFE",
   "icon": "images/Magix.png",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "publisher": "mmfe",
   "engines": {
     "vscode": "^1.28.0"
@@ -57,41 +57,81 @@
     "menus": {
       "editor/context": [
         {
-          "when": "resourceLangId ==  typescript || resourceLangId ==  javascript",
+          "when": "vs-magix:isMagix && resourceLangId == javascript",
           "command": "mx.jumper.toHtml",
           "group": "0_mx"
         },
         {
-          "when": "resourceLangId ==  typescript || resourceLangId ==  javascript",
+          "when": "vs-magix:isMagix && resourceLangId == typescript",
+          "command": "mx.jumper.toHtml",
+          "group": "0_mx"
+        },
+        {
+          "when": "vs-magix:isMagix && resourceLangId == typescript ",
           "command": "mx.jumper.toRap",
           "group": "0_mx"
         },
         {
-          "when": "resourceLangId ==  handlebars",
+          "when": "vs-magix:isMagix && resourceLangId ==  javascript",
+          "command": "mx.jumper.toRap",
+          "group": "0_mx"
+        },
+        {
+          "when": "vs-magix:isMagix && resourceLangId == handlebars",
           "command": "mx.jumper.toES",
           "group": "0_mx"
         },
         {
-          "when": "resourceLangId ==  handlebars",
+          "when": "vs-magix:isMagix && vs-magix:showToReact && resourceLangId == handlebars",
           "command": "mx.code.toReact",
           "group": "0_mx"
         },
         {
-          "when": "resourceLangId == handlebars || resourceLangId == javascript || resourceLangId == typescript",
+          "when": "vs-magix:isMagix && resourceLangId == handlebars",
           "command": "mx.copy.magix.path",
-          "group": "4_mx"
+          "group": "0_mx"
+        },
+        {
+          "when": "vs-magix:isMagix && resourceLangId == javascript",
+          "command": "mx.copy.magix.path",
+          "group": "0_mx"
+        },
+        {
+          "when": "vs-magix:isMagix && resourceLangId == typescript",
+          "command": "mx.copy.magix.path",
+          "group": "0_mx"
         }
       ],
       "explorer/context": [
         {
-          "when": "resourceLangId == handlebars || resourceLangId == javascript || resourceLangId == typescript",
+          "when": "vs-magix:showGogoCode && resourceLangId == handlebars",
           "command": "mx.gogocode",
           "group": "0_mx"
         },
         {
-          "when": "resourceLangId == handlebars || resourceLangId == javascript || resourceLangId == typescript",
+          "when": "vs-magix:showGogoCode && resourceLangId == javascript",
+          "command": "mx.gogocode",
+          "group": "0_mx"
+        },
+        {
+          "when": "vs-magix:showGogoCode && resourceLangId == typescript",
+          "command": "mx.gogocode",
+          "group": "0_mx"
+        },
+        {
+          "when": "vs-magix:isMagix && resourceLangId == handlebars",
           "command": "mx.copy.magix.path",
-          "group": "4_mx"
+          "group": "0_mx"
+        },
+        {
+          "when": "vs-magix:isMagix && resourceLangId == javascript",
+          "command": "mx.copy.magix.path",
+          "group": "0_mx"
+        },
+        {
+          "when": "vs-magix:isMagix && resourceLangId == typescript",
+          "command": "mx.copy.magix.path",
+          "group": "0_mx"
         }
       ]
     },
