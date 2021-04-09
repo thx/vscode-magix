@@ -227,13 +227,13 @@
     "css-tree": "^1.0.0-alpha.29",
     "datauri": "^1.1.0",
     "glob": "^7.1.6",
-    "gogoast": "0.0.18",
+    "gogocode": "^0.2.8",
     "map-lru": "^1.0.2",
     "opn": "^4.0.2",
     "posthtml-parser": "^0.4.2",
     "request": "^2.81.0"
   },
   "repository": "https://github.com/thx/vscode-magix",
-  "author": "",
+  "author": "zhuori",
   "license": "ISC"
 }

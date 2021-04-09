@@ -1,7 +1,7 @@
 import { FnInfo } from '../../model/FnInfo';
 import { ESFileInfo } from '../../model/ESFileInfo';
 
-const GG = require('gogoast');
+import * as $ from 'gogocode';
 /**
  * 分析js、ts文件
  */
@@ -9,19 +9,21 @@ export class ESFileAnalyzer {
 
   public static analyseESFile(content: string, filePath: string): ESFileInfo | null {
     try {
-      const AST = GG.createAstObj(content);
+      const AST = $(content);
       // 找到 magix 关键代码
 
-      const { extraDataList = [] } = AST.getAstsBySelector([`{ $_$.extend($_$) }`]);
-      if (!extraDataList.length ||
-        extraDataList[0].length !== 2 ||
-        !extraDataList[0][1].structure ||
-        !extraDataList[0][1].structure.properties) {
+      const { match } = AST.find(`$_$1.extend($_$2)`);
+      if (!match ||
+        !match['2'] ||
+        !match['2'].length ||
+        !match['2'][0].node ||
+        !match['2'][0].node.properties) {
         return null;
       }
+
       let isMagixPage = false;
       let methodList = new Array<FnInfo>();
-      extraDataList[0][1].structure.properties.forEach((prop: any) => {
+      match['2'][0].node.properties.forEach((prop: any) => {
         if (prop.method || (prop.value && prop.value.type === 'FunctionExpression')) {
           let fnInfo: FnInfo = new FnInfo();
           fnInfo.fnName = prop.key.name || prop.key.value;

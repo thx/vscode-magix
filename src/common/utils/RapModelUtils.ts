@@ -1,4 +1,4 @@
-const GG = require('gogoast');
+import * as $ from 'gogocode';
 import * as path from 'path';
 import { Info } from './ProjectInfoUtils';
 import { Rap } from '../../net/Rap';
@@ -29,15 +29,14 @@ export class RapModelUtils {
 
             fs.readFile(mPath, { encoding: 'utf-8' }, (err, content) => {
                 if (!err) {
-                    const AST = GG.createAstObj(content);    
-                    
-                    let doc = AST;
-                    if (doc.ast.program.body &&
-                        doc.ast.program.body.length > 0 &&
-                        doc.ast.program.body[0].expression &&
-                        doc.ast.program.body[0].expression.right &&
-                        doc.ast.program.body[0].expression.right.elements) {
-                        let elements = doc.ast.program.body[0].expression.right.elements;
+                    const ast = $(content).node;
+
+                    if (ast.program.body &&
+                        ast.program.body.length > 0 &&
+                        ast.program.body[0].expression &&
+                        ast.program.body[0].expression.right &&
+                        ast.program.body[0].expression.right.elements) {
+                        let elements = ast.program.body[0].expression.right.elements;
                         elements.forEach((element: any) => {
                             let modelItem: ModelItem = new ModelItem();
                             // 分析注释文本，找到rapid等信息
