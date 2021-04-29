@@ -1,64 +1,11 @@
 export class GalleryInfo {
     private static LIST = [
         {
-            type: 'mx-table', data: {
+            type: 'mx-stickytable', data: {
                 title: '表格',
                 subTitle: '',
-                url: '/table/index1',
-                code: `<mx-table sticky="true">
-            <!-- 固定列，在table上配置left="true" -->
-            <table class="table" left="true">
-                <thead>
-                    <tr>
-                        {{for(let i=0;i<4;i++)}}
-                        <th width="120">固定字段{{=i}}</th>
-                        {{/for}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{for(let j=0;j<3;j++)}}
-                    <tr>
-                        {{for(let i=0;i<4;i++)}}
-                        <td>固定内容{{=i}}</td>
-                        {{/for}}
-                    </tr>
-                    <tr class="operation-tr">
-                        <td colspan="4">
-                            <a href="javascript:;" class="btn btn-white btn-small mr10">操作</a>
-                            <a href="javascript:;" class="btn btn-white btn-small">操作</a>
-                        </td>
-                    </tr>
-                    {{/for}}
-                </tbody>
-            </table>
-            <!-- 滚动列，在table上直接配置center="true" -->
-            <table class="table" center="true">
-                <thead>
-                    <tr>
-                        {{for(let i=0;i<10;i++)}}
-                        <th width="120">滚动{{=i}}</th>
-                        {{/for}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{for(let j=0;j<3;j++)}}
-                    <tr>
-                        {{for(let i=0;i<10;i++)}}
-                        <td>滚动内容{{=i}}</td>
-                        {{/for}}
-                    </tr>
-                    <!-- 有操作项该行不可少 -->
-                    <tr class="operation-tr">
-                        <td colspan="10"></td>
-                    </tr>
-                    {{/for}}
-                </tbody>
-            </table>
-        </mx-table>
-        <mx-pagination class="table-pager-wrapper"
-            total="100" 
-            size="40" 
-            page="1"/>`
+                url: '/stickytable/desc',
+                code: ``
             }
         },
         {
@@ -92,10 +39,7 @@ export class GalleryInfo {
                 title: '时分秒选择',
                 subTitle: '支持双向绑定',
                 url: '/time/index',
-                code: `<mx-time class="w120" 
-            id="{{=viewId}}_time"
-            time="10:10:10"
-            mx-change="change()" />`
+                code: ``
             }
         },
         {
@@ -103,12 +47,7 @@ export class GalleryInfo {
                 title: '分页',
                 subTitle: '',
                 url: '/pagination/index',
-                code: `<mx-pagination
-            total="600" 
-            sizes="{{@[20,40,50]}}"
-            size="{{=size}}" 
-            page="{{=page}}"
-            mx-change="change()" />`
+                code: ``
             }
         },
         {
@@ -124,11 +63,7 @@ export class GalleryInfo {
                 title: '可编辑内容',
                 subTitle: 'hover显示编辑按钮',
                 url: '/editor/index',
-                code: `<mx-editor
-            tmpl="<span></span><span class='grey-solid-icon ml5'>打标</span>"
-            content="{{=content}}"
-            rules="{{@rules}}"
-            mx-change="change()"></mx-editor>`
+                code: ``
             }
         },
         {
@@ -136,11 +71,7 @@ export class GalleryInfo {
                 title: '搜索',
                 subTitle: '支持选择类型搜索和普通搜索',
                 url: '/search/index',
-                code: `<mx-search class="w200"
-            list="{{@list}}" 
-            search-key="{{=searchKey}}"
-            search-value="{{=searchValue}}"
-            mx-change="search()"></mx-search>`
+                code: ``
             }
         },
         {
@@ -148,23 +79,7 @@ export class GalleryInfo {
                 title: '可选项提示suggest',
                 subTitle: '支持双向绑定',
                 url: '/suggest/index',
-                code: `<mx-suggest class="w250"
-            selected="{{=selectedValue}}"
-            placeholder="输入关键词搜索"
-            list="{{@[{
-                text: 'test1',
-                value: 1
-            }, {
-                text: 'test12',
-                value: 2
-            }, {
-                text: 'abc1',
-                value: 3
-            }, {
-                text: 'abc2',
-                value: 4
-            }]}}"
-            mx-change="suggest()"/>`
+                code: ``
             }
         },
         {
@@ -172,12 +87,7 @@ export class GalleryInfo {
                 title: '开关',
                 subTitle: '支持双向绑定',
                 url: '/switch/index',
-                code: `<mx-switch class="mr20"
-            state="{{=state}}"
-            mx-change="toggle()"/>
-        
-        <a href="javascript:;" class="btn btn-brand" 
-            mx-click="change()">切换状态</a>`
+                code: ``
             }
         },
         {
@@ -185,16 +95,7 @@ export class GalleryInfo {
                 title: 'tree 树状结构',
                 subTitle: '支持双向绑定',
                 url: '/tree/index',
-                code: `<div class="mb20">
-            <span class="color-9">当前已选中：</span>
-            <span>{{=selected}}</span>
-        </div>
-        
-        <mx-tree id="{{=viewId}}_tree"
-            need-expand="true"
-            has-line="true"
-            list="{{@list}}"
-            bottom-values="{{:selected{refresh:true}}}"></mx-tree>`
+                code: ``
             }
         },
         {
@@ -202,11 +103,7 @@ export class GalleryInfo {
                 title: '级联选择',
                 subTitle: '支持双向绑定',
                 url: '/cascade/index',
-                code: `<mx-cascade class="w200"
-            selected="{{=selected}}"
-            list="{{@list}}"
-            mx-change="select()"></mx-cascade>
-                `
+                code: ``
             }
         },
         {
@@ -222,14 +119,7 @@ export class GalleryInfo {
                 title: '标签选择',
                 subTitle: '支持双向绑定',
                 url: '/taginput/index',
-                code: `<a href="javascript:;" class="btn btn-brand" 
-            mx-click="get()">获取选中值</a>
-        
-        <mx-taginput class="w280"
-            id="{{=viewId}}_taginput"
-            list="{{@list}}"
-            selected="{{=selected}}"
-            placeholder="请选择需要的值"/>`
+                code: ``
             }
         },
         {
@@ -237,35 +127,7 @@ export class GalleryInfo {
                 title: '更多菜单选择',
                 subTitle: '',
                 url: '/popmenu/index',
-                code: `<mx-popmenu class="btn"
-            menus="{{@[{
-                value: 1,
-                text: '操作1'
-            }, {
-                value: 2,
-                text: '操作2'
-            }, {
-                value: 3,
-                text: '操作3'
-            }]}}"
-            width="100"
-            mx-change="select()">下中对齐</mx-popmenu>
-        
-        <mx-popmenu class="btn"
-            menus="{{@[{
-                value: 1,
-                text: '操作1'
-            }, {
-                value: 2,
-                text: '操作2'
-            }, {
-                value: 3,
-                text: '操作3'
-            }]}}"
-            width="100"
-            place="lt"
-            mx-change="select()">左上对齐（lt）</mx-popmenu>
-                    `
+                code: ``
             }
         },
         {
@@ -273,34 +135,7 @@ export class GalleryInfo {
                 title: '上传',
                 subTitle: '',
                 url: '/uploader/index',
-                code: `<mx-uploader class="btn btn-brand mr10"
-            action="/creative/upload.action" 
-            method="POST"
-            name="images"
-            multiple="true"
-            accept="image/jpeg,image/png,image/jpg"
-            mx-error="uploadError()"
-            mx-success="uploadSuccess()">
-            多个上传</mx-uploader>
-        
-        <mx-uploader class="btn btn-brand mr10"
-            action="/creative/uploadImages.action" 
-            method="POST"
-            name="images"
-            accept="image/jpeg,image/png,image/jpg"
-            mx-error="uploadError()"
-            mx-success="uploadSuccess()">
-            单个上传</mx-uploader>
-        
-        <mx-uploader class="btn btn-disabled"
-            action="/creative/uploadImages.action" 
-            method="POST"
-            name="images"
-            disabled="true"
-            accept="image/jpeg,image/png,image/jpg"
-            mx-error="uploadError()"
-            mx-success="uploadSuccess()">
-            禁用上传</mx-uploader>`
+                code: ``
             }
         },
         {
@@ -308,15 +143,7 @@ export class GalleryInfo {
                 title: '单个滑块',
                 subTitle: '',
                 url: '/slider/index',
-                code: `<mx-slider
-            width="160"
-            need-input="true"
-            max="200"
-            min="100"
-            value="{{=cur}}"
-            step="0.05"
-            tip="元"
-            mx-change="showValue()"/>`
+                code: ``
             }
         },
         {
@@ -332,10 +159,7 @@ export class GalleryInfo {
                 title: 'icon状态切换与显示',
                 subTitle: '结合iconfont使用，用icon缩略显示当前状态属性',
                 url: '/status/index',
-                code: `<mx-status 
-            opers="{{@opers}}" 
-            selected="{{=cur.value}}"
-            mx-change="change()"/>`
+                code: ``
             }
         },
         {
@@ -343,14 +167,7 @@ export class GalleryInfo {
                 title: '拖动排序',
                 subTitle: '',
                 url: '/dragsort/index',
-                code: `<!-- mx-view 指到组件地址 -->
-            <ul mx-view="app/gallery/mx-dragsort/index" 
-                mx-dragfinish="drag()">
-                {{each items as item}}
-                <li class="item" data-value="{{=item}}">{{=item}}</li>
-                {{/each}}
-            </ul>
-                            `
+                code: ``
             }
         },
         {
@@ -358,14 +175,7 @@ export class GalleryInfo {
                 title: '复制',
                 subTitle: '该组件引入了第三方 https://clipboardjs.com/ 代码',
                 url: '/copy/index',
-                code: `<div class="mb20">
-            <mx-copy copy-node="{{=viewId}}_text_1" class="btn btn-brand"
-                mx-success="done()">复制</mx-copy>
-            {{if success}}
-            <span class="color-green ml20">复制成功</span>
-            {{/if}}
-        </div>
-        <textarea cols="30" rows="4" id="{{=viewId}}_text_1">Magix棒棒的！</textarea>`
+                code: ``
             }
         },
         {
@@ -373,10 +183,7 @@ export class GalleryInfo {
                 title: '颜色选择',
                 subTitle: '',
                 url: '/color/index',
-                code: `<mx-color.picker class="w200"
-            color="{{=color}}"
-            mx-change="changeColor()"/>
-                `
+                code: ``
             }
         },
         {
@@ -384,8 +191,7 @@ export class GalleryInfo {
                 title: '气泡提示',
                 subTitle: '默认使用span标签生成，可自定义tag',
                 url: '/popover/index',
-                code: `<mx-popover class="btn"
-            content="默认下中间对齐">默认下中间对齐</mx-popover>`
+                code: ``
             }
         },
         {
@@ -401,25 +207,7 @@ export class GalleryInfo {
                 title: 'loading加载',
                 subTitle: '',
                 url: '/loading/index',
-                code: `let Magix = require('magix');
-            let Loading = require('@../../mx-loading/index');
-            let $ = require('$');
-            
-            module.exports = Magix.View.extend({
-                tmpl: '@index.html',
-                mixins: [Loading],
-                render() {
-                    this.updater.digest();
-                },
-                'show<click>'(e){
-                    let that = this;
-                    that.showLoading();
-            
-                    setTimeout(() => {
-                        that.hideLoading();
-                    }, 3000);
-                }
-            });`
+                code: ``
             }
         },
         {
@@ -483,22 +271,7 @@ export class GalleryInfo {
                 title: '缩略图和预览',
                 subTitle: '支持图片，视频，html，文件链，套图（大小图）',
                 url: '/preview/index',
-                code: `<!-- 不配展示尺寸按实际尺寸展示 -->
-            <mx-preview class="demo"
-                type="image"
-                url="//img.alicdn.com/tfscom/TB10l9lbgZC2uNjSZFnXXaxZpXa.png"
-                max-width="100"
-                max-height="100"/>
-            
-            <!-- click-url 点击预览图的跳转链接 -->
-            <mx-preview class="demo"
-                type="image"
-                url="//img.alicdn.com/tfscom/TB10l9lbgZC2uNjSZFnXXaxZpXa.png"
-                click-url="//www.taobao.com/"
-                width="400"
-                height="125"
-                max-width="100"
-                max-height="100"/>`
+                code: ``
             }
         },
         {
@@ -506,17 +279,7 @@ export class GalleryInfo {
                 title: '轮播',
                 subTitle: '',
                 url: '/carousel/index',
-                code: `<mx-carousel height="100" autoplay="true" active="1" triggers="true">
-            <mx-carousel.panel>
-                <div class="bg bg1">1</div>
-            </mx-carousel.panel>
-            <mx-carousel.panel>
-                <div class="bg bg2">2</div>
-            </mx-carousel.panel>
-            <mx-carousel.panel>
-                <div class="bg bg3">3</div>
-            </mx-carousel.panel>
-        </mx-carousel>`
+                code: ``
             }
         },
         {
@@ -572,11 +335,7 @@ export class GalleryInfo {
                 title: '标题',
                 subTitle: '',
                 url: '/title/index',
-                code: `<div class="page-header">
-            <span class="first-header">一级标题</span>
-            <span class="page-tip">标题提示文案</span>
-        </div>
-                `
+                code: ``
             }
         },
         {
