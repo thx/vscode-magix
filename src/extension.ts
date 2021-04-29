@@ -1,11 +1,9 @@
-'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+
 import * as vscode from 'vscode';
 import { Initializer } from './initializer';
 import { Command } from './common/constant/Command';
 import { ToDefinitionCommand } from './command/ToDefinitionCommand';
-import { CodeConvertCommand } from './command/CodeConvertCommand';
+import { MxTableConvertCommand } from './command/MxTableConvertCommand';
 import { MXDefinitionProvider, MXInnerDefinitionProvider, HtmlDefinitionProvider } from './provider/VSDefinitionProvider';
 import { MXEventCompletionItemProvider } from './provider/VSCompletionItemProvider';
 import { VSFoldingRangeProvider } from './provider/VSFoldingRangeProvider';
@@ -25,9 +23,9 @@ import { ImageHoverProvider } from './provider/ImageHoverProvider';
 import { GogoCodeCommand } from './command/GogoCodeCommand';
 import { PathCopyCommand } from './command/PathCopyCommand';
 
-export function activate(context: vscode.ExtensionContext) {
 
-    let startTime: number = new Date().getTime();
+export function activate(context: vscode.ExtensionContext) {
+	let startTime: number = new Date().getTime();
     const subscriptions = context.subscriptions;
     
     //初始化期，初始化基本数据
@@ -35,10 +33,9 @@ export function activate(context: vscode.ExtensionContext) {
         //注册command
         new ToDefinitionCommand().registerCommand(context);
         new WebViewCommand().registerCommand(context);
-        new CodeConvertCommand().registerCommand(context);
         new GogoCodeCommand().registerCommand(context);
         new PathCopyCommand().registerCommand(context);
-
+        new MxTableConvertCommand().registerCommand(context);
         // 
         const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
         const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
@@ -124,4 +121,5 @@ function initStatusBar(nickname: string, context: vscode.ExtensionContext) {
         //console.error(msg);
     });
 }
+
 

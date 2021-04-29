@@ -14,7 +14,7 @@ import { setContext, ContextKeys } from './common/constant/Command';
 const ShowGogoCodeProjects = ['subway', 'xiaopin'];
 
 export class Initializer {
-  private rootPath: string
+  private rootPath: string;
 
   constructor() {
     this.rootPath = FileUtils.getProjectPath();
@@ -131,6 +131,7 @@ export class Initializer {
             const content = fs.readFileSync(tsFilePath, 'UTF-8');
             this.updateESCache(content, tsFilePath);
           }
+          this.checkMxTable();
         }
       }
     });
@@ -235,6 +236,15 @@ export class Initializer {
       RapModelUtils.updateModelInfo(info);
     }
   }
+  private checkMxTable() {
+    let editor: TextEditor | undefined = window.activeTextEditor;
+    if (!editor || !editor.document) {
+      return;
+    }
+    //判断当前页面有没有mx-table组件
+    const hasMxTable = editor.document.getText().indexOf('<mx-table') > -1;
+    setContext(ContextKeys.HasMxTable, hasMxTable);
+  }
   private async isMagixProject() {
     const info = ProjectInfoUtils.getInfo();
     if (info && ShowGogoCodeProjects.indexOf(info.name) > -1) {
@@ -246,27 +256,23 @@ export class Initializer {
     return info && info.isMagix;
   }
 
-  public init(): Promise<any> {
+  public async init() {
+    const isMagixProject = await this.isMagixProject();
+    if (!isMagixProject) {
+      //不是magix项目不展示magix相关菜单项
+      await setContext(ContextKeys.IsMagix, undefined);
+      throw new Error('不是Magix项目');
+    }
+    await setContext(ContextKeys.IsMagix, true);
 
-    return new Promise(async (resolve, reject) => {
-      const isMagixProject = await this.isMagixProject();
-      if (!isMagixProject) {
-        reject('不是Magix项目');
-        //不是magix项目不展示magix相关菜单项
-        await setContext(ContextKeys.IsMagix, undefined);
-        return;
-      }
-      await setContext(ContextKeys.IsMagix, true);
-
-      this.scanProjectFile();
-      this.startWatching();
-      this.scanSrcFile();
-      let info: Info = ProjectInfoUtils.getInfo();
-      if (info && info.modelsPath) {
-        RapModelUtils.updateModelInfo(info);
-      }
-      resolve();
-    });
+    this.scanProjectFile();
+    this.startWatching();
+    this.scanSrcFile();
+    let info: Info = ProjectInfoUtils.getInfo();
+    if (info && info.modelsPath) {
+      RapModelUtils.updateModelInfo(info);
+    }
+    this.checkMxTable();
   }
 
 }

@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import { isString } from 'util';
 import { ComponentInfo, Type } from '../model/componentInfo';
 
-const parser = require('posthtml-parser');
+const gogocode = require('gogocode');
 
 export class CodeConvertCommand {
     public registerCommand(context: vscode.ExtensionContext) {
@@ -16,7 +16,7 @@ export class CodeConvertCommand {
             try {
                 fs.readFile(args.path, { encoding: 'utf-8' }, (err, html) => {
                     if (!err) {
-                        const content = parser(html);
+                        const content = gogocode(html,{parseOptions:{language:'html'}});
                         const components: Array<ComponentInfo> = [];
                         this.convert(content, components);
                         const code = this.componentsToCode(components);
@@ -24,8 +24,6 @@ export class CodeConvertCommand {
                         webview.show({ code });
                     }
                 })
-
-
 
             } catch (error) {
 

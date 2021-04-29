@@ -1,239 +1,257 @@
 {
-  "name": "magix",
-  "displayName": "Magix",
-  "description": "Magix 开发增强套件 @MMFE",
-  "icon": "images/Magix.png",
-  "version": "0.15.1",
-  "publisher": "mmfe",
-  "engines": {
-    "vscode": "^1.28.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "*"
-  ],
-  "main": "./out/extension",
-  "contributes": {
-    "commands": [
-      {
-        "command": "mx.jumper.toHtml",
-        "title": "Magix-跳转至html"
-      },
-      {
-        "command": "mx.jumper.toES",
-        "title": "Magix-跳转至js/ts"
-      },
-      {
-        "command": "mx.jumper.toRap",
-        "title": "Magix-跳转至Rap定义"
-      },
-      {
-        "command": "mx.jumper.backAndForth",
-        "title": "MX"
-      },
-      {
-        "command": "mx.code.toReact",
-        "title": "To React"
-      },
-      {
-        "command": "mx.gogocode",
-        "title": "GogoCode转换"
-      },
-      {
-        "command": "mx.copy.magix.path",
-        "title": "复制Magix相对路径"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "mx.jumper.backAndForth",
-        "key": "alt+tab",
-        "mac": "alt+tab",
-        "when": "editorTextFocus"
-      }
-    ],
-    "menus": {
-      "editor/context": [
-        {
-          "when": "vs-magix:isMagix && resourceLangId == javascript",
-          "command": "mx.jumper.toHtml",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == typescript",
-          "command": "mx.jumper.toHtml",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == typescript ",
-          "command": "mx.jumper.toRap",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId ==  javascript",
-          "command": "mx.jumper.toRap",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == handlebars",
-          "command": "mx.jumper.toES",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && vs-magix:showToReact && resourceLangId == handlebars",
-          "command": "mx.code.toReact",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == handlebars",
-          "command": "mx.copy.magix.path",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == javascript",
-          "command": "mx.copy.magix.path",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == typescript",
-          "command": "mx.copy.magix.path",
-          "group": "0_mx"
-        }
-      ],
-      "explorer/context": [
-        {
-          "when": "vs-magix:showGogoCode && resourceLangId == handlebars",
-          "command": "mx.gogocode",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:showGogoCode && resourceLangId == javascript",
-          "command": "mx.gogocode",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:showGogoCode && resourceLangId == typescript",
-          "command": "mx.gogocode",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == handlebars",
-          "command": "mx.copy.magix.path",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == javascript",
-          "command": "mx.copy.magix.path",
-          "group": "0_mx"
-        },
-        {
-          "when": "vs-magix:isMagix && resourceLangId == typescript",
-          "command": "mx.copy.magix.path",
-          "group": "0_mx"
-        }
-      ]
-    },
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "Magix",
-          "title": "Magix VSCode插件",
-          "icon": "images/Magix.svg"
-        }
-      ]
-    },
-    "views": {
-      "Magix": [
-        {
-          "id": "magix-menu-view",
-          "name": "插件设置"
-        }
-      ]
-    },
-    "grammars": [
-      {
-        "language": "handlebars",
-        "scopeName": "text.html.mxtpl",
-        "path": "./syntaxes/mxtpl.tmLanguage.json"
-      }
-    ],
-    "languages": [
-      {
-        "id": "es",
-        "aliases": [
-          "es",
-          "ES"
-        ],
-        "extensions": [
-          ".es"
-        ]
-      },
-      {
-        "id": "handlebars",
-        "aliases": [
-          "mxtpl",
-          "handlebars"
-        ],
-        "extensions": [
-          ".tpl",
-          ".html"
-        ],
-        "configuration": "./language-configuration.json"
-      }
-    ],
-    "configuration": [
-      {
-        "title": "Magix VSCode 插件",
-        "properties": {
-          "magix.config.user.nickname": {
-            "type": "string",
-            "default": "",
-            "description": "请输入您的花名"
-          },
-          "magix.config.rap.type": {
-            "type": "string",
-            "default": "0",
-            "description": "跳转到Rap方式。0：全部、1:鼠标右键跳转、2:Command点击跳转"
-          },
-          "magix.config.gogocode.path": {
-            "type": "string",
-            "default": "",
-            "description": "gogocode 项目路径"
-          }
-        }
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
-  },
-  "devDependencies": {
-    "@types/mocha": "^2.2.42",
-    "@types/node": "^8.10.25",
-    "map-lru": "^1.0.2",
-    "request": "^2.81.0",
-    "tslint": "^5.8.0",
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.21"
-  },
-  "dependencies": {
-    "@types/css-tree": "^1.0.0",
-    "css-tree": "^1.0.0-alpha.29",
-    "datauri": "^1.1.0",
-    "glob": "^7.1.6",
-    "gogocode": "^0.2.8",
-    "map-lru": "^1.0.2",
-    "opn": "^4.0.2",
-    "posthtml-parser": "^0.4.2",
-    "request": "^2.81.0"
-  },
-  "repository": "https://github.com/thx/vscode-magix",
-  "author": "zhuori",
-  "license": "ISC"
+	"name": "magix",
+	"displayName": "Magix",
+	"description": "Magix 开发增强套件 @MMFE",
+	"icon": "resources/image/magix.png",
+	"version": "0.15.1",
+	"publisher": "mmfe",
+	"engines": {
+		"vscode": "^1.31.1"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "mx.jumper.toHtml",
+				"title": "Magix-跳转至html"
+			},
+			{
+				"command": "mx.jumper.toES",
+				"title": "Magix-跳转至js/ts"
+			},
+			{
+				"command": "mx.jumper.toRap",
+				"title": "Magix-跳转至Rap定义"
+			},
+			{
+				"command": "mx.jumper.backAndForth",
+				"title": "MX"
+			},
+			{
+				"command": "mx.code.toReact",
+				"title": "To React"
+			},
+			{
+				"command": "mx.gogocode",
+				"title": "GogoCode转换"
+			},
+			{
+				"command": "mx.copy.magix.path",
+				"title": "复制Magix相对路径"
+			},
+			{
+				"command": "mx.code.convertMxTable",
+				"title": "升级mx-table"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "mx.jumper.backAndForth",
+				"key": "alt+tab",
+				"mac": "alt+tab",
+				"when": "editorTextFocus"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "vs-magix:isMagix && resourceLangId == javascript",
+					"command": "mx.jumper.toHtml",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == typescript",
+					"command": "mx.jumper.toHtml",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == typescript ",
+					"command": "mx.jumper.toRap",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId ==  javascript",
+					"command": "mx.jumper.toRap",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == handlebars",
+					"command": "mx.jumper.toES",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && vs-magix:showToReact && resourceLangId == handlebars",
+					"command": "mx.code.toReact",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == handlebars",
+					"command": "mx.copy.magix.path",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == javascript",
+					"command": "mx.copy.magix.path",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == typescript",
+					"command": "mx.copy.magix.path",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && vs-magix:hasMxTable && resourceLangId == handlebars",
+					"command": "mx.code.convertMxTable",
+					"group": "0_mx"
+				}
+			],
+			"explorer/context": [
+				{
+					"when": "vs-magix:showGogoCode && resourceLangId == handlebars",
+					"command": "mx.gogocode",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:showGogoCode && resourceLangId == javascript",
+					"command": "mx.gogocode",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:showGogoCode && resourceLangId == typescript",
+					"command": "mx.gogocode",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == handlebars",
+					"command": "mx.copy.magix.path",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == javascript",
+					"command": "mx.copy.magix.path",
+					"group": "0_mx"
+				},
+				{
+					"when": "vs-magix:isMagix && resourceLangId == typescript",
+					"command": "mx.copy.magix.path",
+					"group": "0_mx"
+				}
+			]
+		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "Magix",
+					"title": "Magix VSCode插件",
+					"icon": "resources/images/magix.svg"
+				}
+			]
+		},
+		"views": {
+			"Magix": [
+				{
+					"id": "magix-menu-view",
+					"name": "插件设置"
+				}
+			]
+		},
+		"grammars": [
+			{
+				"language": "handlebars",
+				"scopeName": "text.html.mxtpl",
+				"path": "./syntaxes/mxtpl.tmLanguage.json"
+			}
+		],
+		"languages": [
+			{
+				"id": "es",
+				"aliases": [
+					"es",
+					"ES"
+				],
+				"extensions": [
+					".es"
+				]
+			},
+			{
+				"id": "handlebars",
+				"aliases": [
+					"mxtpl",
+					"handlebars"
+				],
+				"extensions": [
+					".tpl",
+					".html"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"configuration": [
+			{
+				"title": "Magix VSCode 插件",
+				"properties": {
+					"magix.config.user.nickname": {
+						"type": "string",
+						"default": "",
+						"description": "请输入您的花名"
+					},
+					"magix.config.rap.type": {
+						"type": "string",
+						"default": "0",
+						"description": "跳转到Rap方式。0：全部、1:鼠标右键跳转、2:Command点击跳转"
+					},
+					"magix.config.gogocode.path": {
+						"type": "string",
+						"default": "",
+						"description": "gogocode 项目路径"
+					}
+				}
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"test-compile": "tsc -p ./",
+		"test-watch": "tsc -watch -p ./",
+		"pretest": "npm run test-compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.31.1",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.4",
+		"@types/node": "^12.11.7",
+		"eslint": "^7.19.0",
+		"@typescript-eslint/eslint-plugin": "^4.14.1",
+		"@typescript-eslint/parser": "^4.14.1",
+		"glob": "^7.1.6",
+		"mocha": "^8.2.1",
+		"typescript": "^4.1.3",
+		"vscode-test": "^1.5.0",
+		"ts-loader": "^8.0.14",
+		"webpack": "^5.19.0",
+		"webpack-cli": "^4.4.0",
+		"vue": "^3.0.11"
+	},
+	"dependencies": {
+		"css-tree": "^1.1.3",
+		"datauri": "^2.0.0",
+		"gogocode": "^0.2.16",
+		"map-lru": "^1.1.0",
+		"opn": "^6.0.0",
+		"request": "^2.88.2"
+	},
+	"repository": "https://github.com/thx/vscode-magix",
+	"author": "zhuori",
+	"license": "ISC"
 }

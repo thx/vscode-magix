@@ -112,7 +112,7 @@ export class HtmlDefinitionProvider implements vscode.DefinitionProvider {
     let p: Promise<vscode.Location> = new Promise((resolve, reject) => {
       if (word.indexOf('mx-view') > -1) {
         const location: vscode.Location | undefined = this.jumpToMxView(word, fileName, document);
-        resolve(location);
+        location && resolve(location);
       } else {
         let mx = word.match(/mx-[a-z]+/);
         if (mx && mx.length > 0) {

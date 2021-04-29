@@ -12,7 +12,7 @@ export class ESFileAnalyzer {
       const AST = $(content);
       // 找到 magix 关键代码
 
-      const { match } = AST.find(`$_$1.extend($_$2)`);
+      const match: any = AST.find(`$_$1.extend($_$2)`).match;
       if (!match ||
         !match['2'] ||
         !match['2'].length ||

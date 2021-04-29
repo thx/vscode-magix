@@ -29,7 +29,7 @@ export class RapModelUtils {
 
             fs.readFile(mPath, { encoding: 'utf-8' }, (err, content) => {
                 if (!err) {
-                    const ast = $(content).node;
+                    const ast: any = $(content).node;
 
                     if (ast.program.body &&
                         ast.program.body.length > 0 &&

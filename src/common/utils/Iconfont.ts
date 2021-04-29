@@ -3,7 +3,7 @@ const request = require('request');
 const Datauri = require('datauri');
 import * as fs from 'fs';
 import * as path from 'path';
-import * as csstree from 'css-tree';
+const csstree = require('css-tree');
 
 export interface IconfontData {
   code: string;
