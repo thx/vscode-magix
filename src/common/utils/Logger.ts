@@ -1,5 +1,9 @@
 const request = require('request');
-
+export enum LogType {
+  Activate = 'activate',
+  Deactivate = 'deactivate',
+  MxTable = 'mx-table'
+}
 import { FileUtils } from './FileUtils';
 export class Logger {
   public static error(info: any) {
@@ -11,20 +15,23 @@ export class Logger {
   }
 
   public static logActivate(useTime: number, error: string) {
-    let rootPath: string = FileUtils.getProjectPath();
-    let url: string = 'http://gm.mmstat.com/magix-plugin.event.activate?project_path=' +
-      encodeURI(rootPath) +
-      '&use_time=' +
-      useTime +
-      '&error=' +
-      encodeURI(error) +
-      '&t=' +
-      new Date().getTime();
-    this.request4Log(url);
+    this.aplusLog(LogType.Activate, { useTime, error });
   }
   public static logDeactivate() {
-    let rootPath: string = FileUtils.getProjectPath();
-    let url: string = 'http://gm.mmstat.com/magix-plugin.event.deactivate?project_path=' + encodeURI(rootPath) + '&t=' + new Date().getTime();
+    this.aplusLog(LogType.Deactivate);
+  }
+  public static aplusLog(logType: LogType, params?: any) {
+    const rootPath: string = FileUtils.getProjectPath();
+    const list: any[] = [];
+    list.push(`project_path=${encodeURI(rootPath)}`);
+    if (params) {
+      for (const key in params) {
+        const value = params[key];
+        list.push(`${value}=${encodeURI(value)}`);
+      }
+    }
+    list.push(`t=${new Date().getTime()}`);
+    const url = `http://gm.mmstat.com/magix-plugin.event.${logType}?${list.join('&')}`;
     this.request4Log(url);
   }
   private static request4Log(url: string) {

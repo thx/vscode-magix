@@ -2,7 +2,7 @@
 import * as $ from 'gogocode';
 import { Command } from '../common/constant/Command';
 import { TextEditor, window, ExtensionContext, commands, TextEditorEdit ,Range, Position} from 'vscode';
-
+import { Logger, LogType } from '../common/utils/Logger';
 export class MxTableConvertCommand {
     public registerCommand(context: ExtensionContext) {
         context.subscriptions.push(commands.registerCommand(Command.COMMAND_CODE_CONVERT_MX_TABLE, (args) => {
@@ -12,6 +12,7 @@ export class MxTableConvertCommand {
                 if (!editor || !editor.document) {
                     return;
                 }
+                Logger.aplusLog(LogType.MxTable, { path: editor.document.fileName });
                 const content = editor.document.getText();
                 const AST = $(content, { parseOptions: { html: true } });
                 AST.find('<mx-table>').each((node) => {
@@ -87,6 +88,10 @@ export class MxTableConvertCommand {
         }
         node.remove('<!-- 固定列，在table上配置left="true" -->');
         node.remove('<!--  滚动列，在table上直接配置center="true"  -->');
+        this.resetThSort(node);
+    }
+    private resetThSort(node: any) {
+
     }
   
     /**
