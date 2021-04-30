@@ -2,8 +2,11 @@
 
 ## 功能
 
-### 代码中图片链接hover展示图片功能
+### mx-table 升级到 mx-stickytable
 
+<img src="https://img.alicdn.com/imgextra/i1/O1CN01QjJH0M1CWnvOVKpHr_!!6000000000089-1-tps-1064-702.gif" alt="js跳转" width="800"/>
+
+### 代码中图片链接hover展示图片功能
 
 <img src="https://img.alicdn.com/tfs/TB1ivTrCuL2gK0jSZFmXXc7iXXa-877-376.gif" alt="js跳转" width="800"/>
 
