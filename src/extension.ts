@@ -25,9 +25,9 @@ import { PathCopyCommand } from './command/PathCopyCommand';
 
 
 export function activate(context: vscode.ExtensionContext) {
-	let startTime: number = new Date().getTime();
+    let startTime: number = new Date().getTime();
     const subscriptions = context.subscriptions;
-    
+
     //初始化期，初始化基本数据
     new Initializer().init().then(() => {
         //注册command
@@ -42,19 +42,19 @@ export function activate(context: vscode.ExtensionContext) {
         const CSS_MODE = [{ language: 'css', scheme: 'file' }, { language: 'less', scheme: 'file' }];
         const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
         const JTS_HTML_CSS_MODE = JTS_HTML_MODE.concat(CSS_MODE);
-       
+
 
         subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
         subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
-        
+
         //注册html代码跳转
         subscriptions.push(vscode.languages.registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
-        
+
         //注册代码提示
         subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
         subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new IconfontCompletionItemProvider(), '&'));
         subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
-        
+
         //注册悬浮提示Provider
         subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
         subscriptions.push(vscode.languages.registerHoverProvider(JTS_MODE, new RapHoverProvider()));
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
         Logger.logActivate(new Date().getTime() - startTime, '');
         Logger.log('插件启动成功');
     }).catch((info) => {
-        
+
         Logger.logActivate(new Date().getTime() - startTime, info);
         Logger.error(info);
     });
@@ -78,15 +78,15 @@ export function deactivate() {
     recoverBesideEditor()
     Logger.logDeactivate();
 }
-function recoverBesideEditor(){
+function recoverBesideEditor() {
     // 回收打开的侧边 编辑器
-   const editors = vscode.window.visibleTextEditors;
-   editors.forEach((item:vscode.TextEditor)=>{
-      let vc:vscode.ViewColumn | undefined = item.viewColumn 
-      if(vc && vc === vscode.ViewColumn.Beside){
-          item.hide()
-      }
-   })
+    const editors = vscode.window.visibleTextEditors;
+    editors.forEach((item: vscode.TextEditor) => {
+        let vc: vscode.ViewColumn | undefined = item.viewColumn
+        if (vc && vc === vscode.ViewColumn.Beside) {
+            item.hide()
+        }
+    })
 }
 
 function initViews(context: vscode.ExtensionContext) {

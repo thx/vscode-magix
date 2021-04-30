@@ -1,7 +1,7 @@
 
 import * as $ from 'gogocode';
 import { Command } from '../common/constant/Command';
-import { TextEditor, window, ExtensionContext, commands, TextEditorEdit ,Range, Position} from 'vscode';
+import { TextEditor, window, ExtensionContext, commands, TextEditorEdit, Range, Position } from 'vscode';
 import { Logger, LogType } from '../common/utils/Logger';
 export class MxTableConvertCommand {
     public registerCommand(context: ExtensionContext) {
@@ -48,14 +48,14 @@ export class MxTableConvertCommand {
                     }
                 }
             });
-            this.removeAttr(node, ['list']);
+            this.removeAttr(node, ['list', 'sticky-interval']);
         }
         // left-col-sticky
         const leftTable = node.find('<table left="true">');
         if (leftTable.length > 0) {
-            const trs = this.getTrs(leftTable, '<thead>');
-            if (trs.length > 0) {
-                this.addAttr(node.attr('content.attributes'), 'left-col-sticky', trs.length);
+            const ths = node.find('<thead>').find('<tr>').find('<th>');
+            if (ths.length > 0) {
+                this.addAttr(node.attr('content.attributes'), 'left-col-sticky', ths.length);
             }
         }
     }
@@ -91,7 +91,39 @@ export class MxTableConvertCommand {
         this.resetThSort(node);
     }
     private resetThSort(node: any) {
+        node.find('<thead>').find('<th>').each((th: any)=>{
+            const sortAST = th.find('<span sort-trigger=$_$>');
+            if (!sortAST.length) {
+                return;
+            }
+            
+            // 生成mx-stickytable.sort标签
+            sortAST.each((s: any)=>{
+                s.attr('content.name','mx-stickytable.sort');
+                const attrs = s.attr('content.attributes');
+                attrs.forEach((attr:any)=>{
+                    const keyName = attr.key.content;
+                    if(keyName==='sort-trigger'){
+                        attr.key.content = 'value';
+                    }else if(keyName==='order-field-key'){
+                        attr.key.content = 'order-field';
+                    }else if(keyName==='order-by-key'){
+                        attr.key.content = 'order-by';
+                    }
+                })
+                this.addAttr(attrs,'order','！！！自行处理！！！');
 
+                //排除排序标签<span sort-trigger="xxx">
+                const children = th.attr('content.children');
+                const innerChildren = children.filter((c:any)=>{
+                    return c.content.name !== 'mx-stickytable.sort';
+                }).map((item:any)=>({...item}));
+                //将th元素塞入到mx-stickytable.sort标签中
+                s.attr('content.children',innerChildren);
+            });
+            const thChildren = th.attr('content.children');
+            th.attr('content.children', thChildren.filter((c: any) => (c.content.name === 'mx-stickytable.sort')));
+        });
     }
   
     /**
@@ -131,7 +163,7 @@ export class MxTableConvertCommand {
             attrs.splice(removeIndex, 1);
         }
     }
-    private getTrs(node:any,parentNodeName:string){
+    private getTrs(node: any, parentNodeName: string) {
         let trs = node.find(parentNodeName).attr('content.children') || [];
         trs = trs.filter((item: any) => {
             return item.nodeType === 'tag' && item.content.name === 'tr';

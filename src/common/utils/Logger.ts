@@ -27,7 +27,7 @@ export class Logger {
     if (params) {
       for (const key in params) {
         const value = params[key];
-        list.push(`${value}=${encodeURI(value)}`);
+        value && list.push(`${key}=${encodeURI(value)}`);
       }
     }
     list.push(`t=${new Date().getTime()}`);
