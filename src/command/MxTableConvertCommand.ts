@@ -14,28 +14,70 @@ export class MxTableConvertCommand {
                 }
                 Logger.aplusLog(LogType.MxTable, { path: editor.document.fileName });
                 const content = editor.document.getText();
+                if (content.length === 0) {
+                    return;
+                }
+
+                const lines = this.getLines(content);
+                const tables: any[] = [];
+
                 const AST = $(content, { parseOptions: { html: true } });
-                AST.find('<mx-table>').each((node) => {
-                    node.attr('content.name', 'mx-stickytable');
-                    this.resetTableAttr(node);
-                    this.resetTable(node);
+                //全部替换
+                let replaceAll = false;
+                AST.find('<mx-table>').each((ast) => {
+                    ast.attr('content.name', 'mx-stickytable');
+                    this.resetTableAttr(ast);
+                    this.resetTable(ast);
+                    const range = this.buildTableRange(lines, ast.node);
+                    if (range) {
+                        tables.push({ code: ast.generate(), range });
+                    } else {
+                        //找不到 table 的range 需要全部替换
+                        replaceAll = true;
+                    }
                 });
-                const code = AST.generate();
+
                 editor.edit((editorBuilder: TextEditorEdit) => {
-                    const lines = content.split('\n');
-                    const lastWord = lines[lines.length - 1].length - 1;
-                    const allWords = new Range(new Position(0, 0), new Position(lines.length, lastWord));
-                    editorBuilder.replace(allWords, code);
+                    if (replaceAll) {
+                        const code = AST.generate();
+                        const lines = content.split('\n');
+                        const lastWord = lines[lines.length - 1].length - 1;
+                        const allWordsRang = new Range(new Position(0, 0), new Position(lines.length, lastWord));
+                        editorBuilder.replace(allWordsRang, code);
+                    } else {
+                        tables.forEach((t: any) => {
+                            editorBuilder.replace(t.range, t.code);
+                        });
+                    }
                 });
-                
+
             } catch (error) {
 
                 window.showWarningMessage(error);
             }
         }));
     }
-    private resetTableAttr(node: any) {
-        const attrs: any = node.attr('content.attributes');
+    private getLines(content: string) {
+        let lines = content.split('\n');
+        let step = content.indexOf('\r\n') > -1 ? 2 : 1;
+        let newLines: any[] = [];
+        lines.forEach((line: string, index: number) => {
+            if (index === 0) {
+                newLines.push({ code: line, start: 0, end: line.length - 1 })
+            } else if (index === lines.length - 1) {
+                const perLine = newLines[index - 1];
+                const start = perLine.end + step + 1;
+                newLines.push({ code: line, start, end: content.length - 1 });
+            } else {
+                const perLine = newLines[index - 1];
+                const start = perLine.end + step + 1;
+                newLines.push({ code: line, start, end: start + line.length - 1 });
+            }
+        });
+        return newLines;
+    }
+    private resetTableAttr(ast: any) {
+        const attrs: any = ast.attr('content.attributes');
         if (attrs) {
             attrs.forEach((attr: any) => {
                 const keyName = attr.key.content;
@@ -48,20 +90,20 @@ export class MxTableConvertCommand {
                     }
                 }
             });
-            this.removeAttr(node, ['list', 'sticky-interval']);
+            this.removeAttr(ast, ['list', 'sticky-interval']);
         }
         // left-col-sticky
-        const leftTable = node.find('<table left="true">');
+        const leftTable = ast.find('<table left="true">');
         if (leftTable.length > 0) {
-            const ths = node.find('<thead>').find('<tr>').find('<th>');
+            const ths = ast.find('<thead>').find('<tr>').find('<th>');
             if (ths.length > 0) {
-                this.addAttr(node.attr('content.attributes'), 'left-col-sticky', ths.length);
+                this.addAttr(ast.attr('content.attributes'), 'left-col-sticky', ths.length);
             }
         }
     }
-    private resetTable(node: any) {
-        const leftTable = node.find('<table left="true">');
-        const centerTable = node.find('<table center="true">');
+    private resetTable(ast: any) {
+        const leftTable = ast.find('<table left="true">');
+        const centerTable = ast.find('<table center="true">');
 
         const hasLeftTable = leftTable.length > 0;
         const hasCenterTable = centerTable.length > 0;
@@ -71,9 +113,9 @@ export class MxTableConvertCommand {
             this.mergeTrs(leftTable, centerTable, 'thead');
             this.mergeTrs(leftTable, centerTable, 'tbody');
 
-            this.removeAttr(centerTable, ['center','class']);
+            this.removeAttr(centerTable, ['center', 'class']);
             this.removeTableClassName(centerTable);
-            node.remove('<table left="true">');
+            ast.remove('<table left="true">');
         } else if (hasLeftTable) {
             this.removeAttr(hasLeftTable, ['left']);
             this.removeTableClassName(hasLeftTable);
@@ -81,65 +123,65 @@ export class MxTableConvertCommand {
             this.removeAttr(centerTable, ['center']);
             this.removeTableClassName(centerTable);
         } else {
-            const table = node.find('<table>');
-            if(table.length > 0){
+            const table = ast.find('<table>');
+            if (table.length > 0) {
                 this.removeTableClassName(table);
             }
         }
-        node.remove('<!-- 固定列，在table上配置left="true" -->');
-        node.remove('<!--  滚动列，在table上直接配置center="true"  -->');
-        this.resetThSort(node);
+        ast.remove('<!-- 固定列，在table上配置left="true" -->');
+        ast.remove('<!--  滚动列，在table上直接配置center="true"  -->');
+        this.resetThSort(ast);
     }
-    private resetThSort(node: any) {
-        node.find('<thead>').find('<th>').each((th: any)=>{
+    private resetThSort(ast: any) {
+        ast.find('<thead>').find('<th>').each((th: any) => {
             const sortAST = th.find('<span sort-trigger=$_$>');
             if (!sortAST.length) {
                 return;
             }
-            
+
             // 生成mx-stickytable.sort标签
-            sortAST.each((s: any)=>{
-                s.attr('content.name','mx-stickytable.sort');
+            sortAST.each((s: any) => {
+                s.attr('content.name', 'mx-stickytable.sort');
                 const attrs = s.attr('content.attributes');
-                attrs.forEach((attr:any)=>{
+                attrs.forEach((attr: any) => {
                     const keyName = attr.key.content;
-                    if(keyName==='sort-trigger'){
+                    if (keyName === 'sort-trigger') {
                         attr.key.content = 'value';
-                    }else if(keyName==='order-field-key'){
+                    } else if (keyName === 'order-field-key') {
                         attr.key.content = 'order-field';
-                    }else if(keyName==='order-by-key'){
+                    } else if (keyName === 'order-by-key') {
                         attr.key.content = 'order-by';
                     }
                 })
-                this.addAttr(attrs,'order','！！！自行处理！！！');
+                this.addAttr(attrs, 'order', '！！！自行处理！！！');
 
                 //排除排序标签<span sort-trigger="xxx">
                 const children = th.attr('content.children');
-                const innerChildren = children.filter((c:any)=>{
+                const innerChildren = children.filter((c: any) => {
                     return c.content.name !== 'mx-stickytable.sort';
-                }).map((item:any)=>({...item}));
+                }).map((item: any) => ({ ...item }));
                 //将th元素塞入到mx-stickytable.sort标签中
-                s.attr('content.children',innerChildren);
+                s.attr('content.children', innerChildren);
             });
             const thChildren = th.attr('content.children');
             th.attr('content.children', thChildren.filter((c: any) => (c.content.name === 'mx-stickytable.sort')));
         });
     }
-  
+
     /**
      * 删除class table
-     * @param node 
+     * @param ast 
      */
-    private removeTableClassName(node: any) {
-       this.removeClassName(node,'table');
+    private removeTableClassName(ast: any) {
+        this.removeClassName(ast, 'table');
     }
     /**
      * 删除某个class
-     * @param node 
+     * @param ast 
      * @param name 
      */
-    private removeClassName(node: any, name: string) {
-        const attrs = node.attr('content.attributes');
+    private removeClassName(ast: any, name: string) {
+        const attrs = ast.attr('content.attributes');
         this.removeClassName4Attrs(attrs, name);
     }
     private removeClassName4Attrs(attrs: any, name: string) {
@@ -163,8 +205,8 @@ export class MxTableConvertCommand {
             attrs.splice(removeIndex, 1);
         }
     }
-    private getTrs(node: any, parentNodeName: string) {
-        let trs = node.find(parentNodeName).attr('content.children') || [];
+    private getTrs(ast: any, parentNodeName: string) {
+        let trs = ast.find(parentNodeName).attr('content.children') || [];
         trs = trs.filter((item: any) => {
             return item.nodeType === 'tag' && item.content.name === 'tr';
         });
@@ -173,24 +215,24 @@ export class MxTableConvertCommand {
     private mergeTrs(leftTable: any, centerTable: any, parentNode: 'thead' | 'tbody') {
         const nodeName = `<${parentNode}>`
 
-        let leftTrs = this.getTrs(leftTable,nodeName);
-        let centerTrs = this.getTrs(centerTable,nodeName);
+        let leftTrs = this.getTrs(leftTable, nodeName);
+        let centerTrs = this.getTrs(centerTable, nodeName);
 
         //处理子表头
-        if(leftTrs.length != centerTrs.length){
+        if (leftTrs.length != centerTrs.length) {
             const rowspan = centerTrs.length - leftTrs.length + 1;
-            if(rowspan < 2){
+            if (rowspan < 2) {
                 //center表格thead里面的tr数量少于 left表格的
                 return;
             }
-            leftTrs.forEach((tr:any)=>{
-               if(tr && tr.content && tr.content.children){
-                   tr.content.children.forEach((c:any)=>{
-                    if(c.nodeType === 'tag' && (c.content.name === 'th' || c.content.name === 'td')){
-                        this.addAttr(c.content.attributes,'rowspan', rowspan);
-                    }
-                   })
-               }
+            leftTrs.forEach((tr: any) => {
+                if (tr && tr.content && tr.content.children) {
+                    tr.content.children.forEach((c: any) => {
+                        if (c.nodeType === 'tag' && (c.content.name === 'th' || c.content.name === 'td')) {
+                            this.addAttr(c.content.attributes, 'rowspan', rowspan);
+                        }
+                    })
+                }
             })
         }
         //合并
@@ -205,7 +247,7 @@ export class MxTableConvertCommand {
         })
         // 处理 operation-tr
         centerTrs.forEach((tr: any) => {
-            if(!tr.content || !tr.content.attributes){
+            if (!tr.content || !tr.content.attributes) {
                 return;
             }
             const attrs = tr.content.attributes;
@@ -213,7 +255,7 @@ export class MxTableConvertCommand {
             attrs.forEach((attr: any, index: number) => {
                 const keyName = attr.key.content;
                 const cNames = attr.value.content.split(' ');
-  
+
                 isOperationTr = keyName === 'class' && !!cNames.find((clazz: string) => {
                     return clazz === 'operation-tr';
                 });
@@ -223,21 +265,50 @@ export class MxTableConvertCommand {
                 this.removeClassName4Attrs(attrs, 'operation-tr');
             }
         })
-       
+
     }
-    private addAttr(attrs: any, key: string, value: string|number) {
+    private addAttr(attrs: any, key: string, value: string | number) {
         attrs.push({
             key: { content: key, type: 'token:attribute-key' },
             value: { content: value, type: 'token:attribute-value' }
         });
     }
-    private removeAttr(node: any, names: string[]) {
-        const attrs = node.attr('content.attributes');
+    private removeAttr(ast: any, names: string[]) {
+        const attrs = ast.attr('content.attributes');
         const newAttrs = attrs.filter((attr: any) => {
             const keyName = attr.key.content;
             return !names.includes(keyName);
         });
-        node.attr('content.attributes', newAttrs);
+        ast.attr('content.attributes', newAttrs);
+    }
+    /**
+     * 找到需要替换的table的位置
+     * @param lines 
+     * @param node 
+     * @returns 
+     */
+    private buildTableRange(lines: any[], node: any) {
+        const start = node.content.openStart.startPosition;
+        const end = node.content.close.endPosition;
+        let starPosition, endPosition;
+        lines.forEach((line: any, index: number) => {
+            if (start >= line.start && start <= line.end) {
+                const p = line.code.indexOf('<mx-table');
+                if (p > -1) {
+                    starPosition = new Position(index, p);
+                }
+            }
+            if (end >= line.start && end <= line.end) {
+                const p = line.code.lastIndexOf('</mx-table>');
+                if (p > -1) {
+                    endPosition = new Position(index, p + 11);
+                }
+            }
+        })
+        if (starPosition && endPosition) {
+            return new Range(starPosition, endPosition);
+        }
+        return null;
     }
 
 
