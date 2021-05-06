@@ -94,8 +94,18 @@ export class MxTableConvertCommand {
         // left-col-sticky
         const leftTable = ast.find('<table left="true">');
         if (leftTable.length > 0) {
-            const ths = ast.find('<thead>').find('<tr>').find('<th>');
-            if (ths.length > 0) {
+            const theads = ast.find('<thead>');
+            let ths;
+            if (theads.length > 0) {
+                const trs = theads.find('<tr>');
+                if (trs.length > 0) {
+                    ths = trs.find('<th>');
+                } else {
+                    // 兼容thead 里面没有tr的情况
+                    ths = theads.find('<th>');
+                }
+            }
+            if (ths && ths.length > 0) {
                 this.addAttr(ast.attr('content'), 'left-col-sticky', ths.length);
             }
         }
