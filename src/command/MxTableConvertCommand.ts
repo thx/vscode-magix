@@ -24,7 +24,7 @@ export class MxTableConvertCommand {
                 const AST = $(content, { parseOptions: { html: true } });
                 //全部替换
                 let replaceAll = false;
-                AST.find('<mx-table>$_$</mx-table>').each((ast) => {
+                AST.find('<mx-table>').each((ast) => {
                     ast.attr('content.name', 'mx-stickytable');
                     this.resetTableAttr(ast);
                     this.resetTable(ast);
@@ -245,7 +245,7 @@ export class MxTableConvertCommand {
             }
             const attrs = tr.content.attributes;
             let isOperationTr = false;
-
+            
             for (let i = 0; i < attrs.length; i++) {
                 const attr = attrs[i];
                 const keyName = attr.key.content;
