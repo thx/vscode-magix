@@ -24,7 +24,7 @@ export class MxTableConvertCommand {
                 const AST = $(content, { parseOptions: { html: true } });
                 //全部替换
                 let replaceAll = false;
-                AST.find('<mx-table>').each((ast) => {
+                AST.find('<mx-table>$_$</mx-table>').each((ast) => {
                     ast.attr('content.name', 'mx-stickytable');
                     this.resetTableAttr(ast);
                     this.resetTable(ast);
@@ -36,7 +36,7 @@ export class MxTableConvertCommand {
                         replaceAll = true;
                     }
                 });
-
+                // 修改editor中的内容
                 editor.edit((editorBuilder: TextEditorEdit) => {
                     if (replaceAll) {
                         const code = AST.generate();
@@ -52,8 +52,7 @@ export class MxTableConvertCommand {
                 });
 
             } catch (error) {
-
-                window.showWarningMessage(error);
+                window.showWarningMessage(error.message);
             }
         }));
     }
@@ -97,7 +96,7 @@ export class MxTableConvertCommand {
         if (leftTable.length > 0) {
             const ths = ast.find('<thead>').find('<tr>').find('<th>');
             if (ths.length > 0) {
-                this.addAttr(ast.attr('content.attributes'), 'left-col-sticky', ths.length);
+                this.addAttr(ast.attr('content'), 'left-col-sticky', ths.length);
             }
         }
     }
@@ -112,21 +111,18 @@ export class MxTableConvertCommand {
 
             this.mergeTrs(leftTable, centerTable, 'thead');
             this.mergeTrs(leftTable, centerTable, 'tbody');
+            
+            // 转移属性
+            centerTable.attr('content.attributes',leftTable.attr('content.attributes'));
+            this.removeAttr(centerTable, ['left']);
 
-            this.removeAttr(centerTable, ['center', 'class']);
-            this.removeTableClassName(centerTable);
             ast.remove('<table left="true">');
         } else if (hasLeftTable) {
             this.removeAttr(hasLeftTable, ['left']);
-            this.removeTableClassName(hasLeftTable);
         } else if (hasCenterTable) {
             this.removeAttr(centerTable, ['center']);
-            this.removeTableClassName(centerTable);
         } else {
             const table = ast.find('<table>');
-            if (table.length > 0) {
-                this.removeTableClassName(table);
-            }
         }
         ast.remove('<!-- 固定列，在table上配置left="true" -->');
         ast.remove('<!--  滚动列，在table上直接配置center="true"  -->');
@@ -153,7 +149,7 @@ export class MxTableConvertCommand {
                         attr.key.content = 'order-by';
                     }
                 })
-                this.addAttr(attrs, 'order', '！！！自行处理！！！');
+                this.addAttr(s.attr('content'), 'order', '！！！自行处理！！！');
 
                 //排除排序标签<span sort-trigger="xxx">
                 const children = th.attr('content.children');
@@ -195,7 +191,7 @@ export class MxTableConvertCommand {
             const value = cNames.filter((clazz: string) => {
                 const c = clazz.trim();
                 return c.length != 0 && c !== name;
-            }).join('');
+            }).join(' ');
             attr.value.content = value;
             if (value.length === 0) {
                 removeIndex = index;
@@ -221,15 +217,12 @@ export class MxTableConvertCommand {
         //处理子表头
         if (leftTrs.length != centerTrs.length) {
             const rowspan = centerTrs.length - leftTrs.length + 1;
-            if (rowspan < 2) {
-                //center表格thead里面的tr数量少于 left表格的
-                return;
-            }
+           
             leftTrs.forEach((tr: any) => {
                 if (tr && tr.content && tr.content.children) {
                     tr.content.children.forEach((c: any) => {
                         if (c.nodeType === 'tag' && (c.content.name === 'th' || c.content.name === 'td')) {
-                            this.addAttr(c.content.attributes, 'rowspan', rowspan);
+                            this.addAttr(c.content, 'rowspan', rowspan);
                         }
                     })
                 }
@@ -252,26 +245,41 @@ export class MxTableConvertCommand {
             }
             const attrs = tr.content.attributes;
             let isOperationTr = false;
-            attrs.forEach((attr: any, index: number) => {
+
+            for (let i = 0; i < attrs.length; i++) {
+                const attr = attrs[i];
                 const keyName = attr.key.content;
                 const cNames = attr.value.content.split(' ');
 
                 isOperationTr = keyName === 'class' && !!cNames.find((clazz: string) => {
                     return clazz === 'operation-tr';
                 });
-            })
+
+                if (isOperationTr) {
+                    break;
+                }
+            }
+           
             if (isOperationTr) {
-                this.addAttr(attrs, 'mx-stickytable-operation', 'line');
+                this.addAttr(tr.content, 'mx-stickytable-operation', 'line');
                 this.removeClassName4Attrs(attrs, 'operation-tr');
             }
         })
 
     }
-    private addAttr(attrs: any, key: string, value: string | number) {
-        attrs.push({
+    private addAttr(content: any, key: string, value: string | number) {
+        if(!content){
+            return;
+        }
+        const attr = {
             key: { content: key, type: 'token:attribute-key' },
             value: { content: value, type: 'token:attribute-value' }
-        });
+        }
+        if (content.attributes) {
+            content.attributes.push(attr);
+        } else {
+            content.attributes = [attr];
+        }
     }
     private removeAttr(ast: any, names: string[]) {
         const attrs = ast.attr('content.attributes');
@@ -288,8 +296,9 @@ export class MxTableConvertCommand {
      * @returns 
      */
     private buildTableRange(lines: any[], node: any) {
-        const start = node.content.openStart.startPosition;
-        const end = node.content.close.endPosition;
+        const { content: { openStart, close, openEnd } } = node;
+        const start = openStart.startPosition;
+        const end = (close || openEnd).endPosition;
         let starPosition, endPosition;
         lines.forEach((line: any, index: number) => {
             if (start >= line.start && start <= line.end) {
