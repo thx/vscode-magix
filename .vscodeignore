@@ -1,15 +1,11 @@
-
 node_modules
 .vscode/**
 out/**
 src/**
 .gitignore
-.yarnrc
 vsc-extension-quickstart.md
-**/tsconfig.json
-**/.eslintrc.json
+tsconfig.json
 **/*.map
-**/*.ts
-*.vsix
+**/*.vsix
 webpack.config.js
 tslint.json
