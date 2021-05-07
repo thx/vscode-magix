@@ -25,6 +25,10 @@ export class MxTableConvertCommand {
                 //全部替换
                 let replaceAll = false;
                 AST.find('<mx-table>').each((ast) => {
+
+                    ast.replace('<mx-dropdown $$$/>','<mx-dropdown.bd $$$/>')
+                    .replace('<mx-dropdown $$$>$$$2</mx-dropdown>','<mx-dropdown.bd $$$>$$$2</mx-dropdown.bd>');
+                    
                     ast.attr('content.name', 'mx-stickytable');
                     this.resetTableAttr(ast);
                     this.resetTable(ast);
@@ -35,6 +39,8 @@ export class MxTableConvertCommand {
                         //找不到 table 的range 需要全部替换
                         replaceAll = true;
                     }
+                    
+                 
                 });
                 // 修改editor中的内容
                 editor.edit((editorBuilder: TextEditorEdit) => {
