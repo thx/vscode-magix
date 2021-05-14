@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { RapModelUtils, Model, ModelItem } from '../common/utils/RapModelUtils';
-
+import { markdownTable } from 'markdown-table';
 
 export class RapHoverProvider implements vscode.HoverProvider {
 
@@ -29,31 +29,38 @@ export class RapHoverProvider implements vscode.HoverProvider {
       model.projectId +
       '&mod=' + item.moduleId +
       '&itf=' + item.id;
+      
     return [
       new vscode.MarkdownString(`#### ${item.moduleName} - ${item.name}   [Rap2链接](${url})`),
       new vscode.MarkdownString(`#### 请求`),
-      new vscode.MarkdownString(`| 名称 |  类型  | 简介 | 
-      |----------|:-------------:|:------|
-      ${request}`),
+      new vscode.MarkdownString(this.buildTable(item.properties, 0, -1, 'request')),
       new vscode.MarkdownString(`#### 返回`),
-      new vscode.MarkdownString(`| 名称 |  类型  | 简介 | 
-      |----------|:-------------:|:------|
-      ${response}`),
+      new vscode.MarkdownString(this.buildTable(item.properties, 0, -1, 'response')),
     ];
   }
-  private buildLines(properties: Array<any>, level: number, pid: number, type: string) {
-    let text = '';
+  private buildTable(properties: Array<any>, level: number, pid: number, type: string) {
+    const data = [
+      ['名称', '类型', '简介'],
+      ...this.buildLines(properties, 0, -1, type)
+    ];
+    return markdownTable(data);
+  }
+  private buildLines(properties: Array<any>, level: number, pid: number, type: string, lines?: any[]) {
+    if (!lines) {
+      lines = [];
+    }
     properties.forEach(item => {
       if (item.scope === type && item.parentId === pid) {
-        text = text + ' | ';
+        let space = '';
         for (let index = 0; index < level; index++) {
-          text = text + ' - ';
+            space = space + ' - ';
         }
-        text = text + item.name + ' | ' + item.type + ' | ' + item.description + ' | \r';
-        text = text + this.buildLines(properties, level + 1, item.id, type);
+        const line = [space + item.name, item.type, item.description];
+        lines && lines.push(line);
+        this.buildLines(properties, level + 1, item.id, type, lines);
       }
     });
-    return text;
+    return lines;
   }
 
 }
