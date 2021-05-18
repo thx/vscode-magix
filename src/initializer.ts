@@ -261,7 +261,7 @@ export class Initializer {
     if (!isMagixProject) {
       //不是magix项目不展示magix相关菜单项
       await setContext(ContextKeys.IsMagix, undefined);
-      throw new Error('不是Magix项目');
+      return;
     }
     await setContext(ContextKeys.IsMagix, true);
 

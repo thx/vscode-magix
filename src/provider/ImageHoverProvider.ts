@@ -11,7 +11,7 @@ export class ImageHoverProvider implements vscode.HoverProvider {
     if (!word) {
       return hover;
     }
-    if(!/\.(png|jpg|gif|jpeg|webp)$/.test(word)){
+    if(!/\.(png|jpg|gif|jpeg|webp)\?*.*$/.test(word)){
       return hover;
     }
     if (/^\/\/.+/.test(word)) {

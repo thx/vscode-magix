@@ -23,10 +23,19 @@ import { ImageHoverProvider } from './provider/ImageHoverProvider';
 import { GogoCodeCommand } from './command/GogoCodeCommand';
 import { PathCopyCommand } from './command/PathCopyCommand';
 
+const { languages: { registerHoverProvider, registerDefinitionProvider, registerCompletionItemProvider, registerFoldingRangeProvider } } = vscode;
+
+const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
+const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
+const CSS_MODE = [{ language: 'css', scheme: 'file' }, { language: 'less', scheme: 'file' }];
+const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
+const JTS_HTML_CSS_MODE = JTS_HTML_MODE.concat(CSS_MODE);
 
 export function activate(context: vscode.ExtensionContext) {
     let startTime: number = new Date().getTime();
     const subscriptions = context.subscriptions;
+    // 不需要判断是不是magix项目，只要是项目就能用这个功能
+    subscriptions.push(registerHoverProvider('*', new ImageHoverProvider()));
 
     //初始化期，初始化基本数据
     new Initializer().init().then(() => {
@@ -37,29 +46,23 @@ export function activate(context: vscode.ExtensionContext) {
         new PathCopyCommand().registerCommand(context);
         new MxTableConvertCommand().registerCommand(context);
         // 
-        const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
-        const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
-        const CSS_MODE = [{ language: 'css', scheme: 'file' }, { language: 'less', scheme: 'file' }];
-        const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
-        const JTS_HTML_CSS_MODE = JTS_HTML_MODE.concat(CSS_MODE);
-
-
-        subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
-        subscriptions.push(vscode.languages.registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
+      
+        subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
+        subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
 
         //注册html代码跳转
-        subscriptions.push(vscode.languages.registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
+        subscriptions.push(registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
 
         //注册代码提示
-        subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
-        subscriptions.push(vscode.languages.registerCompletionItemProvider(HTML_MODE, new IconfontCompletionItemProvider(), '&'));
-        subscriptions.push(vscode.languages.registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
+        subscriptions.push(registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
+        subscriptions.push(registerCompletionItemProvider(HTML_MODE, new IconfontCompletionItemProvider(), '&'));
+        subscriptions.push(registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
 
         //注册悬浮提示Provider
-        subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
-        subscriptions.push(vscode.languages.registerHoverProvider(JTS_MODE, new RapHoverProvider()));
-        subscriptions.push(vscode.languages.registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
-        subscriptions.push(vscode.languages.registerHoverProvider(JTS_HTML_CSS_MODE, new ImageHoverProvider()));
+        subscriptions.push(registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
+        subscriptions.push(registerHoverProvider(JTS_MODE, new RapHoverProvider()));
+        subscriptions.push(registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
+        
 
         initViews(context);
 
