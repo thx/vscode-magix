@@ -17,8 +17,7 @@ export class Initializer {
   private rootPath: string;
 
   constructor() {
-    this.rootPath = FileUtils.getProjectPath();
-    ProjectInfoUtils.scanProject(this.rootPath);
+    this.rootPath = '';
   }
 
   /**
@@ -63,12 +62,7 @@ export class Initializer {
     Iconfont.scanCSSFile(cssFileList);
 
   }
-  /**
-   * 扫描工程目录下的关键文件，eg： package.json
-   */
-  private scanProjectFile() {
-    ProjectInfoUtils.scanProject(this.rootPath);
-  }
+  
   /**
    * 从新扫描CSSFile
    */
@@ -245,34 +239,49 @@ export class Initializer {
     const hasMxTable = editor.document.getText().indexOf('<mx-table') > -1;
     setContext(ContextKeys.HasMxTable, hasMxTable);
   }
-  private async isMagixProject() {
+  private isMagixProject() {
     const info = ProjectInfoUtils.getInfo();
     if (info && ShowGogoCodeProjects.indexOf(info.name) > -1) {
-      await setContext(ContextKeys.ShowGogoCode, true);
+      setContext(ContextKeys.ShowGogoCode, true);
     }
     else {
-      await setContext(ContextKeys.ShowGogoCode, undefined);
+      setContext(ContextKeys.ShowGogoCode, undefined);
     }
     return info && info.isMagix;
   }
 
-  public async init() {
-    const isMagixProject = await this.isMagixProject();
-    if (!isMagixProject) {
-      //不是magix项目不展示magix相关菜单项
-      await setContext(ContextKeys.IsMagix, undefined);
-      return;
-    }
-    await setContext(ContextKeys.IsMagix, true);
+  public init(): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      try {
+        this.rootPath = FileUtils.getProjectPath();
+        ProjectInfoUtils.scanProject(this.rootPath);
+       
+        if (!this.rootPath) {
+          resolve(false);
+          return;
+        }
+        const isMagixProject = this.isMagixProject();
+       
+        if (!isMagixProject) {
+          //不是magix项目不展示magix相关菜单项
+          setContext(ContextKeys.IsMagix, undefined);
+          resolve(false);
+          return;
+        }
+        setContext(ContextKeys.IsMagix, true);
 
-    this.scanProjectFile();
-    this.startWatching();
-    this.scanSrcFile();
-    let info: Info = ProjectInfoUtils.getInfo();
-    if (info && info.modelsPath) {
-      RapModelUtils.updateModelInfo(info);
-    }
-    this.checkMxTable();
+        this.startWatching();
+        this.scanSrcFile();
+        let info: Info = ProjectInfoUtils.getInfo();
+        if (info && info.modelsPath) {
+          RapModelUtils.updateModelInfo(info);
+        }
+        this.checkMxTable();
+        resolve(true);
+      } catch (error) {
+        reject(error.message);
+      }
+    });
   }
 
 }

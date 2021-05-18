@@ -27,52 +27,60 @@ const { languages: { registerHoverProvider, registerDefinitionProvider, register
 
 const JTS_MODE = [{ language: 'javascript', scheme: 'file' }, { language: 'typescript', scheme: 'file' }];
 const HTML_MODE = [{ language: 'html', scheme: 'file' }, { language: 'handlebars', scheme: 'file' }];
-const CSS_MODE = [{ language: 'css', scheme: 'file' }, { language: 'less', scheme: 'file' }];
+//const CSS_MODE = [{ language: 'css', scheme: 'file' }, { language: 'less', scheme: 'file' }];
 const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
-const JTS_HTML_CSS_MODE = JTS_HTML_MODE.concat(CSS_MODE);
+//const JTS_HTML_CSS_MODE = JTS_HTML_MODE.concat(CSS_MODE);
 
 export function activate(context: vscode.ExtensionContext) {
     let startTime: number = new Date().getTime();
     const subscriptions = context.subscriptions;
     // 不需要判断是不是magix项目，只要是项目就能用这个功能
     subscriptions.push(registerHoverProvider('*', new ImageHoverProvider()));
-
-    //初始化期，初始化基本数据
-    new Initializer().init().then(() => {
-        //注册command
-        new ToDefinitionCommand().registerCommand(context);
-        new WebViewCommand().registerCommand(context);
-        new GogoCodeCommand().registerCommand(context);
-        new PathCopyCommand().registerCommand(context);
-        new MxTableConvertCommand().registerCommand(context);
-        // 
-      
-        subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
-        subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
-
-        //注册html代码跳转
-        subscriptions.push(registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
-
-        //注册代码提示
-        subscriptions.push(registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
-        subscriptions.push(registerCompletionItemProvider(HTML_MODE, new IconfontCompletionItemProvider(), '&'));
-        subscriptions.push(registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
-
-        //注册悬浮提示Provider
-        subscriptions.push(registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
-        subscriptions.push(registerHoverProvider(JTS_MODE, new RapHoverProvider()));
-        subscriptions.push(registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
+    
+    new Initializer().init().then(result => {
         
+        if (!result) {
+            Logger.logActivate(new Date().getTime() - startTime, 'simple use');
+            Logger.log('magix 插件启动成功,只支持部分功能！');
+            return;
+        }
+        try {
 
-        initViews(context);
+            new ToDefinitionCommand().registerCommand(context);
+            new WebViewCommand().registerCommand(context);
+            new GogoCodeCommand().registerCommand(context);
+            new PathCopyCommand().registerCommand(context);
+            new MxTableConvertCommand().registerCommand(context);
 
-        Logger.logActivate(new Date().getTime() - startTime, '');
-        Logger.log('插件启动成功');
-    }).catch((info) => {
+            subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
+            subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));
 
-        Logger.logActivate(new Date().getTime() - startTime, info);
-        Logger.error(info);
-    });
+            //注册html代码跳转
+            subscriptions.push(registerDefinitionProvider(HTML_MODE, new HtmlDefinitionProvider()));
+
+            //注册代码提示
+            subscriptions.push(registerCompletionItemProvider(HTML_MODE, new MXEventCompletionItemProvider(), '=', '\'', '"'));
+            subscriptions.push(registerCompletionItemProvider(HTML_MODE, new IconfontCompletionItemProvider(), '&'));
+            subscriptions.push(registerFoldingRangeProvider(HTML_MODE, new VSFoldingRangeProvider()));
+
+            //注册悬浮提示Provider
+            subscriptions.push(registerHoverProvider(JTS_HTML_MODE, new IconfontHoverProvider()));
+            subscriptions.push(registerHoverProvider(JTS_MODE, new RapHoverProvider()));
+            subscriptions.push(registerHoverProvider(HTML_MODE, new GalleryHoverProvider()));
+
+            initViews(context);
+
+            Logger.logActivate(new Date().getTime() - startTime, '');
+            Logger.log('magix 插件启动成功');
+
+        } catch (error) {
+            Logger.logActivate(new Date().getTime() - startTime, error.message);
+            Logger.error(error.message);
+        }
+    }).catch((msg) => {
+        Logger.logActivate(new Date().getTime() - startTime, msg);
+    })
+   
 }
 
 export function deactivate() {

@@ -47,7 +47,9 @@ export enum ContextKeys {
 }
 
 export function setContext(key: ContextKeys | string, value: any) {
-	return vscode.commands.executeCommand(BuiltInCommand.SetContext, key, value);
+	vscode.commands.executeCommand(BuiltInCommand.SetContext, key, value).then(() => {
+    // do nothing
+  });
 }
 
 
