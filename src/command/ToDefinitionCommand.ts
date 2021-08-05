@@ -94,7 +94,7 @@ export class ToDefinitionCommand {
         return;
       }
       let url: string = 'https://rap2.alibaba-inc.com/repository/editor?id=' +
-        model.projectId +
+        find.projectId +
         '&mod=' + find.moduleId +
         '&itf=' + find.id;
       opn(url);

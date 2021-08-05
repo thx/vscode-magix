@@ -60,7 +60,7 @@ export class MXDefinitionProvider implements vscode.DefinitionProvider {
           if (time - this.lastTriggerTime > 1000) {
             this.lastTriggerTime = time;
             let url: string = 'https://rap2.alibaba-inc.com/repository/editor?id=' +
-              model.projectId +
+              find.projectId +
               '&mod=' + find.moduleId +
               '&itf=' + find.id;
             opn(url);

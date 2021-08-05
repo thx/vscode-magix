@@ -72,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             Logger.logActivate(new Date().getTime() - startTime, '');
             Logger.log('magix 插件启动成功');
-
+            
         } catch (error) {
             Logger.logActivate(new Date().getTime() - startTime, error.message);
             Logger.error(error.message);

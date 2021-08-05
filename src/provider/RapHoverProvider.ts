@@ -18,17 +18,13 @@ export class RapHoverProvider implements vscode.HoverProvider {
     }
     //console.log(item);
     let hover: vscode.Hover = new vscode.Hover(`${item.moduleName} - ${item.name}`);
-    hover.contents = this.buildMarkdownStringList(item, model);
+    hover.contents = this.buildMarkdownStringList(item);
     return hover;
   }
 
-  private buildMarkdownStringList(item: ModelItem, model: Model) {
-    let request = this.buildLines(item.properties, 0, -1, 'request');
-    let response = this.buildLines(item.properties, 0, -1, 'response');
-    let url: string = 'https://rap2.alibaba-inc.com/repository/editor?id=' +
-      model.projectId +
-      '&mod=' + item.moduleId +
-      '&itf=' + item.id;
+  private buildMarkdownStringList(item: ModelItem) {
+ 
+    let url: string = `https://rap2.alibaba-inc.com/repository/editor?id=${item.projectId}&mod=${item.moduleId}&itf=${item.id}`;
       
     return [
       new vscode.MarkdownString(`#### ${item.moduleName} - ${item.name}   [Rap2链接](${url})`),

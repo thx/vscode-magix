@@ -3,7 +3,7 @@
 	"displayName": "Magix",
 	"description": "Magix 开发增强套件 @MMFE",
 	"icon": "resources/image/magix.png",
-	"version": "0.16.15",
+	"version": "0.16.16",
 	"publisher": "mmfe",
 	"engines": {
 		"vscode": "^1.31.1"
@@ -246,6 +246,7 @@
 	"dependencies": {
 		"css-tree": "^1.1.3",
 		"datauri": "^2.0.0",
+		"fs-extra": "^10.0.0",
 		"gogocode": "^0.2.16",
 		"map-lru": "^1.1.0",
 		"markdown-table": "^3.0.0",

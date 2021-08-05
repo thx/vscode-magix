@@ -2,7 +2,7 @@ import * as $ from 'gogocode';
 import * as path from 'path';
 import { Info } from './ProjectInfoUtils';
 import { Rap } from '../../net/Rap';
-import * as fs from 'fs';
+const fse = require('fs-extra');
 
 export class RapModelUtils {
     private static model: Model;
@@ -24,81 +24,79 @@ export class RapModelUtils {
     private static analyseModelsFile(projectInfo: Info) {
         let mPath = path.join(projectInfo.rootPath, projectInfo.modelsPath);
         this.model = new Model();
-        this.model.projectId = projectInfo.rapProjectId;
+        
         try {
+            const content = fse.readFileSync(mPath).toString();
+            const ast: any = $(content).node;
 
-            fs.readFile(mPath, { encoding: 'utf-8' }, (err, content) => {
-                if (!err) {
-                    const ast: any = $(content).node;
-
-                    if (ast.program.body &&
-                        ast.program.body.length > 0 &&
-                        ast.program.body[0].expression &&
-                        ast.program.body[0].expression.right &&
-                        ast.program.body[0].expression.right.elements) {
-                        let elements = ast.program.body[0].expression.right.elements;
-                        elements.forEach((element: any) => {
-                            let modelItem: ModelItem = new ModelItem();
-                            // 分析注释文本，找到rapid等信息
-                            if (element.leadingComments && element.leadingComments.length > 0) {
-                                let comment = element.leadingComments[0].value;
-                                let arr = comment.split('-');
-                                if (arr.length > 1) {
-                                    modelItem.name = arr[0];
-                                    let tempArr = arr[1].split('#');
-                                    modelItem.id = tempArr.length > 1 ? tempArr[1] : '';
-                                }
-
+            if (ast.program.body &&
+                ast.program.body.length > 0 &&
+                ast.program.body[0].expression &&
+                ast.program.body[0].expression.right &&
+                ast.program.body[0].expression.right.elements) {
+                let elements = ast.program.body[0].expression.right.elements;
+                elements.forEach((element: any) => {
+                    let modelItem: ModelItem = new ModelItem();
+                    
+                    if (element.properties) {
+                        element.properties.forEach((prop: any) => {
+                            let key = prop.key.value;
+                            let value = prop.value.value;
+                            if (key === 'name') {
+                                modelItem.key = value;
+                            } else if (key === 'url') {
+                                modelItem.url = value;
                             }
-                            if (element.properties) {
-                                element.properties.forEach((prop: any) => {
-                                    let key = prop.key.value;
-                                    let value = prop.value.value;
-                                    if (key === 'name') {
-                                        modelItem.key = value;
-                                    } else if (key === 'url') {
-                                        modelItem.url = value;
-                                    }
-                                });
-                            }
-                            this.model.list.push(modelItem);
                         });
                     }
-                }
-            })
+                    // 分析注释文本，找到rapid等信息
+                    
+                    if (element.leadingComments && element.leadingComments.length > 0) {
+                        
+                        let comment = element.leadingComments[0].value;
+                        const index = comment.lastIndexOf('-');
+                        if (index > -1) {
+                            modelItem.name = comment.substr(0, index).trim();
+                            const tempStr = comment.substr(index + 1, comment.length).trim();
+                            let tempArr = tempStr.split('#');
+                            if (tempArr.length > 1) {
+                                modelItem.projectId = tempArr[0].trim();
+                                modelItem.id = tempArr[1].trim();
+                            }
+                        }
+                    }
+                    this.model.list.push(modelItem);
+                });
+                
+            }
 
         } catch (error) {
-            //console.error(error);
+            console.error(error);
         }
     }
     private static getDataFromRap(projectId: string) {
         Rap.getProjectInfo(projectId).then((interfaces: Array<any>) => {
-
+            
             let list = this.model.list;
-
+            
             interfaces.forEach((interfaceItem: any) => {
-
                 let find = list.find((item: ModelItem) => {
                     return interfaceItem.url === item.url;
                 });
-                if (find) {
-                    find.id = interfaceItem.id;
-                    find.moduleDescription = interfaceItem.moduleDescription;
+                if (find && find.id == interfaceItem.id) {
                     find.moduleId = interfaceItem.moduleId;
+                    find.moduleDescription = interfaceItem.moduleDescription;
                     find.moduleName = interfaceItem.moduleName;
                     find.name = interfaceItem.name;
                     find.properties = interfaceItem.properties;
-
                 }
             });
         });
     }
 }
 export class Model {
-    projectId: string;
     list: Array<ModelItem>;
     constructor() {
-        this.projectId = '';
         this.list = [];
     }
 }
@@ -109,6 +107,7 @@ export class ModelItem {
     id: string;
     moduleName: string;
     moduleId: string;
+    projectId: string;
     moduleDescription: string;
     properties: Array<any>;
     constructor() {
@@ -120,5 +119,6 @@ export class ModelItem {
         this.moduleId = '';
         this.moduleDescription = '';
         this.properties = [];
+        this.projectId = ''
     }
 }
