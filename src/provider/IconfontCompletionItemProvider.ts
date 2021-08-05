@@ -5,9 +5,12 @@ import { Iconfont, IconfontData } from '../common/utils/Iconfont';
 export class IconfontCompletionItemProvider implements vscode.CompletionItemProvider {
   
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
-    
+    const { triggerCharacter } = context;
+    if (triggerCharacter !== '&') {
+      return;
+    }
     let list: vscode.CompletionList = new vscode.CompletionList();
-    let arr:Array<IconfontData> = Iconfont.getDataByCode('');
+    let arr:Array<IconfontData> = Iconfont.getDataByCode();
     arr.forEach(item=>{
       let label:string = `&#x${item.code};`;
       let completionItem:vscode.CompletionItem = new vscode.CompletionItem(label,vscode.CompletionItemKind.Field);

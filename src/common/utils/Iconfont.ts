@@ -26,8 +26,8 @@ export class Iconfont {
    * 通过 code 获取IconFont 图标信息 
    * @param code 
    */
-  public static getDataByCode(code: string): Array<IconfontData> {
-    if (code === '') {
+  public static getDataByCode(code?: string): Array<IconfontData> {
+    if (!code) {
       return this.IconFontDataCache;
     }
     return this.IconFontDataCache.filter(item => {
