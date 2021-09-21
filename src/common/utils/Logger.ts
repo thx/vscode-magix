@@ -1,4 +1,4 @@
-const request = require('request');
+const axios = require('axios');
 export enum LogType {
   Activate = 'activate',
   Deactivate = 'deactivate',
@@ -35,16 +35,10 @@ export class Logger {
     this.request4Log(url);
   }
   private static request4Log(url: string) {
-    try {
-      request(url, (error: any, response: any, body: any) => {
-        if (!error && response.statusCode === 200) {
-          console.log('send log success');
-        } else {
-          console.log('send log error');
-        }
-      });
-    } catch (error) {
+    axios.get(url).then(() => {
+      console.log('send log success');
+    }).catch((error: any) => {
       console.error(error);
-    }
+    });
   }
 }

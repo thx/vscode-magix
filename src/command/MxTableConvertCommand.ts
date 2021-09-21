@@ -87,12 +87,13 @@ export class MxTableConvertCommand {
             attrs.forEach((attr: any) => {
                 const keyName = attr.key.content;
                 if (keyName === 'sticky') {
-                    attr.key.content = 'head-sticky';
+                    attr.key.content = 'thead-sticky';
                 } else if (keyName === 'scroll-wrapper') {
                     const val = attr.value.content;
                     if (val) {
                         attr.value.content = `#${val}`;
                     }
+                    attr.key.content = 'thead-sticky-wrapper';
                 }
             });
             this.removeAttr(ast, ['list', 'sticky-interval']);

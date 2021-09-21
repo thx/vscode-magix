@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import {ESFileProvider} from './ESFileProvider';
+import { ESFileProvider } from './ESFileProvider';
 import { ESFileInfo } from '../model/ESFileInfo';
-import {HtmlESMappingCache} from '../common/utils/CacheUtils';
+import { HtmlESMappingCache } from '../common/utils/CacheUtils';
 import { FnInfo } from '../model/FnInfo';
 
 export class MXEventCompletionItemProvider implements vscode.CompletionItemProvider {

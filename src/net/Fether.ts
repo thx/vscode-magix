@@ -1,5 +1,5 @@
 
-const request = require('request');
+const axios = require('axios');
 import { ShortcutInfo } from '../model/ShortcutInfo';
 
 export class Fether {
@@ -21,24 +21,30 @@ export class Fether {
         return this.fetherRequest(path, shortcut);
     }
     private static fetherRequest(path: string, params: any) {
-        let promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
 
-            let url = 'https://fether.m.alibaba-inc.com/magix-vscode-server/' + path
+            const url = 'https://fether.m.alibaba-inc.com/magix-vscode-server/' + path
                 + '?_f_needLogin=0&_f_debug=0&_f_ignoreCache=0&token=&_f_storage=&params='
                 + encodeURIComponent(JSON.stringify(params));
-            request({ url, timeout: 3000 }, (error: any, response: any, body: any) => {
-                if (!error && response.statusCode === 200) {
-                    let resp = JSON.parse(response.body);
+            axios({
+                url,
+                method: 'get',
+                timeout: 3000
+            }).then((response: any) => {
+                if (response.status === 200) {
+                    const resp = response.data;
                     if (resp.code === 200 && resp.result.ok) {
                         resolve(resp.result.data);
-                    }
-                    else {
+                    } else {
                         reject(resp.result.msg);
                     }
                 } else {
-                    reject(error);
+                    reject(response.status);
                 }
+            }).catch((err: any) => {
+                reject(err.message);
             });
+               
         });
         return promise;
     }

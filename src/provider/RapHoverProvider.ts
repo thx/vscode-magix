@@ -25,7 +25,7 @@ export class RapHoverProvider implements vscode.HoverProvider {
   private buildMarkdownStringList(item: ModelItem) {
  
     let url: string = `https://rap2.alibaba-inc.com/repository/editor?id=${item.projectId}&mod=${item.moduleId}&itf=${item.id}`;
-      
+    url = encodeURI(url);
     return [
       new vscode.MarkdownString(`#### ${item.moduleName} - ${item.name}   [Rap2链接](${url})`),
       new vscode.MarkdownString(`#### 请求`),

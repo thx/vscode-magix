@@ -22,6 +22,7 @@ import { GalleryHoverProvider } from './provider/GalleryHoverProvider';
 import { ImageHoverProvider } from './provider/ImageHoverProvider';
 import { GogoCodeCommand } from './command/GogoCodeCommand';
 import { PathCopyCommand } from './command/PathCopyCommand';
+import { TSConvertCommand } from './command/TSConvertCommand';
 
 const { languages: { registerHoverProvider, registerDefinitionProvider, registerCompletionItemProvider, registerFoldingRangeProvider } } = vscode;
 
@@ -32,6 +33,7 @@ const JTS_HTML_MODE = JTS_MODE.concat(HTML_MODE);
 //const JTS_HTML_CSS_MODE = JTS_HTML_MODE.concat(CSS_MODE);
 
 export function activate(context: vscode.ExtensionContext) {
+    
     let startTime: number = new Date().getTime();
     const subscriptions = context.subscriptions;
     // 不需要判断是不是magix项目，只要是项目就能用这个功能
@@ -51,6 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
             new GogoCodeCommand().registerCommand(context);
             new PathCopyCommand().registerCommand(context);
             new MxTableConvertCommand().registerCommand(context);
+            new TSConvertCommand().registerCommand(context);
 
             subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
             subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));

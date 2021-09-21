@@ -12,10 +12,10 @@ export class Command {
   public static COMMAND_DIAMOND_OPEN_PRE: string = "mx.diamond.open.pre";
   public static COMMAND_DIAMOND_CONFIG: string = "mx.diamond.config";
   public static COMMAND_WEBVIEW_SHOW:string="mx.webview.show";
-  public static COMMAND_TEST:string = "mx.test";
   public static COMMAND_DYNAMIC:string = 'mx.dynamic.';
   public static COMMAND_GOGOCODE:string = 'mx.gogocode';
   public static COMMAND_COPY_MAGIX_PATH:string = 'mx.copy.magix.path';
+  public static COMMAND_CODE_TO_TS: string = 'mx.code.toTS';
 }
 
 export enum BuiltInCommand {

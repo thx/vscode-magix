@@ -1,4 +1,4 @@
-const request = require('request');
+const axios = require('axios');
 export class Rap {
     public static getProjectInfo(projectId: string): Promise<any> {
         let promise = new Promise((resolve, reject) => {
@@ -38,13 +38,15 @@ export class Rap {
     private static fetchProject(projectId: string): Promise<any> {
         let promise = new Promise((resolve, reject) => {
             let url = 'http://rap2api.alibaba-inc.com/repository/get?id=' + projectId;
-            request({ url }, (error: any, response: any, body: any) => {
-                if (!error && response.statusCode === 200) {
-                    let resp = JSON.parse(response.body);
+            axios.get(url).then((response: any) => {
+                if (response.status === 200) {
+                    let resp = response.data;
                     resolve(resp.data);
                 } else {
-                    reject(error);
+                    reject(response.status);
                 }
+            }).catch((error: any) => {
+                reject(error.message);
             });
         });
         return promise;

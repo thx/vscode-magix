@@ -1,9 +1,10 @@
 
-const request = require('request');
+const axios = require('axios');
 const Datauri = require('datauri');
 import * as fs from 'fs';
 import * as path from 'path';
 const csstree = require('css-tree');
+const ttf2svg = require('ttf2svg');
 
 export interface IconfontData {
   code: string;
@@ -57,16 +58,21 @@ export class Iconfont {
       if (filePath.indexOf('src') < 0) {
         return;
       }
+      
       if (extName === '.css' || extName === '.less' || extName === '.scss') {
         fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
           if (!err) {
             content = this.removeComments(content);
             let cssAST: any = csstree.parse(content);
-           
-            let classUrlMap: Map<string, string> = this.readCSSAST(cssAST)
-
+            if(filePath.indexOf('iconfont.less')> -1){
+              debugger;
+            }
+            let classUrlMap: Map<string, string> = this.readCSSAST(cssAST);
+            
             classUrlMap.forEach((url, className) => {
-              this.fetchSvgData(className, url).then((list: any) => {
+              debugger
+              console.log(filePath);
+              this.fetchTTFData(className, url).then((list: any) => {
                 //去重
                 list.forEach((data:any)=>{
                   if (!Iconfont.IconFontDataCache.find((item: any) => {
@@ -118,7 +124,7 @@ export class Iconfont {
                 if (thNode.type === 'Url' &&
                   thNode.value &&
                   thNode.value.value &&
-                  thNode.value.value.indexOf('.svg') > -1) {
+                  thNode.value.value.indexOf('.ttf') > -1) {
                   url = thNode.value.value.replace(/[\'\"]/gi, '');
                 }
               });
@@ -179,32 +185,64 @@ export class Iconfont {
   }
   private static fetchSvgData(className: string, url: string) {
     let p = new Promise((resolve, reject) => {
-      request('http:' + url, (error: any, response: any, body: any) => {
-        if (!error && response.statusCode === 200) {
-
-          let arr = body.match(/<glyph.*\/>/gi);
-          let list: Array<IconfontData> = [];
-          if (arr) {
-            arr.forEach((item: string) => {
-              item.match(/unicode=\"\&\#(\d+);\"\s*d=\"(.*?)\"/gi);
-              let code = RegExp.$1 ? Number(RegExp.$1).toString(16) : '';
-              let data = RegExp.$2;
-              if (code && data) {
-                list.push({ className, code, data });
-              }
-            });
-          }
-          resolve(list);
-
-        } else {
-          //console.error('send log error');
-          reject(error);
+      axios.get('http:' + url).then((data: any) => {
+        let arr = data.match(/<glyph.*\/>/gi);
+        let list: Array<IconfontData> = [];
+        if (arr) {
+          arr.forEach((item: string) => {
+            item.match(/unicode=\"\&\#(\d+);\"\s*d=\"(.*?)\"/gi);
+            let code = RegExp.$1 ? Number(RegExp.$1).toString(16) : '';
+            let data = RegExp.$2;
+            if (code && data) {
+              list.push({ className, code, data });
+            }
+          });
         }
+        resolve(list);
+      }).catch((error: any) => {
+        reject(error.message);
+      });
+     
+    });
+    return p;
+  }
+  private static fetchTTFData(className: string, url: string) {
+    let p = new Promise((resolve, reject) => {
+      
+      axios({
+        url: 'http:' + url,
+        method: 'get',
+        responseType: 'arraybuffer'
+      }).then((response: any) => {
+        if (response.status === 200) {
+          try {
+            const svgData = ttf2svg(response.data);
+            let arr = svgData.match(/<glyph.*\/>/gi);
+            let list: Array<IconfontData> = [];
+            if (arr) {
+              arr.forEach((item: string) => {
+                item.match(/unicode=\"\&\#(\w+);\"\s*d=\"(.*?)\"/gi);
+                let code = RegExp.$1 ? RegExp.$1.toLowerCase() : '';
+                let data = RegExp.$2;
+                if (code && data) {
+                  list.push({ className, code, data });
+                }
+              });
+            }
+            resolve(list);
+          } catch (error: any) {
+            reject(error.message);
+          }
+        } else {
+          reject(response.status);
+        }
+        
+      }).catch((error: any) => {
+        reject(error.message);
       });
     });
     return p;
   }
-
   public static dataToMarkdown(data: IconfontData, needClassName: boolean) {
     let svg: string = needClassName ? this.toSvgWithClassName(data) : this.toSvg(data);
     this.datauri.format('.svg', svg);
