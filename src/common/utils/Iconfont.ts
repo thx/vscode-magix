@@ -64,14 +64,11 @@ export class Iconfont {
           if (!err) {
             content = this.removeComments(content);
             let cssAST: any = csstree.parse(content);
-            if(filePath.indexOf('iconfont.less')> -1){
-              debugger;
-            }
+        
             let classUrlMap: Map<string, string> = this.readCSSAST(cssAST);
             
             classUrlMap.forEach((url, className) => {
-              debugger
-              console.log(filePath);
+              
               this.fetchTTFData(className, url).then((list: any) => {
                 //去重
                 list.forEach((data:any)=>{
@@ -171,7 +168,6 @@ export class Iconfont {
       }
     });
 
-
     fontClassList.forEach((c) => {
       let font = fontFaceList.find(f => {
         return f.name === c.fontName;
@@ -180,7 +176,12 @@ export class Iconfont {
         classUrlMap.set(c.className, font.url);
       }
     });
-
+    // 本文件没有 font 引用
+    if (classUrlMap.size === 0) {
+      fontFaceList.forEach(font => {
+        classUrlMap.set('iconfont', font.url);
+      });
+    }
     return classUrlMap;
   }
   private static fetchSvgData(className: string, url: string) {
