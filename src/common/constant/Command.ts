@@ -16,6 +16,7 @@ export class Command {
   public static COMMAND_GOGOCODE:string = 'mx.gogocode';
   public static COMMAND_COPY_MAGIX_PATH:string = 'mx.copy.magix.path';
   public static COMMAND_CODE_TO_TS: string = 'mx.code.toTS';
+  public static COMMAND_CODE_TO_GIT: string = 'mx.code.toGit';
 }
 
 export enum BuiltInCommand {

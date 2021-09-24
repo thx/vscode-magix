@@ -23,6 +23,7 @@ import { ImageHoverProvider } from './provider/ImageHoverProvider';
 import { GogoCodeCommand } from './command/GogoCodeCommand';
 import { PathCopyCommand } from './command/PathCopyCommand';
 import { TSConvertCommand } from './command/TSConvertCommand';
+import {ToGitCommand} from './command/ToGitCommand';
 
 const { languages: { registerHoverProvider, registerDefinitionProvider, registerCompletionItemProvider, registerFoldingRangeProvider } } = vscode;
 
@@ -53,7 +54,8 @@ export function activate(context: vscode.ExtensionContext) {
             new GogoCodeCommand().registerCommand(context);
             new PathCopyCommand().registerCommand(context);
             new MxTableConvertCommand().registerCommand(context);
-            new TSConvertCommand().registerCommand(context);
+            //new TSConvertCommand().registerCommand(context);
+            new ToGitCommand().registerCommand(context);
 
             subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXDefinitionProvider()));
             subscriptions.push(registerDefinitionProvider(JTS_MODE, new MXInnerDefinitionProvider()));

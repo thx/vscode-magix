@@ -50,8 +50,8 @@
 				"title": "升级mx-table"
 			},
 			{
-				"command": "mx.code.toTS",
-				"title": "Magix TS 升级"
+				"command": "mx.code.toGit",
+				"title": "转到 gitlib/github"
 			}
 		],
 		"keybindings": [
@@ -115,14 +115,8 @@
 					"group": "0_mx"
 				},
 				{
-					"when": "vs-magix:isMagix && resourceLangId == javascript",
-					"command": "mx.code.toTS",
-					"group": "0_mx"
-				},
-				{
-					"when": "vs-magix:isMagix && resourceLangId == typescript",
-					"command": "mx.code.toTS",
-					"group": "0_mx"
+					"command": "mx.code.toGit",
+					"group": "0_git"
 				}
 			],
 			"explorer/context": [
@@ -157,8 +151,8 @@
 					"group": "0_mx"
 				},
 				{
-					"command": "mx.code.toTS",
-					"group": "0_mx"
+					"command": "mx.code.toGit",
+					"group": "0_git"
 				}
 			]
 		},
