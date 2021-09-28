@@ -26,6 +26,7 @@ export class ToGitCommand {
         const branch = this.getBranch(rootPath);
         const relativePath = filePath.replace(rootPath, '');
         const url = `${repository}/${isDir ? 'tree' : 'blob'}/${branch}${relativePath}`;
+        console.log(url);
         opn(url);
       } catch (error: any) {
         vscode.window.showErrorMessage(error.message);

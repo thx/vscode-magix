@@ -6,6 +6,7 @@ import * as path from 'path';
 const csstree = require('css-tree');
 const ttf2svg = require('ttf2svg');
 
+
 export interface IconfontData {
   code: string;
   data: string;
@@ -220,11 +221,13 @@ export class Iconfont {
             const svgData = ttf2svg(response.data);
             let arr = svgData.match(/<glyph.*\/>/gi);
             let list: Array<IconfontData> = [];
+            
             if (arr) {
               arr.forEach((item: string) => {
-                item.match(/unicode=\"\&\#(\w+);\"\s*d=\"(.*?)\"/gi);
+                item.match(/unicode=\"\&\#\x(\w+);\"/gi);
                 let code = RegExp.$1 ? RegExp.$1.toLowerCase() : '';
-                let data = RegExp.$2;
+                item.match(/d=\"(.*?)\"/gi);
+                let data = RegExp.$1;
                 if (code && data) {
                   list.push({ className, code, data });
                 }

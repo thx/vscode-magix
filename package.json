@@ -3,7 +3,7 @@
 	"displayName": "Magix",
 	"description": "Magix 开发增强套件 @MMFE",
 	"icon": "resources/image/magix.png",
-	"version": "0.16.17",
+	"version": "0.17.3",
 	"publisher": "mmfe",
 	"engines": {
 		"vscode": "^1.31.1"
@@ -263,7 +263,7 @@
 		"map-lru": "^1.1.0",
 		"markdown-table": "^3.0.0",
 		"opn": "^6.0.0",
-		"ttf2svg": "^1.2.0"
+		"ttf2svg": "0.0.7"
 	},
 	"repository": "https://github.com/thx/vscode-magix",
 	"author": "zhuori",
