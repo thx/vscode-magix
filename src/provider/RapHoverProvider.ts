@@ -3,9 +3,11 @@ import { RapModelUtils, Model, ModelItem } from '../common/utils/RapModelUtils';
 import { markdownTable } from 'markdown-table';
 
 export class RapHoverProvider implements vscode.HoverProvider {
+  private quotationReg = /[\'\"()]+([^\'\"()]*)[\'\")]+/g;
 
   provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
-    const word = document.getText(document.getWordRangeAtPosition(position));
+    let word = document.getText(document.getWordRangeAtPosition(position, this.quotationReg));
+    word = word.replace(/[\'\"()]/gi,'').trim();
     let model: Model = RapModelUtils.getModel();
     if (!model) {
       return null;
