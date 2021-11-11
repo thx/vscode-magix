@@ -63,12 +63,16 @@ export class Iconfont {
       if (extName === '.css' || extName === '.less' || extName === '.scss') {
         fs.readFile(filePath, { encoding: 'utf-8' }, (err, content) => {
           if (!err) {
-            content = this.removeComments(content);
+            //content = this.removeComments(content);
             let cssAST: any = csstree.parse(content);
         
             let classUrlMap: Map<string, string> = this.readCSSAST(cssAST);
             
             classUrlMap.forEach((url, className) => {
+              if(url.indexOf('thx/brix/') > -1 ){
+                //brix组件的icon不分析
+                return;
+              }
               
               this.fetchTTFData(className, url).then((list: any) => {
                 //去重
@@ -85,7 +89,6 @@ export class Iconfont {
             });
           }
         })
-
       }
     });
    
@@ -129,7 +132,8 @@ export class Iconfont {
             }
 
             if (name && url) {
-              fontFaceList.push({ name, url });
+              //倒着插入，模拟css后面样式对前面的覆盖
+              fontFaceList.unshift({ name, url });
             }
           }
         });
@@ -218,6 +222,7 @@ export class Iconfont {
       }).then((response: any) => {
         if (response.status === 200) {
           try {
+            
             const svgData = ttf2svg(response.data);
             let arr = svgData.match(/<glyph.*\/>/gi);
             let list: Array<IconfontData> = [];
