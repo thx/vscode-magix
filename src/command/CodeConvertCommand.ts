@@ -14,7 +14,7 @@ export class CodeConvertCommand {
         context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_CODE_TO_REACT, (args) => {
 
             try {
-                fs.readFile(args.path, { encoding: 'utf-8' }, (err, html) => {
+                fs.readFile(args.fsPath, { encoding: 'utf-8' }, (err, html) => {
                     if (!err) {
                         const content = gogocode(html,{parseOptions:{language:'html'}});
                         const components: Array<ComponentInfo> = [];

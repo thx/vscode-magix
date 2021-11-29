@@ -15,7 +15,7 @@ export class ToGitCommand {
      */
   public registerCommand(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_CODE_TO_GIT, (args) => {
-      const filePath = args.path;
+      const filePath = args.fsPath;
       if (!filePath) {
         return;
       }

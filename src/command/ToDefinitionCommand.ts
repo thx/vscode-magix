@@ -16,11 +16,11 @@ export class ToDefinitionCommand {
   public registerCommand(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_JUMP_TO_HTML, (args) => {
-      this.jumpBackAndForth(args.path);
+      this.jumpBackAndForth(args.fsPath);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_JUMP_TO_JTS, (args) => {
-      this.jumpBackAndForth(args.path);
+      this.jumpBackAndForth(args.fsPath);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_JUMP_TO_RAP, () => {
@@ -37,8 +37,8 @@ export class ToDefinitionCommand {
     context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_JUMP_BACK_AND_FORTH, (args) => {
       try {
         let filePath: string = '';
-        if (args && args.path) {
-          filePath = args.path;
+        if (args && args.fsPath) {
+          filePath = args.fsPath;
         } else {
           let editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
           if (editor) {

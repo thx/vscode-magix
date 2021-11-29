@@ -4,9 +4,6 @@ const Datauri = require('datauri');
 import * as fs from 'fs';
 import * as path from 'path';
 const csstree = require('css-tree');
-const ttf2svg = require('ttf2svg');
-
-
 export interface IconfontData {
   code: string;
   data: string;
@@ -212,40 +209,26 @@ export class Iconfont {
     });
     return p;
   }
+
   private static fetchTTFData(className: string, url: string) {
     let p = new Promise((resolve, reject) => {
-      
-      axios({
-        url: 'http:' + url,
-        method: 'get',
-        responseType: 'arraybuffer'
-      }).then((response: any) => {
-        if (response.status === 200) {
-          try {
-            
-            const svgData = ttf2svg(response.data);
-            let arr = svgData.match(/<glyph.*\/>/gi);
-            let list: Array<IconfontData> = [];
-            
-            if (arr) {
-              arr.forEach((item: string) => {
-                item.match(/unicode=\"\&\#\x(\w+);\"/gi);
-                let code = RegExp.$1 ? RegExp.$1.toLowerCase() : '';
-                item.match(/d=\"(.*?)\"/gi);
-                let data = RegExp.$1;
-                if (code && data) {
-                  list.push({ className, code, data });
-                }
-              });
+      const apiUrl = `https://magix.fc.alibaba-inc.com/ttf?path=${encodeURIComponent('http:' + url)}`
+      axios.get(apiUrl).then((resp: any) => {
+        const svgData = resp.data;
+        let arr = svgData.match(/<glyph.*\/>/gi);
+        let list: Array<IconfontData> = [];
+        if (arr) {
+          arr.forEach((item: string) => {
+            item.match(/unicode=\"\&\#\x(\w+);\"/gi);
+            let code = RegExp.$1 ? RegExp.$1.toLowerCase() : '';
+            item.match(/d=\"(.*?)\"/gi);
+            let data = RegExp.$1;
+            if (code && data) {
+              list.push({ className, code, data });
             }
-            resolve(list);
-          } catch (error: any) {
-            reject(error.message);
-          }
-        } else {
-          reject(response.status);
+          });
         }
-        
+        resolve(list);
       }).catch((error: any) => {
         reject(error.message);
       });

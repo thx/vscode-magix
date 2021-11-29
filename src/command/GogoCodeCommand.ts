@@ -24,7 +24,7 @@ export class GogoCodeCommand {
                 vscode.window.showErrorMessage(`gogocode执行文件不存在:${jsPath}`);
                 return;
             }
-            const codePath = args.path;
+            const codePath = args.fsPath;
             if (!codePath.includes('/src/app')) {
                 vscode.window.showErrorMessage(`不是src/app路径中文件`);
                 return;

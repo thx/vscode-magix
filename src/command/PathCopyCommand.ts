@@ -9,7 +9,7 @@ import { Command } from '../common/constant/Command';
 export class PathCopyCommand {
     public registerCommand(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.commands.registerCommand(Command.COMMAND_COPY_MAGIX_PATH, (args) => {
-            const filePath = args.path;
+            const filePath = args.fsPath;
             if (!filePath) {
                 return;
             }
